@@ -5,6 +5,7 @@ Job(Paid Internship) Placement Dating
 
 [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
 
+<!-- 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -73,11 +74,22 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
+-->
+
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **William Darko** - *Initial work* - [williamdarkocode](https://github.com/williamdarkocode)
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Rahin Rahman** -
+
+* **Francisco Ruiz** -
+
+* **Atta Saleh** -
+
+* **Boyeong Yoon** -
+
+
+See also the list of [contributors](https://github.com/CSCI-49900-Fall-2020/project-pladat/graphs/contributors) who participated in this project.
 
 ## License
 
@@ -88,3 +100,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 * Hat tip to anyone whose code was used
 * Inspiration
 * etc
+
