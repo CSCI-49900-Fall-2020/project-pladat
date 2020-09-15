@@ -2,6 +2,7 @@
 Job(Paid Internship) Placement Dating
 
 [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal)
+
 [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
 
 ## Getting Started
