@@ -6,13 +6,17 @@ const sgMail = require('@sendgrid/mail');
 const passport = require('passport');
 
 const User = require('../../models/User');
+const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
+const { configureEmailVerification } = require('../../configs/EmailTemplate');
+
 
 function verifyToken(req, res, next) {
-    req.token = req.query.token;
+    req.token = req.params.token;
     if(!req.token || typeof req.token === 'undefined' || typeof req.token === null) {
         return res.status(403).json({success: false, msg: "Invalid email verification link, or your link has expired."});
     }
+    next();
 }
 
 function checkValidEmailFormat(email) {
@@ -41,25 +45,162 @@ router.post('/register', (req, res) => {
     else if(pass !== passConf) {
         return res.status(422).json({success: false, msg: 'Passwords must match.'});
     }
-    else if(userType !== 'student' || userType !== 'recruiter' || userType !== 'employer') {
+    else if(userType !== "student" && userType !== "recruiter" && userType !== "employer") {
         return res.status(422).json({success: false, msg: 'Invalid user type.'});
     }
     else {
-        // send verification email here
+        User.findOne({ email: email})
+        .then((user) => {
+            if(user) {
+                return res.status(422).json({success: false, msg: 'This emailed is al ready registered to a user.'});
+            }
+            else {
+                const newUser = new User({
+                    firstname,
+                    lastname,
+                    email,
+                    password: pass,
+                    typeOfUser: userType
+                });
+
+                jwt.sign({newUser}, JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, token) => {
+                    if(err) {
+                        return res.status(500).json({success: false, msg: 'Due to server issues, we cannot register you at the moment', err});
+                    }
+                    else {
+                        sgMail.setApiKey(SENDGRID_APIKEY);
+
+                        const returnLink = `${CLIENT_ORIGIN}/complete-registeration/email-verification/${token}`;
+
+                        const htmlContent = configureEmailVerification(newUser.firstname, returnLink);
+
+                        const msg = {
+                            to: newUser.email,
+                            from: PROJECT_EMAIL,
+                            subject: 'Your PlaceMint email verification.',
+                            html: htmlContent
+                        };
+                        sgMail.send(msg, (err) => {
+                            if(Object.entries(err).length > 0) {
+                                return res.status(500).json({success: false, msg: "Something went wrong; can't send validation email.", err});
+                            }
+
+                            return res.status(200).json({success: true, msg: "Check your email for your email verification link.", userInfo: {email: newUser.email, firstname: newUser.firstname}});
+                        })
+                    }
+                })
+            }
+        })
+        .catch(err => {
+            if(Object.entries(err).length > 0) {
+                res.status(500).json({success: false, msg: "Something went wrong; couldn't register you just yet.", err});
+            }
+        })
     }
 
 });
 
-router.get('/register/verifyEmail', (req, res) => {
-    res.status(200).json({success: true});
+router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
+    jwt.verify(req.token, JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, authData) => {
+        if(err) {
+            return res.status(403).json({success: false, msg: 'Invalid email verification link.', err});
+        }
+        else {
+            let validUser = new User({
+                ...authData.newUser,
+                password: authData.newUser.password,
+                isVerified: true
+            });
+
+            User.findOne({email: validUser.email})
+            .then(user => {
+                if(user) {
+                    return res.status(401).json({success: false, msg: 'This email is already verified'});
+                }
+                else {
+                    bcrypt.genSalt(10, (err, salt) => {
+                        bcrypt.hash(validUser.password, salt, (err, hash) => {
+                            if(err) {
+                                return res.status(500).json({success: false, msg: 'Something went wrong, cannnot complete your registeration yet', err});
+                            }
+                            else {
+                                validUser.password = hash;
+                                validUser.save()
+                                .then(user => {
+                                    res.status(200).json({success: true, msg: "You're registered! Proceed with logging in.", user});
+            
+                                })
+                                .catch(err => {
+                                    if(Object.entries(err).length > 0) {
+                                        res.status(422).json({success: false, msg: "Something went wrong; couldn't register you now. Try the verification email link again.", err});
+                                    }
+                                })
+                            }
+                        })
+                    });
+                }
+            })
+            .catch(err => {
+                if(Object.entries(err).length > 0) {
+                    res.status(500).json({success: false, msg: "Something went wrong; couldn't register you now.", err});
+                }
+            })
+        }
+    })
 });
 
 router.post('/login', (req, res, next) => {
-    res.status(200).json({success: true});
+    if(!req.body.email || !req.body.password) {
+        return res.status(422).json({msg: "Please enter all credentials."});
+    }
+    
+    passport.authenticate('local', (err, user, info) => {
+        if(err) {
+            return next(err);
+        }
+        if(!user) {
+            return res.status(403).json({success: false, msg: info.msg});
+        }
+
+
+        req.logIn(user, (err) => {
+            if(err) {
+                return next(err);
+            }
+            const userEmail = user.email;
+            User.findOneAndUpdate(
+                { email: userEmail },
+                { $set: { isActive: true } }
+            )
+            .then(user => {
+                if(user) {
+                    req.user = user;
+                    res.status(200).json({success: true, msg: "You've logged in successfully.", userInfo: user});
+                }
+                else {
+                    res.status(403).json({success: false, msg: "This email is not registered."})
+                }
+            })
+            .catch(err => {
+                res.status(422).json({msg: "This email is not registered.", error: err});
+            })
+        })
+    }) (req, res, next);
 });
 
-router.post('/logout', (req, res) => {
-    res.status(200);
+router.post('/logout', ensureAuthenticated, (req, res) => {
+    User.findOneAndUpdate(
+        { email: req.user.email },
+        { $set: { isActive: false } }
+    )
+    .then(user => {
+        req.logout();
+        return res.status(200).json({success: true, msg: "You've been logged out."});
+    })
+    .catch(err => {
+        req.logout();
+        return res.status(500).json({success: false, msg: "Couldn't mark user as in active."});
+    })
 });
 
 router.get('/verifyAuth/:userId', (req, res) => {
