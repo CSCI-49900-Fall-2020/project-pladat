@@ -1,17 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { render } from 'react-dom';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import App from  './components/App';
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+
+// import pages components
+
+
+
+// router dependencies
+import { Route, Switch } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import store from './store';
+
+
+
+
+
+const router = (
+    <Provider store={store}>
+        <BrowserRouter>
+                <Route path="/" component={App}>
+                    <Switch>
+                        {/* All the pages go here, wrapperd in react router 'Route tags' see react router docs */}
+                    </Switch>
+
+                </Route>
+        </BrowserRouter>
+    </Provider>
+)
+
+render(router, document.getElementById('root'));

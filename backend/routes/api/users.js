@@ -204,18 +204,21 @@ router.post('/logout', ensureAuthenticated, (req, res) => {
 });
 
 router.get('/verifyAuth/:userId', (req, res) => {
-    res.status(200);
+    if(req.user && req.user._id+'' === req.params.userId && req.session.passport.user === req.params.userId && req.isAuthenticated()) {
+        return res.status(200).json({success: true, userAuthenticated: true, userInfo: req.user});
+    }
+    return res.status(401).json({success: false, userAuthenticated: false, userInfo: null});
 });
 
-router.put('/resetPasswordRequest', (req, res) => {
-    res.status(200);
+router.put('/resetPasswordRequest', ensureAuthenticated, (req, res) => {
+    
 });
 
 router.get('resetPasswordRequest/verification/:resetToken', (req, res) => {
     res.status(200);
 });
 
-router.get('/terminateAccount/request/:userId', (req, res) => {
+router.get('/terminateAccount/request/:userId', ensureAuthenticated, (req, res) => {
     res.status(200);
 });
 
