@@ -22,12 +22,13 @@ import store from './store';
 const router = (
     <Provider store={store}>
         <BrowserRouter>
-                <Route path="/" component={App}>
-                    <Switch>
-                        {/* All the pages go here, wrapperd in react router 'Route tags' see react router docs */}
-                    </Switch>
-
-                </Route>
+                <Switch>
+                  <Route path="/" component={App}>
+                    <div>
+                      Component
+                    </div>
+                  </Route>
+                </Switch>
         </BrowserRouter>
     </Provider>
 )

@@ -1,11 +1,11 @@
 import { createStore, compose , applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 
-import rootReducer from './reducers/index';
+import rootReducer from './reducers/index.js';
 
 
 
-let jobs = {
+let socket = {
 };
 
 let employers = {
@@ -14,10 +14,22 @@ let employers = {
 let recruiters = {
 };
 
+let students = {
+};
+
+let jobs = {
+};
+
+let user = {
+};
+
 const defaultState = {
     jobs,
     employers,
-    recruiters
+    recruiters,
+    user,
+    students,
+    socket
 };
 
 
