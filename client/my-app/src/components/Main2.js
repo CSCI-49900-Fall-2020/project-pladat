@@ -1,11 +1,11 @@
 import React from 'react';
 
 
-class Main extends React.Component {
+class Main2 extends React.Component {
     render() {
         return (
             <div>
-                <h1>PlaceMint</h1>
+                <h1>PlaceMint2</h1>
                 {/* {React.cloneElement({...this.props.children}, {...this.props})} */}
                 {/* {React.cloneElement(this.props.children, this.props)} */}
                 {React.cloneElement({...this.props}.children, {...this.props})}
@@ -14,4 +14,4 @@ class Main extends React.Component {
     }
 }
 
-export default Main;
+export default Main2;

@@ -6,6 +6,10 @@ const sgMail = require('@sendgrid/mail');
 const passport = require('passport');
 
 const User = require('../../models/User');
+const Student = require('../../models/Student');
+const Employer = require('../../models/Employer');
+const Recruiter = require('../../models/Recruiter');
+
 const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 const { configureEmailVerification } = require('../../configs/EmailTemplate');
@@ -45,14 +49,14 @@ router.post('/register', (req, res) => {
     else if(pass !== passConf) {
         return res.status(422).json({success: false, msg: 'Passwords must match.'});
     }
-    else if(userType !== "student" && userType !== "recruiter" && userType !== "employer") {
+    else if(userType !== "Student" && userType !== "Recruiter" && userType !== "Employer") {
         return res.status(422).json({success: false, msg: 'Invalid user type.'});
     }
     else {
         User.findOne({ email: email})
         .then((user) => {
             if(user) {
-                return res.status(422).json({success: false, msg: 'This emailed is al ready registered to a user.'});
+                return res.status(422).json({success: false, msg: 'This emailed is already registered to a user.'});
             }
             else {
                 const newUser = new User({
@@ -106,11 +110,36 @@ router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
             return res.status(403).json({success: false, msg: 'Invalid email verification link.', err});
         }
         else {
-            let validUser = new User({
-                ...authData.newUser,
-                password: authData.newUser.password,
-                isVerified: true
-            });
+            // let validUser = new User({
+            //     ...authData.newUser,
+            //     password: authData.newUser.password,
+            //     isVerified: true
+            // });
+            let validUser = null;
+            if(authData.newUser.typeOfUser === "Student") {
+                validUser = new Student({
+                    ...authData.newUser,
+                    password: authData.newUser.password,
+                    isVerified: true,
+                });
+            }
+            else if(authData.newUser.typeOfUser === "Recruiter") {
+                validUser = new Recruiter({
+                    ...authData.newUser,
+                    password: authData.newUser.password,
+                    isVerified: true
+                });
+            }
+            else if(authData.newUser.typeOfUser === "Employer") {
+                validUser = new Employer({
+                    ...authData.newUser,
+                    password: authData.newUser.password,
+                    isVerified: true
+                });
+            }
+            else {
+                return res.status(403).json({success: false, msg: 'Invalid user type; please redo registeration.'});
+            }
 
             User.findOne({email: validUser.email})
             .then(user => {

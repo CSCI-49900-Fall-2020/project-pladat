@@ -6,21 +6,27 @@ import rootReducer from './reducers/index.js';
 
 
 let socket = {
+    fake: null
 };
 
 let employers = {
+    fake: null
 };
 
 let recruiters = {
+    fake: null
 };
 
 let students = {
+    fake: null
 };
 
 let jobs = {
+    fake: null
 };
 
 let user = {
+    fake: null
 };
 
 const defaultState = {
