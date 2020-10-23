@@ -3,13 +3,9 @@ import { render } from 'react-dom';
 
 import App from  './components/App';
 
-import WaveyText from './components/WaveyText';
-
-import Main2 from './components/Main2';
-
 
 // import pages components
-
+import Landing from './components/pages/Landing';
 
 
 // router dependencies
@@ -29,8 +25,7 @@ const router = (
           
           <Route path="/" component={App}>
               <Switch>
-                  <Route exact path="/" component={WaveyText}></Route>
-                  <Route exact path= "/test"> <div> Test </div> </Route>
+                  <Route exact path="/" component={Landing}/>
               </Switch>
           </Route>
 

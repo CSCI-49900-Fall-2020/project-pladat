@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:100,200,300,400,500&display=swap');
+
+
+.page-wrapper {
+    background-color: rgb(33, 33, 33);
+    background-image: url('https://i.ibb.co/0Fwh04s/light-paper-fibers.png');
+    background-blend-mode: overlay;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+}
+
+.text {
+    font-family: Montserrat, sans-serif;;
+}

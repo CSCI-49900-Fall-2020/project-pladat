@@ -1,0 +1,79 @@
+#landing-page-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    justify-content: space-between;
+}
+
+#landing-container-left {
+    display: flex;
+    flex-direction: column;
+    height: 95%;
+    width: 55%;
+    border: 1px solid #6ac994;
+    padding: 1%;
+}
+
+#landing-container-left .landing-left-part {
+    width: 100%;
+    border: 1px solid #6ac994;
+}
+
+#landing-text-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5%;
+}
+#landing-text-container #landing-page-header {
+    font-size: 130px;
+    font-weight: 300;
+    color: rgb(229, 229, 229);    
+}
+#landing-page-header span {
+    color: #00a68a;
+    /* color: #6ac994; */
+}
+
+#landing-button-container {
+    position: absolute;
+    bottom: 15%;
+    display: flex;
+    flex-direction: row;
+    width: 40% !important;
+    height: auto;
+    justify-content: flex-start;
+    border: none !important;
+    padding-left: 1%;
+}
+#landing-button-container .landing-auth-btns {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    width: 125px;
+    height: 70px;
+    background: #00a68a;
+    text-align: center;
+    border: 1px solid #00a68a;
+    outline: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition-duration: .5s;
+    /* color: rgb(229, 229, 229); */
+    color: rgb(47, 47, 47)
+}
+.landing-auth-btns h2{
+    font-weight: 400;
+}
+#landing-signup-btn {
+    margin-right: 25%;
+}
+
+#landing-container-right {
+    width: 40%;
+    height: 95%;
+    padding: 1%;
+    border: 1px solid #6ac994;
+}
