@@ -31,8 +31,12 @@ class Landing extends Component {
                         <TypingText statements={["We're literally tinder, but for you to get a job, you knobhead...", "Stop swiping on girls, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
                     </div>
                     <div id="landing-button-container" className="landing-left-part">
-                        <div className="landing-auth-btns" id="landing-signup-btn"><h2 className="text">Sign Up</h2></div>
-                        <div className="landing-auth-btns" id="landing-login-btn"><h2 className="text">Login</h2></div>
+                        <Link to="/register" className="landing-auth-btns" id="landing-signup-btn">
+                            <div ><h2 className="text">Sign Up</h2></div>
+                        </Link>
+                        <Link to="/login" className="landing-auth-btns"  id="landing-login-btn">
+                            <div><h2 className="text">Login</h2></div>
+                        </Link>
                     </div>
                 </div>
 

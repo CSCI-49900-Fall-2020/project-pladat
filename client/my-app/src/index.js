@@ -6,6 +6,9 @@ import App from  './components/App';
 
 // import pages components
 import Landing from './components/pages/Landing';
+import Login from './components/pages/Login';
+import Register from './components/pages/Register';
+
 
 
 // router dependencies
@@ -26,6 +29,8 @@ const router = (
           <Route path="/" component={App}>
               <Switch>
                   <Route exact path="/" component={Landing}/>
+                  <Route exact path="/login" component={Login}/>
+                  <Route exact path="/register" component={Register}/>
               </Switch>
           </Route>
 
