@@ -6,32 +6,33 @@
     position: relative;
 }
 
-#auth-register-form-wrapper {
-    width: 80%;
-    height: 85%;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid red;
-    align-self: center;
-}
 
-.auth-form-title {
-    border: 1px solid yellow;
+#auth-register-nameInputGroup-container  {
+    justify-content: space-between;
 }
-.auth-form-container {
-    border: 1px solid blue;
-    height: 100%;
+#auth-register-nameInputGroup-container input{
+    width: 43%;
+}
+#auth-register-emailInput-container input {
     width: 100%;
-    display: flex;
-    flex-direction: row;
 }
-.auth-from-container-left {
-    border: 1px solid green;
-    width: 60%;
-    height: 100%;
+#auth-register-userTypeInput-container {
+    justify-content: space-evenly;
+    justify-items: center;
+    align-items: center;
+    color: #aeaeae;
+}
+#auth-register-userTypeInput-container span h2 {
+    font-weight: 300;
+}
+#auth-register-userTypeInput-container span label {
+    margin-right: 4px;
+    font-size: 16px;
 }
 
-.auth-from-container-right {
-    border: 1px solid pink;
-    width: 40%;
+#auth-register-passInputGroup-container {
+    justify-content: space-between;
+}
+#auth-register-passInputGroup-container input {
+    width: 43%;
 }

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import TypingText from '../uiComponents/TypingText';
 
 import './styles/Register.css';
 import './styles/Base.css';
@@ -25,6 +24,7 @@ class Register extends Component {
             password: "",
             passwordConfirm: "",
             userType: "",
+            userTypeId: null,
             authErrors: [],
             authErrorsMapper: [],
             formSubmitted: false,
@@ -194,12 +194,25 @@ class Register extends Component {
     //     })
     // }
 
-    handleUserTypePick = () => {
-
-    }
+   
 
     handleFormKeyPress = () => {
 
+    }
+
+    handleUserTypePick = (event) => {
+        this.setState({
+            userType: event.target.checked === true ? event.target.value: "",
+            userTypeId: event.target.id
+        }, () => {
+           
+            let userTypes = document.getElementsByClassName('auth-register-userTypeInput');
+            for(let i = 0; i < userTypes.length; i++) {
+                if(userTypes[i].id !== this.state.userTypeId) {
+                    userTypes[i].checked = false;
+                }
+            }
+        })
     }
 
     render() {
@@ -233,46 +246,60 @@ class Register extends Component {
 
                 <div className="auth-form-wrapper" id="auth-register-form-wrapper">
                     <div className="auth-form-title">
-                        <h1 className="text form-title" id="auth-form-register-title">SignUp</h1>
+                        <h1 className="text form-title" id="auth-form-register-title">Sign Up</h1>
                     </div>
 
                     <div className="auth-form-container" id="auth-register-form-container">
 
-                        <div className="auth-from-container-left" id="auth-register-from-container-left">
+                        <div className="auth-form-container-left" id="auth-register-form-container-left">
                             <form id="auth-register-formElem">
-                                <div className="auth-from-inputGroup auth-form-inputLine" id="auth-register-nameInputGroup-container">
+                                <div className="auth-form-inputGroup auth-form-inputLine" id="auth-register-nameInputGroup-container">
                                     <input placeholder="firstname"/>
                                     <input placeholder="lastname" />
                                 </div>
                                 <div className="auth-form-inputLine" id="auth-register-emailInput-container">
                                     <input placeholder="email"/>
                                 </div>
-                                <div className="auth-from-inputGroup auth-form-inputLine" id="auth-register-userTypeInput-container">
-                                    <label htmlFor="student" className="text">Student</label>
-                                    <input type="checkbox" name="student" value="Student" id="auth-register-userTypeInput-student" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
+                                <div className="auth-form-inputGroup auth-form-inputLine" id="auth-register-userTypeInput-container">
+                                    <span>
+                                        <h2>I'm a: </h2>
+                                    </span>
+                                    <span>
+                                        <label htmlFor="student" className="text">Student</label>
+                                        <input type="checkbox" name="student" value="Student" id="auth-register-userTypeInput-student" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
+                                    </span>
+                                    
+                                    <span>
+                                        <label htmlFor="employer" className="text">Employer</label>
+                                        <input type="checkbox" name="employer" value="Employer" id="auth-register-userTypeInput-employer" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
+                                    </span>
 
-                                    <label htmlFor="employer" className="text">Employer</label>
-                                    <input type="checkbox" name="employer" value="Employer" id="auth-register-userTypeInput-employer" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
-
-                                    <label htmlFor="recruiter" className="text">Recruiter</label>
-                                    <input type="checkbox" name="recruiter" value="Recruiter" id="auth-register-userTypeInput-recruiter" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
+                                    <span>
+                                        <label htmlFor="recruiter" className="text">Recruiter</label>
+                                        <input type="checkbox" name="recruiter" value="Recruiter" id="auth-register-userTypeInput-recruiter" className="auth-register-userTypeInput" onKeyPress={this.handleFormKeyPress} onClick={this.handleUserTypePick}/>
+                                    </span>
+                                    
                                 </div>
-                                <div className="auth-from-inputGroup auth-form-inputLine" id="auth-register-passInputGroup-container">
+                                <div className="auth-form-inputGroup auth-form-inputLine" id="auth-register-passInputGroup-container">
                                     <input placeholder="password"/>
                                     <input placeholder="confirm password"/>
                                 </div>
-                                <div className="auth-from-inputLine" id="auth-register-submitBtnContainer">
-                                    <button>
-                                        <h2>
+                                <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-register-submitBtnContainer">
+                                    <button className="auth-from-submitBtn">
+                                        <h2 className="text">
                                             Sign Up
                                         </h2>
                                     </button>
+                                </div>
+
+                                <div className="auth-form-redirectLinks" id="auth-register-form-redirectLinks">
+                                    <span><Link to="/login"><h3>Already have an account? <span>Log in.</span></h3></Link></span>
                                 </div>
                             </form>
 
                         </div>
 
-                        <div className="auth-form-container-right" id="auth-register-from-container-right">
+                        <div className="auth-form-container-right" id="auth-register-form-container-right">
                             Nice logo or mint svg goes here
                         </div>
 

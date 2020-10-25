@@ -24,7 +24,9 @@
     /* font-size: 23px; */
     font-size: 1.15vw;
     font-weight: 300;
-    color: rgb(229, 229, 229);
+    /* color: rgb(229, 229, 229); */
+    /* color: #e4e4e4; */
+    color: #d3d3d3;
     display: none;
 }
 

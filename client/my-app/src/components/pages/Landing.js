@@ -28,7 +28,7 @@ class Landing extends Component {
                 <div className="wrapper-inner-container" id="landing-container-left">
                     <div id="landing-text-container" className="landing-left-part">
                         <h1 className="text" id="landing-page-header">Place<span>Mint</span></h1>
-                        <TypingText statements={["We're literally tinder, but for you to get a job, you knobhead...", "Stop swiping on girls, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
+                        <TypingText statements={["We're literally tinder, but to help you get a job, you knobhead...", "Stop swiping on boys, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
                     </div>
                     <div id="landing-button-container" className="landing-left-part">
                         <Link to="/register" className="landing-auth-btns" id="landing-signup-btn">
