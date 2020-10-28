@@ -332,7 +332,7 @@ class Register extends Component {
                                     <input placeholder="confirm password" type="password" value={this.state.passwordConfirm} onKeyPress={this.handleFormKeyPress} onChange={this.handlePasswordConfirmInput}/>
                                 </div>
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-register-submitBtnContainer">
-                                    <button className="auth-from-submitBtn" onClick={this.handleFromSubmit}>
+                                    <button className="auth-form-submitBtn" onClick={this.handleFromSubmit}>
                                         {
                                             this.state.sumbitting ? "Boyeong's loader" :
                                             <h2 className="text">

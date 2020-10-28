@@ -31,8 +31,181 @@ class Login extends Component {
         }
     }
 
-    errorOnShowAnimation = () => {
+    componentDidMount() {
+        // console.log('login page mounted idkkk');
+        this.props.actions.userActions.clearAuthErrors();
+        this.props.actions.userActions.clearAuthState();
+        if(this.props.location.state) {
+            if(this.props.location.state.email) {
+                const passedEmail = this.props.location.state.email;
+                this.setState({
+                    email: passedEmail
+                })
+            }
+        }
+    }
 
+    componentDidUpdate (prevProps) {
+        const { user, authMessage, authError, errorsDidChange, authState, isAuthenticated, isLoading,  } = this.props.user;
+
+        if(prevProps.user !== this.props.user) {
+            if(user && isAuthenticated ) {
+                this.setState({
+                    submitting: false,
+                    successFullLogin: true,
+                    redirectParam1: user.uni_Id,
+                    redirectParam2: user.uni
+                })
+            }
+    
+            if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+                if(authError !== this.state.authErrors[0]) {
+                    let tempArr = [];
+                    tempArr.push({msg: authError});
+                    this.setState({
+                        authErrors: tempArr,
+                        authErrorsMapper: tempArr,
+                        errorsLoaded: true,
+                        submitting: false
+                    })
+                }
+            } 
+            else {
+                if(!errorsDidChange && this.state.authErrorsMapper.length < 1 && this.state.authErrors.length > 0 && this.state.formSubmitted === true && authState !== 'USER_LOGGING_IN') {
+                    let temp = this.state.authErrors;
+                    this.setState({
+                        authErrorsMapper: temp,
+                        errorsLoaded: true,
+                        submitting: false
+                    })
+                }
+                if(!errorsDidChange && this.state.authErrorsMapper.length > 0 && this.state.authErrors.length > 0 && this.state.submitting && authState !== 'USER_LOGGING_IN') {
+                    this.setState({
+                        submitting: false
+                    })
+                }
+            }
+        }
+
+    }
+
+    errorOnShowAnimation = () => {
+        anime({
+            targets: '#auth-login-from-error-holder .auth-form-error',
+            delay: anime.stagger(80),
+            visibility: 'visible',
+            translateX: [
+                {value: -40, duration: 80},
+                {value: 40, duration: 80},
+                {value: -40, duration: 80},
+                {value: 40, duration: 80},
+                {value: 0}
+            ],
+            easing: 'easeInOutBounce',
+        });
+    }
+
+    popErr = (idx, iteration) => {
+        if(this.state.authErrorsMapper.length == 1) {
+            this.setState({
+                authErrorsMapper: [],
+                formSubmitted: false,
+                fakeIdIndex: iteration+1
+            })
+        }
+        else {
+            const newArr = this.state.authErrorsMapper;
+            let otherArr = newArr;
+            otherArr.splice(idx, 1);
+            this.setState({
+                authErrorsMapper: otherArr,
+                formSubmitted: false,
+                fakeIdIndex: iteration+1
+            })
+        }
+    }
+
+    handleErrorRemoval = (event) => {
+        event.preventDefault();
+        const targetId = event.target.parentNode.id;
+        const actualNode = event.target.parentNode;
+        const index = parseInt(actualNode.getAttribute('data-key'));
+        const oldIterationNum = parseInt(actualNode.getAttribute('error-iteration'));
+        const func = this.popErr;
+
+        let animePromise = new Promise((resolve, reject) => {
+            anime({
+                targets: actualNode,
+                opacity: anime.stagger([1,0], {easing: 'easeOutCirc'}),
+                translateY: [
+                    {value: -100, easing: 'easeOutCirc'}
+                ],
+                duration: 400,
+                easing: 'easeOutCirc',
+                complete: function() {
+                    window.setTimeout(function() {
+                        resolve(true);
+                    }, 50);
+                }
+            })
+        })
+        .then((val) => {
+            if(val === true) {
+                func(index, oldIterationNum);
+            }
+        })
+    }
+
+    
+    handleFormSubmit = async (event) => {
+
+        if(event) {
+            event.preventDefault();
+        }
+
+        this.setState({
+            formSubmitted: true,
+            submitting: true
+        });
+
+        const { email, password } = this.state;
+        const userCred = { email, password };
+
+        setTimeout(() => {
+            this.props.actions.userActions.logInUser(userCred);
+        }, 1000);
+
+        // this.props.actions.userActions.logInUser(userCred);
+    }
+
+    handleEmailInput = (e) => {
+        this.setState({
+            email: e.target.value
+        });
+    }
+
+    handlePasswordInput = (e) => {
+        this.setState({
+            password: e.target.value
+        })
+    }
+
+    handleFormKeyPress = (event) => {
+        switch(event.target.id) {
+            case "auth-login-form-email-input":
+                if(event.keyCode === 13 || event.which === 13) {
+                    document.getElementById("auth-login-form-password-input").focus();
+                    event.preventDefault();
+                }
+                break;
+            case "auth-login-form-password-input":
+                if(event.keyCode === 13 || event.which === 13) {
+                    // document.getElementById("auth-login-form-submit-btn").focus();
+                    // event.preventDefault();
+                    this.handleFormSubmit();
+                }
+                break; 
+        }
     }
 
 
@@ -74,17 +247,15 @@ class Login extends Component {
                         <div className="auth-form-container-left" id="auth-login-form-container-left">
                             <form id="auth-login-formElem">
                                 <div className="auth-form-inputLine" id="auth-login-emailInput-container">
-                                    <input placeholder="email"/>
+                                    <input type="email" value={this.state.email} onChange={this.handleEmailInput} onKeyPress={this.handleFormKeyPress} placeholder="email"/>
                                 </div>
                                 <div className="auth-form-inputLine" id="auth-login-passInput-container">
-                                    <input placeholder="password"/>
+                                    <input type="password" value={this.state.password} onChange={this.handlePasswordInput} onKeyPress={this.handleFormKeyPress} placeholder="password"/>
                                 </div>
                            
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-login-submitBtnContainer">
-                                    <button className="auth-from-submitBtn">
-                                        <h2 className="text">
-                                            Log in
-                                        </h2>
+                                    <button onClick={this.handleFormSubmit} className="auth-form-submitBtn">
+                                        {this.state.submitting ? 'Boyeongs loader...' : <h2 className="text">Login</h2>}
                                     </button>
                                 </div>
 
