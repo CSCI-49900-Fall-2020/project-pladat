@@ -13,6 +13,7 @@ const Recruiter = require('../../models/Recruiter');
 const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 const { configureEmailVerification } = require('../../configs/EmailTemplate');
+const { dateInFuture2 } = require('../../configs/DateFunctions');
 
 
 function verifyToken(req, res, next) {
@@ -35,28 +36,28 @@ router.post('/register', (req, res) => {
     let isvalidemail = checkValidEmailFormat(email);
 
     if(!firstname || !lastname || !email || !pass || !passConf || !userType) {
-        return res.status(422).json({success: false, msg: 'Please enter all fields.'});
+        return res.status(422).json({success: false, msg: 'Please enter all fields.', errors: 'Please enter all fields.'});
     }
     else if(firstname.length < 1 || lastname.length < 1 || email.length < 1 || pass.length < 1 || passConf.length < 1|| userType.length < 1) {
-        return res.status(422).json({success: false, msg: 'Please enter all fields.'});
+        return res.status(422).json({success: false, msg: 'Please enter all fields.', errors: 'Please enter all fields.'});
     }
     else if(!isvalidemail) {
-        return res.status(422).json({success: false, msg: 'Please enter a valid email address.'});
+        return res.status(422).json({success: false, msg: 'Please enter a valid email address.', errors: 'Please enter a valid email address.'});
     }
     else if(pass.length < 8) {
-        return res.status(422).json({success: false, msg: 'Passwords should be at least 8 characters, and a mix of letters, numbers, and symbols'});
+        return res.status(422).json({success: false, msg: 'Passwords should be at least 8 characters, and a mix of letters, numbers, and symbols', errors: 'Passwords should be at least 8 characters, and a mix of letters, numbers, and symbols'});
     }
     else if(pass !== passConf) {
-        return res.status(422).json({success: false, msg: 'Passwords must match.'});
+        return res.status(422).json({success: false, msg: 'Passwords must match.', errors: 'Passwords must match.'});
     }
     else if(userType !== "Student" && userType !== "Recruiter" && userType !== "Employer") {
-        return res.status(422).json({success: false, msg: 'Invalid user type.'});
+        return res.status(422).json({success: false, msg: 'Invalid user type.', errors: 'Invalid user type.'});
     }
     else {
         User.findOne({ email: email})
         .then((user) => {
             if(user) {
-                return res.status(422).json({success: false, msg: 'This emailed is already registered to a user.'});
+                return res.status(422).json({success: false, msg: 'This emailed is already registered to a user.', errors: 'This emailed is already registered to a user.'});
             }
             else {
                 const newUser = new User({
@@ -78,6 +79,8 @@ router.post('/register', (req, res) => {
 
                         const htmlContent = configureEmailVerification(newUser.firstname, returnLink);
 
+                        const linkExpirationDate = dateInFuture2(24);
+
                         const msg = {
                             to: newUser.email,
                             from: PROJECT_EMAIL,
@@ -89,7 +92,7 @@ router.post('/register', (req, res) => {
                                 return res.status(500).json({success: false, msg: "Something went wrong; can't send validation email.", err});
                             }
 
-                            return res.status(200).json({success: true, msg: "Check your email for your email verification link.", userInfo: {email: newUser.email, firstname: newUser.firstname}});
+                            return res.status(200).json({success: true, msg: "Check your email for your email verification link.", userInfo: {email: newUser.email, firstname: newUser.firstname}, link: returnLink, dateSent: new Date(), linkExprDate: linkExpirationDate});
                         })
                     }
                 })
@@ -103,6 +106,11 @@ router.post('/register', (req, res) => {
     }
 
 });
+
+// router.post('/resendVerificationEmail', (req, res) => {
+//     let linkToSend = req.query.link;
+
+// })
 
 router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
     jwt.verify(req.token, JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, authData) => {

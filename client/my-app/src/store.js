@@ -26,16 +26,34 @@ let jobs = {
 };
 
 let user = {
-    fake: null
+    isLoading: false,
+    verifyingAuth: false,
+    loggingInUser: false,
+    loggedIn: false,
+    hashedToStore: false,
+    hashingToLocalStorage: false,
+    removingFromLocalStorage: false,
+    awaitingEmailVerification: false,
+    isAuthenticated: false,
+    userLoginVerified: false,
+    userLoginVerificationFail: false,
+    emailIsValidated: false,
+    user: null,
+    preliminaryInfo: null,
+    authMessage: null,
+    authError: [],
+    errorsDidChange: false,
+    authState: null,
+    serverStatus: null
 };
 
 const defaultState = {
-    jobs,
-    employers,
-    recruiters,
+    // jobs,
+    // employers,
+    // recruiters,
     user,
-    students,
-    socket
+    // students,
+    // socket
 };
 
 

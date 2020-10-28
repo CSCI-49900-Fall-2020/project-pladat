@@ -1,6 +1,6 @@
 module.exports = {
     ensureAuthenticated: (req, res, next) => {
-        if(req.user) {
+        if(req.user && req.user.isVerified) {
             return next();
         }
         res.status(401).json({success: false, msg: 'Must be logged in to proceed'});

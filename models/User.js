@@ -14,7 +14,8 @@ const GeneralUser = new Schema({
     password: {type: String, required: true},
     isVerified: {type: Boolean, default: false},
     typeOfUser: {type: String, required: true},
-    infoComplete: {type: Boolean, default: false} 
+    infoComplete: {type: Boolean, default: false},
+    basicProfileInfoComplete: {type: Boolean, default: false} 
 }, baseOptions);
 
 module.exports = User = mongoose.model('User', GeneralUser);

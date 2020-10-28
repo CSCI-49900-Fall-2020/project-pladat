@@ -10,12 +10,12 @@ import socket from './SocketReducer';
 
 
 const rootReducer = combineReducers({
-    students: student,
-    employers: employer,
+    // students: student,
+    // employers: employer,
     user,
-    jobs: job,
-    recruiters: recruiter,
-    socket,
+    // jobs: job,
+    // recruiters: recruiter,
+    // socket,
     routing: routerReducer
 });
 

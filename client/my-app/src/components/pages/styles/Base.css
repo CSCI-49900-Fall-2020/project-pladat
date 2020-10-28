@@ -38,6 +38,7 @@
     float: right;
     color: #FFFCFE;
     transition-duration: 1s;
+    font-weight: 300;
 }
 
 .auth-form-error-closebtn:hover {
@@ -45,7 +46,8 @@
 }
 
 .auth-form-error {
-    background: #e84853;
+    /* background: #e84853; */
+    background-color: #df454e;
     flex-grow: 1;
     z-index: 11;
     padding-left: 2%;

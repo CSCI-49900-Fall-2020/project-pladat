@@ -13,7 +13,80 @@ const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = requ
 
 
 
-router.put('/completeProfile', ensureAuthenticated, (req, res) => {
+router.put('/completeBaiscProfile', ensureAuthenticated, (req, res) => {
+    const {
+        university,
+        major,
+        graduationDate,
+        shortDesc,
+        skills
+    } = req.body;
+
+    if(!university || !major || !graduationDate || !shortDesc || !skills) {
+        return res.status(401).json({success: false, msg: "Please enter all data."});
+    }
+    Student.findOneAndUpdate(
+        {_id: req.user.id},
+        {
+            $set: {
+                university,
+                major,
+                graduationDate,
+                shortDesc,
+                skills,
+                basicProfileInfoComplete: true
+            }
+        },
+        {
+            returnNewDocument: true,
+            new: true
+        }
+    )
+    .then(student => {
+        if(student) {
+            return res.status(200).json({success: true, msg: "You've completed your basic profile.", student});
+        }
+        else {
+            return res.status(422).json({success: false, msg: 'Something went wrong editing your profile'});
+        }
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: 'Something went wrong tyring to edit your profile; try again.', err});
+    })
+})
+
+
+router.put('/completeMatchProfile', ensureAuthenticated, (req, res) => {
+    const { matchProfile, resume, values } = req.body;
+
+    Student.findOneAndUpdate(
+        {_id: req.user.id},
+        {
+            $set: {
+                resume,
+                values,
+                matchProfile,
+            }
+        },
+        {
+            returnNewDocument: true,
+            new: true
+        }
+    )
+    .then(student => {
+        if(student) {
+            return res.status(200).json({success: true, msg: 'Some edits have been made to your match profile.', student});
+        }
+        else {
+            return res.status(422).json({success: false, msg: 'Something went wrong editing your match profile'});
+        }
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: 'Something went wrong tyring to edit your match profile; try again.', err});
+    })
+});
+
+router.put('/editProfile', ensureAuthenticated, (req, res) => {
     const {
         university,
         major,
@@ -36,7 +109,8 @@ router.put('/completeProfile', ensureAuthenticated, (req, res) => {
                 skills,
                 resume,
                 values,
-                matchProfile
+                matchProfile,
+                socials
             }
         },
         {
@@ -56,7 +130,6 @@ router.put('/completeProfile', ensureAuthenticated, (req, res) => {
         res.status(422).json({success: false, msg: 'Something went wrong tyring to edit your profile; try again.', err});
     })
 });
-
 
 router.put('/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
     let srs = req.user.swipedRight;
