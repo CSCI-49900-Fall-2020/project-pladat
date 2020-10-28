@@ -91,7 +91,7 @@ class Login extends Component {
 
     errorOnShowAnimation = () => {
         anime({
-            targets: '#auth-login-from-error-holder .auth-form-error',
+            targets: '#auth-login-form-error-container .auth-form-error',
             delay: anime.stagger(80),
             visibility: 'visible',
             translateX: [
@@ -171,11 +171,11 @@ class Login extends Component {
         const { email, password } = this.state;
         const userCred = { email, password };
 
-        setTimeout(() => {
-            this.props.actions.userActions.logInUser(userCred);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.props.actions.userActions.logInUser(userCred);
+        // }, 1000);
 
-        // this.props.actions.userActions.logInUser(userCred);
+        this.props.actions.userActions.logInUser(userCred);
     }
 
     handleEmailInput = (e) => {
