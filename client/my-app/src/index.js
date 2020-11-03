@@ -34,6 +34,7 @@ const router = (
                   <Route exact path="/register" component={Register}/>
                   <Route exact path="/complete-registeration/email-verification/:token" component={OnEmailVerify} />
                   <Route exact path="/registeration-first-step-complete/:prelims" component={OnRegister} />
+                  
               </Switch>
           </Route>
 
