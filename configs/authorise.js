@@ -12,6 +12,7 @@ module.exports = {
         res.status(200).json({success: false, msg: 'Successfully Logged In'}); 
     },
     ensureAuthorisation: (req, res, next) => {
+<<<<<<< HEAD
         if(req.user && req.user.isVerified && req.user.typeOfUser === req.query.userType) {
             return next();
         }
@@ -22,4 +23,11 @@ module.exports = {
 
     //     }
     // }
+=======
+        if(req.user.typeOfUser === req.query.actionUserType) {
+            return next();
+        }
+        res.status(401).json({success: false, msg: 'This action is reserved for other users.'});
+    }
+>>>>>>> master
 }
