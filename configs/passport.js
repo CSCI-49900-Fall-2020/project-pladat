@@ -12,12 +12,6 @@ module.exports = (passport) => {
                 return done(null, false, {msg: 'Email is not registered'});
             }
             /* maybe check for verification here */
-<<<<<<< HEAD
-            if(!user.isVerified) {
-                return done(null, false, {msg: 'Must verify email to login.'});
-            }
-=======
->>>>>>> master
 
             bcrypt.compare(password.trim(), user.password, (err, isMatch) => {
                 if(err) {

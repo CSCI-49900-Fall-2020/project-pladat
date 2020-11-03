@@ -17,10 +17,6 @@ const { dateInFuture2 } = require('../../configs/DateFunctions');
 
 
 function verifyToken(req, res, next) {
-<<<<<<< HEAD
-    // req.token = req.query.token;
-=======
->>>>>>> master
     req.token = req.params.token;
     if(!req.token || typeof req.token === 'undefined' || typeof req.token === null) {
         return res.status(403).json({success: false, msg: "Invalid email verification link, or your link has expired."});
@@ -111,13 +107,10 @@ router.post('/register', (req, res) => {
 
 });
 
-<<<<<<< HEAD
-=======
 // router.post('/resendVerificationEmail', (req, res) => {
 //     let linkToSend = req.query.link;
 
 // })
->>>>>>> master
 
 router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
     jwt.verify(req.token, JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, authData) => {
@@ -125,14 +118,11 @@ router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
             return res.status(403).json({success: false, msg: 'Invalid email verification link.', err});
         }
         else {
-<<<<<<< HEAD
-=======
             // let validUser = new User({
             //     ...authData.newUser,
             //     password: authData.newUser.password,
             //     isVerified: true
             // });
->>>>>>> master
             let validUser = null;
             if(authData.newUser.typeOfUser === "Student") {
                 validUser = new Student({
@@ -171,10 +161,6 @@ router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
                                 return res.status(500).json({success: false, msg: 'Something went wrong, cannnot complete your registeration yet', err});
                             }
                             else {
-<<<<<<< HEAD
-                                console.log(validUser.password);
-=======
->>>>>>> master
                                 validUser.password = hash;
                                 validUser.save()
                                 .then(user => {
