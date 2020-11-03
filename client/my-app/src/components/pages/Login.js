@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import * as allUserActions from '../../actions/UserActions';
 
 import anime from 'animejs';
+import ButtonLoader from '../uiComponents/ButtonLoader';
 
 class Login extends Component {
     constructor(props) {
@@ -255,7 +256,7 @@ class Login extends Component {
                            
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-login-submitBtnContainer">
                                     <button onClick={this.handleFormSubmit} className="auth-form-submitBtn">
-                                        {this.state.submitting ? 'Boyeongs loader...' : <h2 className="text">Login</h2>}
+                                        {this.state.submitting ? <ButtonLoader /> : <h2 className="text">Login</h2>}
                                     </button>
                                 </div>
 
