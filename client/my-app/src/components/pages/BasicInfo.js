@@ -66,7 +66,7 @@ class BasicInfo extends React.Component {
                 shouldRedirectToMain: this.props.user.user.basicProfileInfoComplete
             }, () => {
                 this.setState((prevState, props) => {
-                    return { loadingUser: true }
+                    return { loadingUser: false }
                 })
             })
         }
