@@ -116,7 +116,9 @@ function user(state = initialState, action) {
                 userLoginVerified: true,
                 userLoginVerificationFail: false,
                 loggedIn: true,
-                hashedToStore: true
+                hashedToStore: true,
+                authError: [],
+                errorsDidChange: true,
             };
         case UserConstants.VERIFYING_USER_LOGIN_FAILURE:
             return {
@@ -141,7 +143,9 @@ function user(state = initialState, action) {
               authState: UserConstants.HASHED_TO_STORAGE,
               isAuthenticated: true,
               authMessage: action.msg,
-              hashedToStore: true
+              hashedToStore: true,
+              authError: [],
+              errorsDidChange: true
             };
         case UserConstants.HASHING_TO_STORAGE_FAIL:
             return {
@@ -162,6 +166,7 @@ function user(state = initialState, action) {
                 user: action.userInfo,
                 authState: UserConstants.USER_LOGGED_IN,
                 authError: [],
+                errorsDidChange: true,
                 loggedIn: true
             };
         case UserConstants.USER_LOGIN_FAILURE:

@@ -58,8 +58,16 @@ class Login extends Component {
                     redirectParam2: user.uni
                 })
             }
-    
-            if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+            
+            if(authError !== prevProps.user.authError && errorsDidChange && (!authError || authError.length < 1) && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+                this.setState({
+                    authErrors: [],
+                    authErrorsMapper: [],
+                    errorsLoaded: false,
+                    submitting: false
+                })
+            }
+            else if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
                 if(authError !== this.state.authErrors[0]) {
                     let tempArr = [];
                     tempArr.push({msg: authError});
@@ -171,6 +179,7 @@ class Login extends Component {
 
         const { email, password } = this.state;
         const userCred = { email, password };
+        // console.log(userCred);
 
         // setTimeout(() => {
         //     this.props.actions.userActions.logInUser(userCred);

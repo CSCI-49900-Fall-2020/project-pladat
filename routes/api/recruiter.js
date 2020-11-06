@@ -42,7 +42,8 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                     education: education,
                     jobTitle: jobTitle,
                     shortDesc: shortDesc,
-                    basicProfileInfoComplete: true
+                    basicProfileInfoComplete: true,
+                    company: company
                 }
             }
         )
@@ -55,8 +56,9 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
 
 
 router.put('/recruiter/completeMatchProfile', ensureAuthenticated, (req, res) => {
-    const {  } = req.body;
+    const { automatedMatchMsg, matchProfile } = req.body;
 
+    User.findOne
 
 });
 

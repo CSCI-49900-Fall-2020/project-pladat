@@ -57,7 +57,7 @@ router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
 
 
 router.put('/student/completeMatchProfile', ensureAuthenticated, (req, res) => {
-    const { matchProfile, resume, values } = req.body;
+    const { matchProfile, resume, values, socials } = req.body;
 
     Student.findOneAndUpdate(
         {_id: req.user.id},
