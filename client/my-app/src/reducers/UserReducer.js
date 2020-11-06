@@ -88,7 +88,7 @@ function user(state = initialState, action) {
                 authMessage: action.msg,
                 authError: [],
                 authState: UserConstants.LOADING_USER_SUCCESS,
-                emailIsValidated: action.userInfo.data.emailVerified,
+                emailIsValidated: action.userInfo.data.isVerified,
                 loggedIn: true
             }
         case UserConstants.USER_LOGGING_IN:
@@ -112,7 +112,7 @@ function user(state = initialState, action) {
                 isAuthenticated: action.isAuth,
                 user: action.userInfo,
                 authMessage: action.msg,
-                emailIsValidated: action.userInfo.emailVerified,
+                emailIsValidated: action.userInfo.isVerified,
                 userLoginVerified: true,
                 userLoginVerificationFail: false,
                 loggedIn: true,
@@ -162,7 +162,7 @@ function user(state = initialState, action) {
                 loggingInUser: false,
                 authMessage: action.msg,
                 // isAuthenticated: true,
-                emailIsValidated: action.userInfo.emailVerified,
+                emailIsValidated: action.userInfo.isVerified,
                 user: action.userInfo,
                 authState: UserConstants.USER_LOGGED_IN,
                 authError: [],

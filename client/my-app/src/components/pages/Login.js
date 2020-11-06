@@ -54,8 +54,8 @@ class Login extends Component {
                 this.setState({
                     submitting: false,
                     successFullLogin: true,
-                    redirectParam1: user.uni_Id,
-                    redirectParam2: user.uni
+                    canRedirect: true,
+                    redirectCompToken: this.computeRedirectUrl()
                 })
             }
             
@@ -96,6 +96,15 @@ class Login extends Component {
             }
         }
 
+    }
+
+    computeRedirectUrl = () => {
+        let userType = this.props.user.user.typeOfUser.toLowerCase();
+        let basicComplete = this.props.user.user.basicProfileInfoComplete;
+
+        let url = basicComplete ? "/login" : `${userType}/basicInfo`;
+
+        return url;
     }
 
     errorOnShowAnimation = () => {
