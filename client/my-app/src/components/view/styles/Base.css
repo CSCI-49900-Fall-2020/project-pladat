@@ -1,6 +1,6 @@
 .basicInfo-form-wrapper {
-    width: 70%;
-    height: 90%;
+    width: 80%;
+    height: 95%;
     display: flex;
     flex-direction: column;
     align-self: center;
@@ -88,4 +88,20 @@
     color: #d3d3d3;
     font-weight: 300;
     transition: 125ms cubic-bezier(.25,.1,.25,1);
+}
+
+.BasicViewWrapper {
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    flex-direction: column;
+    /* align-content: center;
+    justify-content: center; */
+    align-items: center;
+    justify-items: center;
+    position: relative;
+}
+
+.basicInfo-form-userName {
+    color: #00a68a;
 }

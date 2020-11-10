@@ -57,9 +57,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
 
 router.put('/recruiter/completeMatchProfile', ensureAuthenticated, (req, res) => {
     const { automatedMatchMsg, matchProfile } = req.body;
-
-    // User.findOne
-
+    
 });
 
 router.put('/recruiter/editProfile', ensureAuthenticated, (req, res) => {
