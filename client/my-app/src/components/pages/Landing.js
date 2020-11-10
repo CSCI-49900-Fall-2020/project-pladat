@@ -42,7 +42,6 @@ class Landing extends Component {
                 </div>
 
                 <div className="wrapper-inner-container" id="landing-container-right">
-                    Some cool svg art animation wil go here
                     <AnimatedArt />
                 </div>
 
