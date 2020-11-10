@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import TypingText from '../uiComponents/TypingText';
+import AnimatedArt from '../uiComponents/AnimatedArt';
 
 import './styles/Landing.css';
 import './styles/Base.css';
@@ -42,6 +43,7 @@ class Landing extends Component {
 
                 <div className="wrapper-inner-container" id="landing-container-right">
                     Some cool svg art animation wil go here
+                    <AnimatedArt />
                 </div>
 
             </div>
