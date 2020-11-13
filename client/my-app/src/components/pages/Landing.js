@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import TypingText from '../uiComponents/TypingText';
 
 import './styles/Landing.css';
@@ -11,6 +10,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as allUserActions from '../../actions/UserActions';
+import AnimatedArt from '../uiComponents/Vines';
+import MintAnimation from '../uiComponents/Mint';
 
 class Landing extends Component {
     constructor(props) {
@@ -28,8 +29,9 @@ class Landing extends Component {
                 <div className="wrapper-inner-container" id="landing-container-left">
                     <div id="landing-text-container" className="landing-left-part">
                         <h1 className="text" id="landing-page-header">Place<span>Mint</span></h1>
-                        <TypingText statements={["We're literally tinder, but to help you get a job, you knobhead...", "Stop swiping on boys, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
+                        <TypingText statements={["We're literally Tinder, but to help you get a job, you knobhead...", "Stop swiping on boys, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
                     </div>
+                    <div><MintAnimation/></div>
                     <div id="landing-button-container" className="landing-left-part">
                         <Link to="/register" className="landing-auth-btns" id="landing-signup-btn">
                             <div ><h2 className="text">Sign Up</h2></div>
@@ -41,7 +43,7 @@ class Landing extends Component {
                 </div>
 
                 <div className="wrapper-inner-container" id="landing-container-right">
-                    Some cool svg art animation wil go here
+                    <AnimatedArt/>
                 </div>
 
             </div>
