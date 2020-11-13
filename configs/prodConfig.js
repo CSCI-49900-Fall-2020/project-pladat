@@ -8,6 +8,8 @@ exports.SENDGRID_APIKEY = process.env.NODE_ENV === 'production' ? process.env.SE
 
 exports.JWT_EMAIL_VERIFY_SIGN_KEY = process.env.NODE_ENV === 'production' ? process.env.JWT_EMAIL_VERIFY_SIGN_PROD : process.env.JWT_EMAIL_VERIFY_SIGN_DEV;
 
+exports.JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER = process.env.NODE_ENV === 'production' ? process.env.JWT_EMAIL_VERIFY_SIGN_PROD_RECRUITER : process.env.JWT_EMAIL_VERIFY_SIGN_DEV_RECRUITER;
+
 exports.CLIENT_ORIGIN = process.env.NODE_ENV === 'production' 
   ? process.env.CLIENT_ORIGIN
   : 'http://localhost:3000';

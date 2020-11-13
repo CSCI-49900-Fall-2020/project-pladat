@@ -40,7 +40,9 @@ class StudentBasic extends React.Component {
 
                     <div className="baseInfo-form-container">
                         <div className="basicInfo-form-inner-left">
-                            <form></form>
+                            <form>
+                                
+                            </form>
                         </div>
 
                         <div className="basicInfo-form-inner-right">
