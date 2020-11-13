@@ -25,7 +25,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
         return res.status(401).json({success: false, msg: "Please enter all the required information."});
     }
 
-    Employer.findOne({companyName: company})
+    Employer.findOne({companyName: company, isVerifiedCompany: true, isVerfied: true, basicProfileInfoComplete: true})
     .then(employer => {
         if(!employer) {
             return res.status(403).json({success: false, msg: "You're employer must be registered on this platform."}); 
@@ -64,7 +64,9 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                             education: education,
                             jobTitle: jobTitle,
                             company: company,
-                            shortDesc: shortDesc
+                            shortDesc: shortDesc,
+                            basicProfileInfoComplete: true,
+                            companyId: employer._id
                         }
                     },
                     {

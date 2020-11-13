@@ -21,7 +21,9 @@ router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => 
             $set: {
                 companyName: companyName,
                 industry: industry,
-                location: location
+                location: location,
+                basicProfileInfoComplete: true,
+                isVerifiedCompany: true
             }
         },
         {
@@ -38,7 +40,42 @@ router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => 
 });
 
 router.put('/employer/verify-recruiter/:rId', ensureAuthorisation, (req, res) => {
-
+    Recruiter.findOneAndUpdate(
+        {_id: req.params.rId},
+        {
+            $set: {isCompanyVerified: true}
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(recruiter => {
+        if(recruiter && recruiter.companyId === req.user._id) {
+            Employer.findOneAndUpdate(
+                {_id: req.user.id},
+                {
+                    $push: {recruiters: recruiter._id}
+                },
+                {
+                    new: true,
+                    returnNewDocument: true
+                }
+            )
+            .then(employer => {
+                return res.status(200).json({success: true, msg: "We've verified your recruiter.", employer});
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Couldn't add recruiter to list.", err});
+            })
+        }
+        else {
+            return res.status(403).json({success: false, msg: "This recruiter appears to no longer be registered on PlaceMint."});
+        }
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong, couldn't verify recruiter", err});
+    })
 });
 
 
