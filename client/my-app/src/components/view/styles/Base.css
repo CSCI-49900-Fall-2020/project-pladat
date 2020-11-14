@@ -157,3 +157,9 @@
 .basicInfo-form-userName {
     color: #00a68a;
 }
+
+datalist option {
+    font-family: Montserrat, sans-serif;
+    color: red;
+    font-weight: 300;
+}

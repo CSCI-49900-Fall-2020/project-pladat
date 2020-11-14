@@ -8,9 +8,13 @@ import * as allUserActions from '../../actions/UserActions';
 
 import BasicViewWrapper from './BasicViewWrapper';
 
+import { usSchoolNames } from '../../staticData/universites';
+import { skillsArr } from '../../staticData/skills';
+
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
+
 
 
 class StudentBasic extends React.Component {
@@ -36,6 +40,14 @@ class StudentBasic extends React.Component {
         
     }
 
+    handleUniChange = (event) => {
+        event.preventDefault();
+
+        this.setState({
+            university: event.target.value
+        })
+    }
+
     render() {
         return (
             <BasicViewWrapper route={this.props.match.path}>
@@ -50,7 +62,14 @@ class StudentBasic extends React.Component {
                             <form>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-unis">
                                     <label htmlFor="uniInput" className="text basicInfo-from-inputLabel">What university/universities have you attended.</label>
-                                    <input value={this.state.university} name="uniInput" className="basicInfo-form-input" placeholder="univerity/college"/>
+                                    <input value={this.state.university} list="school-options" name="uniInput" onChange={this.handleUniChange} className="basicInfo-form-input" placeholder="univerity/college"/>
+                                    <datalist id="school-options">
+                                        {
+                                            usSchoolNames.map((school, index) => {
+                                                return <option value={school} key={"school"+index}/>
+                                            })
+                                        }
+                                    </datalist>
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-gradDate">
                                     <label htmlFor="dateInput" className="text basicInfo-from-inputLabel">Graduation date</label>
