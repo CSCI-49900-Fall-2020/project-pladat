@@ -5,7 +5,7 @@
 PlaMint for promising students benefit both students and employers tremendously. Students gain valuable experience, mentorship, and often financial incentive while employers improve their existing resources in personnel, help staff with mentoring and management, and hire potential long-term employees. Searching for these placements can be an anxious time in a student’s life. Employers similarly can find it difficult to find qualified candidates to fill these placements. Students looking to engage in placements with potential employers can use our service to “match” to these opportunities. Employers and students will both register with our service and provide details of placement opportunities and student capabilities. Our matching algorithm then will provide strong candidates for employers and suggested placements for students to review in order to find the match possible.
 
 
-## How to run/test
+## How to run and test
 1. To clone the project at your desire directory, open the terminal and run `git clone https://github.com/CSCI-49900-Fall-2020/project-pladat.git`
 2. From the project root folder (not /client, just /pladat), run `npm run dev`
 3. If you have any errors, if they're syntax related debug. If they're because a library cannot be found, run `npm install` in the root folder and run `yarn install` in client/my-app then go back to root folder, run `npm run dev` again. The browser tab with the PlaceMint landing page will open, register a fake user, and see if the activity loaders are rendering as desired
