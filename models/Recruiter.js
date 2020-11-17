@@ -7,6 +7,7 @@ const User = require('./User');
 const Recruiter = User.discriminator('Recruiter', new Schema({
     education: [{type: String, required: false, defualt: null}],
     jobTitle: {type: String, required: false, defualt: null},
+    companyId: {type: String, required: false, default: null, ref: 'Employer'},
     company: {type: Schema.Types.ObjectId, required: false, ref: 'Employer', defualt: null},
     isCompanyVerified: {type: Boolean, required: false, default: false},
     studentMatches: [{type: Schema.Types.ObjectId, required: false, ref: 'Student', defualt: null}],

@@ -31,6 +31,8 @@ const Student = User.discriminator('Student', new Schema({
     matched: [{type: Schema.Types.ObjectId, required: false, default: true}],
     swipedLeft: [{type: Schema.Types.ObjectId, required: false, default: true}],
     matchProfile: {type: Schema.Types.Mixed, required: false, defualt: null},
+    preferredRoles: [{type: String, required: false, default: null}],
+    generalExperience: [{type: String, required: false, defualt: null}]
 }))
 
 module.exports = mongoose.model('Student');

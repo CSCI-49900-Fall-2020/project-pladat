@@ -28,6 +28,8 @@
     color: #d3d3d3;
     font-weight: 300;
     font-size: 4vw;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 #basicInfo-header span {
@@ -36,7 +38,7 @@
 
 #basicInfo-primary-wrapper {
     width: 100%;
-    height: 80%;
+    height: 90%;
     display: flex;
     flex-direction: column;
     /* align-content: center;
