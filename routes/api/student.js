@@ -19,10 +19,11 @@ router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
         major,
         graduationDate,
         shortDesc,
-        skills
+        preferredRoles,
+        generalExperience
     } = req.body;
 
-    if(!university || !major || !graduationDate || !shortDesc || !skills) {
+    if(!university || !major || !graduationDate || !shortDesc || !preferredRoles || !generalExperience) {
         return res.status(401).json({success: false, msg: "Please enter all data."});
     }
     Student.findOneAndUpdate(
@@ -33,7 +34,8 @@ router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
                 major,
                 graduationDate,
                 shortDesc,
-                skills,
+                preferredRoles,
+                generalExperience,
                 basicProfileInfoComplete: true
             }
         },
