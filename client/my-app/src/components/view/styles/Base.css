@@ -155,6 +155,18 @@
     overflow-y: auto;
     padding-top: 4%;
 }
+.basicInfo-form-inner-right-innerWrapper {
+    margin-left: 2%;
+    margin-top: 4%;
+    /* border: 1px solid #666666; */
+    width: 96%;
+    height: 96%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
 .basicInfo-form-inner-right-elem-container {
     margin-left: 2%;
     margin-top: 2%;
@@ -163,10 +175,12 @@
     height: auto;
     display: block;
     padding-left: 2%;
+    margin-bottom: 8%;
 }
 .basicInfo-form-inner-right-elem-container label {
     margin-bottom: 4px;
     color: #aeaeae;
+    margin-right: 8px;
 }
 .basicInfo-form-right-slot {
     display: inline-block;
@@ -180,13 +194,13 @@
     cursor: pointer;
     color: #d3d3d3;
     position: relative;
-    /* padding-right: 16px; */
+    padding-right: 12px;
 }
 .basicInfo-form-right-slot span {
-    /* position: absolute; */
+    position: absolute;
     color: #df454e;
-    right: 3px;
-    /* top: 0; */
+    right: -2px;
+    top: -8px;
     font-size: 14px;
 }
 
@@ -211,7 +225,7 @@
 
 datalist option {
     font-family: Montserrat, sans-serif;
-    color: red;
+    /* color: red; */
     font-weight: 300;
 }
 
@@ -239,7 +253,14 @@ datalist option {
     cursor: pointer;
 }
 .basicInfo-form-optionsBox .experienceSlot:hover {
-    background-color: #00a68a;
+    /* background-color: #00a68a; */
+    opacity: .8;
+    transform: scale(1.1);
+}
+.basicInfo-form-optionsBox .roleSlot:hover {
+    /* background-color: #00a68a; */
+    opacity: .8;
+    transform: scale(1.1);
 }
 
 .basicInfo-form-addBtn {
@@ -288,6 +309,8 @@ datalist option {
     cursor: pointer;
     outline: none;
     background-color: #00a68a;
+    /* background-image: url('https://i.ibb.co/0Fwh04s/light-paper-fibers.png');
+    background-blend-mode: overlay; */
     border-radius: 4px;
 }
 #basicInfo-form-gradDate input:invalid::-webkit-datetime-edit {
