@@ -1,4 +1,4 @@
-# PlaMint
+# PlaceMint
 
 
 ## Introduction
