@@ -15,7 +15,7 @@ PlaMint for promising students benefit both students and employers tremendously.
 |  |  |
 |------|------|
 | Frontend | __HTML, CSS, JavaScript, React__ |
-| Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc__ |
+| Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc.__ |
 | Backend (Database Schema Design) | __MongoDB, Mongoose__ |
 | Matching Algorithm | [See details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
 | Deployment | __Heroku, Docker__ |
