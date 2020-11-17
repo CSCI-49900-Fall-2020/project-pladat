@@ -44,5 +44,5 @@ Fill the database with dummy data to see if the matching algorithm is working as
 
 
 ## Wiki
-[Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
-[Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
+- [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
+- [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
