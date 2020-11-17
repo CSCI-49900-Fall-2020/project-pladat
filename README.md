@@ -12,8 +12,6 @@ PlaMint for promising students benefit both students and employers tremendously.
 
 
 ## Development Environments
-|  |  |
-|------|------|
 | Frontend | __HTML, CSS, JavaScript, React__ |
 | Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc__ |
 | Backend (Database Schema Design) | __MongoDB, Mongoose__ |
