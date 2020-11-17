@@ -6,9 +6,9 @@ PlaMint for promising students benefit both students and employers tremendously.
 
 
 ## How to run/test
-(1) To clone the project at your desire directory, open the terminal and run `git clone https://github.com/CSCI-49900-Fall-2020/project-pladat.git`.
-(2) From the project root folder (not /client, just /pladat), run `npm run dev`.
-(3) If you have any errors, if they're syntax related debug. If they're because a library cannot be found, run `npm install` in the root folder and run `yarn install` in client/my-app then go back to root folder, run `npm run dev` again. The browser tab with the PlaceMint landing page will open, register a fake user, and see if the activity loaders are rendering as desired.
+1. To clone the project at your desire directory, open the terminal and run `git clone https://github.com/CSCI-49900-Fall-2020/project-pladat.git`.
+2. From the project root folder (not /client, just /pladat), run `npm run dev`.
+3. If you have any errors, if they're syntax related debug. If they're because a library cannot be found, run `npm install` in the root folder and run `yarn install` in client/my-app then go back to root folder, run `npm run dev` again. The browser tab with the PlaceMint landing page will open, register a fake user, and see if the activity loaders are rendering as desired.
 
 
 ## Development Environments
@@ -17,25 +17,18 @@ PlaMint for promising students benefit both students and employers tremendously.
 | Frontend | __HTML, CSS, JavaScript, React__ |
 | Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc__ |
 | Backend (Database Schema Design) | __MongoDB, Mongoose__ |
-| Matching Algorithm | [to see details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
+| Matching Algorithm | [see details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
 | Deployment | __Heroku, Docker__ |
 
 
 ## List of features
-* __Candidate like tab__: Allow employers to see candidates who “like” their opportunities 
-<br><br>
-* __Student like tab__: Allow students to see any candidates that “like” the resumes of prospective placements
-<br><br>
-* __Targeted follow up function__: Allow employers to highlights aspects and respond directly to interesting resume information or student interview prompts
-<br><br>
-* __Versatile file uploads__: Upload features for different file types of resumes, job descriptions, profile pictures, job site picture, employers may upload the video to display workplace culture in action
-<br><br>
-* __Student profile page prompts__: Common interview questions can be published as prompts on a students page where they can showcase their answers to employers
-<br><br>
-* __Employer profile page prompts__: Employers can publish FAQ as prompts on their page to assist students in deciding if that particular work-place culture is for them
-<br><br>
-* __Premium Version for Students__: gives viewing access to internship salaries
-<br><br>
+* __Candidate like tab__: Allow employers to see candidates who “like” their opportunities <br>
+* __Student like tab__: Allow students to see any candidates that “like” the resumes of prospective placements<br>
+* __Targeted follow up function__: Allow employers to highlights aspects and respond directly to interesting resume information or student interview prompts<br>
+* __Versatile file uploads__: Upload features for different file types of resumes, job descriptions, profile pictures, job site picture, employers may upload the video to display workplace culture in action<br>
+* __Student profile page prompts__: Common interview questions can be published as prompts on a students page where they can showcase their answers to employers<br>
+* __Employer profile page prompts__: Employers can publish FAQ as prompts on their page to assist students in deciding if that particular work-place culture is for them<br>
+* __Premium Version for Students__: gives viewing access to internship salaries<br>
 * __Employer - Student matching algorithms__: rating system of both parties and max scores determine the compatibility of placement. Similar to the college admission process where different characteristics have different values of importance to either party
 
 
@@ -51,5 +44,5 @@ Fill the database with dummy data to see if the matching algorithm is working as
 
 
 ## Wiki
-[Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal)
+[Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
 [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
