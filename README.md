@@ -17,7 +17,7 @@ PlaMint for promising students benefit both students and employers tremendously.
 | Frontend | __HTML, CSS, JavaScript, React__ |
 | Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc__ |
 | Backend (Database Schema Design) | __MongoDB, Mongoose__ |
-| Matching Algorithm | [see details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
+| Matching Algorithm | [See details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
 | Deployment | __Heroku, Docker__ |
 
 
@@ -44,5 +44,5 @@ Fill the database with dummy data to see if the matching algorithm is working as
 
 
 ## Wiki
-- [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
-- [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
+* [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
+* [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
