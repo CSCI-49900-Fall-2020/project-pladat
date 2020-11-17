@@ -22,13 +22,13 @@ PlaMint for promising students benefit both students and employers tremendously.
 
 
 ## List of features
-* __Candidate like tab__: Allow employers to see candidates who “like” their opportunities <br>
-* __Student like tab__: Allow students to see any candidates that “like” the resumes of prospective placements<br>
-* __Targeted follow up function__: Allow employers to highlights aspects and respond directly to interesting resume information or student interview prompts<br>
-* __Versatile file uploads__: Upload features for different file types of resumes, job descriptions, profile pictures, job site picture, employers may upload the video to display workplace culture in action<br>
-* __Student profile page prompts__: Common interview questions can be published as prompts on a students page where they can showcase their answers to employers<br>
-* __Employer profile page prompts__: Employers can publish FAQ as prompts on their page to assist students in deciding if that particular work-place culture is for them<br>
-* __Premium Version for Students__: gives viewing access to internship salaries<br>
+* __Candidate like tab__: Allow employers to see candidates who “like” their opportunities 
+* __Student like tab__: Allow students to see any candidates that “like” the resumes of prospective placements
+* __Targeted follow up function__: Allow employers to highlights aspects and respond directly to interesting resume information or student interview prompts
+* __Versatile file uploads__: Upload features for different file types of resumes, job descriptions, profile pictures, job site picture, employers may upload the video to display workplace culture in action
+* __Student profile page prompts__: Common interview questions can be published as prompts on a students page where they can showcase their answers to employers
+* __Employer profile page prompts__: Employers can publish FAQ as prompts on their page to assist students in deciding if that particular work-place culture is for them
+* __Premium Version for Students__: gives viewing access to internship salaries
 * __Employer - Student matching algorithms__: rating system of both parties and max scores determine the compatibility of placement. Similar to the college admission process where different characteristics have different values of importance to either party
 
 
