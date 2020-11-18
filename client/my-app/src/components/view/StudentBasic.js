@@ -90,9 +90,19 @@ class StudentBasic extends React.Component {
             }
         }
         else {
-            this.setState({
-                uniAddError: "Can add up to two universities/colleges"
-            })
+            if(this.state.university.length >=2 && this.state.universities.length < 1) {
+                this.setState({
+                    universities: [this.state.university],
+                    university: "",
+                    uniAddError: "",
+                    uniArrIdx: 1
+                })
+            }
+            else {
+                this.setState({
+                    uniAddError: "Can add up to two universities/colleges"
+                })
+            }
         }
     }
     handleUniRemove = (event) => {
@@ -170,9 +180,19 @@ class StudentBasic extends React.Component {
             }
         }
         else {
-            this.setState({
-                majorAddError: "Can add up to two majors"
-            })
+            if(this.state.major.length >= 2 && this.state.majors.length < 1) {
+                this.setState({
+                    majors: [this.state.major],
+                    major: "",
+                    majorAddError: "",
+                    majorArrIdx: 1
+                })
+            }
+            else {
+                this.setState({
+                    majorAddError: "Can add up to two majors"
+                })
+            }
         }
     }
 
@@ -251,6 +271,13 @@ class StudentBasic extends React.Component {
         }
     }
 
+    handleShortBioInput = (event) => {
+        event.preventDefault();
+        this.setState({
+            shortDesc: event.target.value
+        })
+    }
+
     render() {
         return (
             <BasicViewWrapper route={this.props.match.path}>
@@ -320,7 +347,9 @@ class StudentBasic extends React.Component {
                                     </fieldset>
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-shortDesc">
-                                    <textarea cols="92" rows="10" value={this.state.shortDesc} name="majorInput" className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise."></textarea>
+                                    <textarea maxLength="280" value={this.state.shortDesc} onChange={this.handleShortBioInput} name="majorInput" className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise.">
+                                    </textarea>
+                                    <span className="baiscInfoShortDesc-charCount">{280-this.state.shortDesc.length}</span>
                                 </div>
                             </form>
                         </div>
@@ -384,6 +413,15 @@ class StudentBasic extends React.Component {
                                     })}
                                 </div> 
                                 : ""
+                            }
+                            {
+                                this.state.shortDesc.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-shortDesc">
+                                    <label>Bio: </label><br/>
+                                    <span className="basicInfo-form-right-slot"><p>{this.state.shortDesc}</p></span>
+                                </div>
+
+                                :""
                             }
                            </div>
                             

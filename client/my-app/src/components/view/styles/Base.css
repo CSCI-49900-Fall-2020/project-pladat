@@ -87,7 +87,7 @@
   }
    
 .basicInfo-form-inner-left form::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
     border-radius: 4px;
     /* cursor: pointer; */
     outline: none !important;
@@ -132,6 +132,9 @@
     font-weight: 300;
     transition: 125ms cubic-bezier(.25,.1,.25,1);
 }
+#basicInfo-form-shortDesc {
+    position: relative;
+}
 
 .basicInfo-form-inner-left form .basicInfo-form-inputContainer textarea {
     outline: none;
@@ -148,34 +151,89 @@
     resize: none;
     height: 170px;
 }
+/* .basicInfo-form-inputContainer textarea */
+.basicInfo-form-inputContainer textarea::-webkit-scrollbar {
+    width: .4em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    /* cursor: pointer; */
+    outline: none !important;
+  }
+   
+.basicInfo-form-inputContainer textarea::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+    border-radius: 4px;
+    /* cursor: pointer; */
+    outline: none !important;
+}
+   
+.basicInfo-form-inputContainer textarea::-webkit-scrollbar-thumb {
+    background-color: rgb(18, 18, 18);
+    outline: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none !important;
+}
+
+
+
 
 .basicInfo-form-inner-right {
     width: 40%;
-    height: 100%;
-    overflow-y: auto;
+    height: 94%;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
     padding-top: 4%;
+    padding-bottom: 2%;
 }
 .basicInfo-form-inner-right-innerWrapper {
-    margin-left: 2%;
-    margin-top: 4%;
-    /* border: 1px solid #666666; */
-    width: 96%;
-    height: 96%;
+    margin-left: 4%;
+    /* margin-top: 4%; */
+    width: 94%;
+    height: 100%;
+    /* padding-bottom: 4%; */
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
 }
+.basicInfo-form-inner-right-innerWrapper::-webkit-scrollbar {
+    width: .5em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    /* cursor: pointer; */
+    outline: none !important;
+  }
+   
+.basicInfo-form-inner-right-innerWrapper::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+    border-radius: 4px;
+    /* cursor: pointer; */
+    outline: none !important;
+}
+   
+.basicInfo-form-inner-right-innerWrapper::-webkit-scrollbar-thumb {
+    background-color: #666666;
+    outline: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none !important;
+}
+
+
+
 .basicInfo-form-inner-right-elem-container {
-    margin-left: 2%;
     margin-top: 2%;
-    /* border: 1px solid #666666; */
     width: 94%;
     height: auto;
     display: block;
     padding-left: 2%;
     margin-bottom: 8%;
+    /* overflow-x: hidden !important;
+    overflow-y: hidden; */
 }
 .basicInfo-form-inner-right-elem-container label {
     margin-bottom: 4px;
@@ -210,8 +268,6 @@
     height: 95% !important;
     display: flex;
     flex-direction: column;
-    /* align-content: center;
-    justify-content: center; */
     align-items: center;
     justify-items: center;
     position: absolute;
@@ -225,7 +281,6 @@
 
 datalist option {
     font-family: Montserrat, sans-serif;
-    /* color: red; */
     font-weight: 300;
 }
 
@@ -253,12 +308,10 @@ datalist option {
     cursor: pointer;
 }
 .basicInfo-form-optionsBox .experienceSlot:hover {
-    /* background-color: #00a68a; */
     opacity: .8;
     transform: scale(1.1);
 }
 .basicInfo-form-optionsBox .roleSlot:hover {
-    /* background-color: #00a68a; */
     opacity: .8;
     transform: scale(1.1);
 }
@@ -305,14 +358,33 @@ datalist option {
 #basicInfo-form-gradDate input::-webkit-calendar-picker-indicator {
     color: #d3d3d3;
     fill: #d3d3d3;
-    /* background: #d3d3d3; */
     cursor: pointer;
     outline: none;
     background-color: #00a68a;
-    /* background-image: url('https://i.ibb.co/0Fwh04s/light-paper-fibers.png');
-    background-blend-mode: overlay; */
     border-radius: 4px;
 }
 #basicInfo-form-gradDate input:invalid::-webkit-datetime-edit {
     color: #666666;
+}
+
+#basicInfo-form-inner-right-shortDesc span p {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    /* word-break: break-all; */
+    word-break: break-word;
+    hyphens: auto;
+    overflow-wrap: break-word;
+}
+
+.baiscInfoShortDesc-charCount {
+    border: 1px solid #00a68a;
+    width: fit-content;
+    padding: 4px;
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    border-radius: 4px;
+    background-color: #00a68a;
+    color: rgb(18, 18, 18)
 }
