@@ -8,7 +8,7 @@ PlaMint for promising students benefit both students and employers tremendously.
 ## How to run and test
 1. To clone the project at your desire directory, open the terminal and run `git clone https://github.com/CSCI-49900-Fall-2020/project-pladat.git`
 2. From the project root folder (not /client, just /pladat), run `npm run dev`
-3. If you have any errors, run `npm install` in the root folder and run `yarn install` in client/my-app then go back to root folder, run `npm run dev` again. The browser tab with the PlaceMint landing page will open, register a fake user, and see if the activity loaders are rendering as desired
+3. If you have any errors, run `npm install` in the root folder and run `yarn install` in client/my-app then go back to root folder, run `npm run dev` again. The browser tab with the PlaceMint landing page will be opened
 
 
 ## Development Environments
