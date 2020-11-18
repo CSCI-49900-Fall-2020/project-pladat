@@ -26,17 +26,17 @@ class StudentBasic extends React.Component {
             userName: this.props.user.user.firstname+ " " + this.props.user.user.lastname,
             majors: [],
             major: "",
+            majorArrIdx: 0,
             majorAddError: "",
             gradDate: "",
             dateError: "",
-            shortDesc: null,
+            shortDesc: "",
             universities: [],
             university: "",
             uniAddError: "",
+            uniArrIdx: 0,
             roles: [],
-            role: "",
-            genExperience: [],
-            experience: ""
+            experiences: [],
         }
     }
 
@@ -53,14 +53,15 @@ class StudentBasic extends React.Component {
 
         this.setState({
             university: event.target.value,
-            uniAddError: ""
+            uniAddError: "",
+            universities: this.state.universities.length <=1 && this.state.uniArrIdx === 0 ? [event.target.value]: this.state.universities
         })
     }
     handleUniAddMore = (event) => {
         event.preventDefault();
 
         if(this.state.university.length < 2) {
-            if(this.state.universities.length == 2) {
+            if(this.state.universities.length === 2) {
                 this.setState({
                     uniAddError: "Can add up to two universities/colleges"
                 })
@@ -71,24 +72,37 @@ class StudentBasic extends React.Component {
                 })
             }
         }
-        else if(this.state.university.length >= 2 && this.state.universities.length === 0) {
-            this.setState({
-                universities: [this.state.university],
-                university: ""
-            })
-        }
-        else if(this.state.university.length >= 2 && (this.state.universities.length > 0 && this.state.universities.length < 2) && !this.state.universities.includes(this.state.university)) {
-            let unis = this.state.universities;
-            unis.push(this.state.university);
-            this.setState({
-                universities: unis,
-                university: ""
-            })
+        else if(this.state.university.length >= 2 && this.state.universities.length === 1) {
+            if(this.state.universities.includes(this.state.university)) {
+                this.setState({
+                    university: "",
+                    uniArrIdx: this.state.uniArrIdx+1
+                })
+            }
+            else {
+                let unis = this.state.universities;
+                unis.push(this.state.university);
+                this.setState({
+                    universities: unis,
+                    university: "",
+                    uniArrIdx: this.state.uniArrIdx+1
+                })
+            }
         }
         else {
-            this.setState({
-                uniAddError: "Can add up to two universities/colleges"
-            })
+            if(this.state.university.length >=2 && this.state.universities.length < 1) {
+                this.setState({
+                    universities: [this.state.university],
+                    university: "",
+                    uniAddError: "",
+                    uniArrIdx: 1
+                })
+            }
+            else {
+                this.setState({
+                    uniAddError: "Can add up to two universities/colleges"
+                })
+            }
         }
     }
     handleUniRemove = (event) => {
@@ -100,7 +114,8 @@ class StudentBasic extends React.Component {
         unis = [...unis.slice(0,id), ...unis.slice(id+1)];
         this.setState({
             universities: unis,
-            uniAddError: ""
+            uniAddError: "",
+            uniArrIdx: this.state.uniArrIdx > 0 ? this.state.uniArrIdx-1 : 0
         })
     }
 
@@ -127,14 +142,16 @@ class StudentBasic extends React.Component {
         event.preventDefault();
         this.setState({
             major: event.target.value,
-            majorAddError: ""
+            majorAddError: "",
+            majors: this.state.majors.length <=1 && this.state.majorArrIdx === 0 ? [event.target.value]: this.state.majors
+
         })
     }
     handleMajorAddMore = (event) => {
         event.preventDefault();
 
         if(this.state.major.length < 2) {
-            if(this.state.majors.length == 2) {
+            if(this.state.majors.length === 2) {
                 this.setState({
                     majorAddError: "Can add up to two majors"
                 })
@@ -145,25 +162,120 @@ class StudentBasic extends React.Component {
                 })
             }
         }
-        else if(this.state.major.length >= 2 && this.state.majors.length === 0) {
-            this.setState({
-                majors: [this.state.major],
-                major: ""
-            })
+        else if(this.state.major.length >= 2 && this.state.majors.length === 1) {
+            if(this.state.majors.includes(this.state.major)) {
+                this.setState({
+                    major: "",
+                    majorArrIdx: this.state.majorArrIdx+1
+                })
+            }
+            else {
+                let majs = this.state.majors;
+                majs.push(this.state.major);
+                this.setState({
+                    majors: majs,
+                    major: "",
+                    majorArrIdx: this.state.majorArrIdx+1
+                })
+            }
         }
-        else if(this.state.major.length >= 2 && (this.state.majors.length > 0 && this.state.majors.length < 2) && !this.state.majors.includes(this.state.major)) {
-            let maj = this.state.majors;
-            maj.push(this.state.major);
+        else {
+            if(this.state.major.length >= 2 && this.state.majors.length < 1) {
+                this.setState({
+                    majors: [this.state.major],
+                    major: "",
+                    majorAddError: "",
+                    majorArrIdx: 1
+                })
+            }
+            else {
+                this.setState({
+                    majorAddError: "Can add up to two majors"
+                })
+            }
+        }
+    }
+
+    handleMajorRemove = (event) => {
+        event.preventDefault();
+        let id = event.target.id;
+        id = Number(id);
+
+        let majs = this.state.majors;
+        majs = [...majs.slice(0,id), ...majs.slice(id+1)];
+        this.setState({
+            majors: majs,
+            majorAddError: "",
+            majorArrIdx: this.state.majorArrIdx > 0 ? this.state.majorArrIdx-1: 0
+        })
+    }
+
+    handleBackgroundPick = (event) => {
+        event.preventDefault();
+        let clickedRole = event.target.dataset.experiencetype;
+        if(this.state.experiences.includes(clickedRole)) {
+            let popper = this.state.experiences;
+            let clickedIdx = popper.indexOf(clickedRole);
+            popper = [...popper.slice(0, clickedIdx), ...popper.slice(clickedIdx+1)];
             this.setState({
-                majors: maj,
-                major: ""
+                experiences: popper
             })
         }
         else {
+            if(this.state.experiences.length === 5) {
+                let popper = this.state.experiences;
+                popper.pop();
+                popper.push(clickedRole);
+                this.setState({
+                    experiences: popper
+                })
+            }
+            else {
+                let pusher = this.state.experiences;
+                pusher.push(clickedRole);
+                this.setState({
+                    experiences: pusher
+                })
+            }
+        }
+    }
+
+
+    handlePreferredPick = (event) => {
+        event.preventDefault();
+        let clickedRole = event.target.dataset.role;
+        if(this.state.roles.includes(clickedRole)) {
+            let popper = this.state.roles;
+            let clickedIdx = popper.indexOf(clickedRole);
+            popper = [...popper.slice(0, clickedIdx), ...popper.slice(clickedIdx+1)];
             this.setState({
-                majorAddError: "Can add up to two majors"
+                roles: popper
             })
         }
+        else {
+            if(this.state.roles.length === 4) {
+                let popper = this.state.roles;
+                popper.pop();
+                popper.push(clickedRole);
+                this.setState({
+                    roles: popper
+                })
+            }
+            else {
+                let pusher = this.state.roles;
+                pusher.push(clickedRole);
+                this.setState({
+                    roles: pusher
+                })
+            }
+        }
+    }
+
+    handleShortBioInput = (event) => {
+        event.preventDefault();
+        this.setState({
+            shortDesc: event.target.value
+        })
     }
 
     render() {
@@ -215,8 +327,8 @@ class StudentBasic extends React.Component {
                                     <fieldset name="backgroundInput" className="basicInfo-form-optionsBox" id="basicInfo-form-backgroundChoicesContainer">
                                         {
                                             experienceArr.map((background, index) => {
-                                                return <div className="experienceSlot" key={"expSlot-"+index}>
-                                                    <span className="experienceSlot-type">{background}</span>
+                                                return <div className="experienceSlot" data-experiencetype={background} onClick={this.handleBackgroundPick} key={"expSlot-"+index} style={this.state.experiences.includes(background) ? {backgroundColor: "#00a68a"} : {}}>
+                                                    <span data-experiencetype={background} className="experienceSlot-type" >{background}</span>
                                                 </div>
                                             })
                                         }
@@ -227,21 +339,24 @@ class StudentBasic extends React.Component {
                                     <fieldset name="preferred" className="basicInfo-form-optionsBox" id="basicInfo-form-preferredRolesContainer">
                                         {
                                             preferredRoles.map((role, index) => {
-                                                return <div className="roleSlot" key={"roleSlot-"+index}>
-                                                    <span className="roleSlot-type">{role}</span>
+                                                return <div className="roleSlot" data-role={role} onClick={this.handlePreferredPick} key={"roleSlot-"+index} style={this.state.roles.includes(role) ? {backgroundColor: "#00a68a"} : {}}>
+                                                    <span data-role={role} className="roleSlot-type">{role}</span>
                                                 </div>
                                             })
                                         }
                                     </fieldset>
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-shortDesc">
-                                    <textarea cols="92" rows="10" value={this.state.shortDesc} name="majorInput" className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise."></textarea>
+                                    <textarea maxLength="280" value={this.state.shortDesc} onChange={this.handleShortBioInput} name="majorInput" className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise.">
+                                    </textarea>
+                                    <span className="baiscInfoShortDesc-charCount">{280-this.state.shortDesc.length}</span>
                                 </div>
                             </form>
                         </div>
 
                         <div className="basicInfo-form-inner-right">
-                            {
+                           <div className="basicInfo-form-inner-right-innerWrapper">
+                           {
                                 this.state.universities.length > 0 ?
                                 <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-unis">
                                     <label>You've attended: </label>
@@ -253,6 +368,62 @@ class StudentBasic extends React.Component {
                                 </div> 
                                 : ""
                             }
+                            {
+                                this.state.gradDate.length > 0 ?
+
+                                <div className="basicInfo-form-inner-right-elem-container">
+                                    <label>Graduation date:</label>
+                                    <span className="basicInfo-form-right-slot"> {this.state.gradDate}</span>
+                                </div>
+
+                                : ""
+                            }
+                            {
+                                this.state.majors.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-majors">
+                                    <label>You're majoring in: </label>
+                                    {this.state.majors.map((major, idx) => {
+                                        return <span className="basicInfo-form-right-slot" key={idx} id={idx+""}>
+                                            {major}  <span onClick={this.handleMajorRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
+                                        </span>
+                                    })}
+                                </div> 
+                                : ""
+                            }
+                            {
+                                this.state.experiences.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-experiences">
+                                    <label>You have experience with: </label>
+                                    {this.state.experiences.map((exp, idx) => {
+                                        return <span className="basicInfo-form-right-slot" key={idx} id={idx+"exp"}>
+                                            {exp} 
+                                        </span>
+                                    })}
+                                </div> 
+                                : ""
+                            }
+                            {
+                                this.state.roles.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-roles">
+                                    <label>You prefer to work as: </label>
+                                    {this.state.roles.map((role, idx) => {
+                                        return <span className="basicInfo-form-right-slot" key={idx} id={idx+"role"}>
+                                            {role} 
+                                        </span>
+                                    })}
+                                </div> 
+                                : ""
+                            }
+                            {
+                                this.state.shortDesc.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-shortDesc">
+                                    <label>Bio: </label><br/>
+                                    <span className="basicInfo-form-right-slot"><p>{this.state.shortDesc}</p></span>
+                                </div>
+
+                                :""
+                            }
+                           </div>
                             
                         </div>
                     </div>
