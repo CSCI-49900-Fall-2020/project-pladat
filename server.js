@@ -60,12 +60,12 @@ app.use('/api/jobs', require('./routes/api/jobs'));
 
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
-    app.use(express.static('client/build'));
+    app.use(express.static('client/my-app/build'));
     app.enable('trust proxy');
 
     // Catch all to handle all other requests that come into the app. 
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.resolve(__dirname, 'client', 'my-app', 'build', 'index.html'));
     });
 }
 
