@@ -126,16 +126,24 @@ class StudentBasic extends React.Component {
             gradDate: event.target.value
         })
     }
-    handleDateValid = (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-            const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
-            if(!regex.test(this.state.gradDate)) {
-                this.setState({
-                    dateError: "Please enter a valid date in mm/yyyy format"
-                })
-            }
-        }, 2000)
+    handleDateValid = () => {
+        // event.preventDefault();
+        // setTimeout(() => {
+        //     const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
+        //     if(!regex.test(this.state.gradDate)) {
+        //         this.setState({
+        //             dateError: "Please enter a valid date in mm/yyyy format"
+        //         })
+        //     }
+        // }, 2000)
+        let reversedDate = this.state.gradDate;
+        reversedDate = reversedDate.split("-").reverse().join("-");
+        // const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
+        // const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\-)([0-9]{2})(\-)([0-9]{4})$/g;
+        const regex = /^([0-9]{2})(\-)([0-9]{2})(\-)([0-9]{4})$/g;
+        const mmddyyFormat = regex.test(reversedDate);
+        console.log(reversedDate, mmddyyFormat);
+        return mmddyyFormat;
     }
 
     handleMajorInput = (event) => {
@@ -278,7 +286,23 @@ class StudentBasic extends React.Component {
         })
     }
 
+    handleSubmitBasicInfo = (event) => {
+        const submitData = {
+            university: this.state.universities,
+            major: this.state.majors,
+            graduationDate: this.state.gradDate,
+            shortDesc: this.state.shortDesc,
+            preferredRoles: this.state.roles,
+            generalExperience: this.state.experiences
+        }
+    }
+
     render() {
+        // if() {
+        //     this.setState({
+        //         isReadyToSubmit: true
+        //     })
+        // }
         return (
             <BasicViewWrapper route={this.props.match.path}>
                 <div className="basicInfo-form-wrapper" id="basicInfo-student-form-wrapper">
@@ -355,6 +379,25 @@ class StudentBasic extends React.Component {
                         </div>
 
                         <div className="basicInfo-form-inner-right">
+                            {
+                                (this.state.experiences.length > 0 && this.state.gradDate.length > 0 && this.handleDateValid() && this.state.majors.length > 0 && this.state.roles.length > 0 && this.state.universities.length > 0 && this.state.shortDesc.length > 0) ?
+
+                                <div className="baiscInfo-form-inner-right-submitBtn">
+                                    <h3>
+                                        Next 
+                                    </h3>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path d="M0 0h24v24H0z" fill="none"/>
+                                            <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                
+
+                                : ""
+
+                            }
                            <div className="basicInfo-form-inner-right-innerWrapper">
                            {
                                 this.state.universities.length > 0 ?

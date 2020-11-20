@@ -3,7 +3,7 @@ import "./styles/ViewLoader.css";
 
 const ViewLoader = () => {
     return (
-        <div class="sk-cube-grid">
+        <div className="sk-cube-grid">
             <div className="sk-cube sk-cube1"></div>
             <div className="sk-cube sk-cube2"></div>
             <div className="sk-cube sk-cube3"></div>
