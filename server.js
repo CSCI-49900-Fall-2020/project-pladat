@@ -3,6 +3,7 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const path =  require('path');
 
 const dotenv = require('dotenv').config();
 const passport = require('passport');
