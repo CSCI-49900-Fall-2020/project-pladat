@@ -16,6 +16,7 @@ import { majorsArr } from '../../staticData/majors';
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
+import './styles/Media.css';
 
 
 
@@ -126,6 +127,7 @@ class StudentBasic extends React.Component {
             gradDate: event.target.value
         })
     }
+
     handleDateValid = () => {
         // event.preventDefault();
         // setTimeout(() => {
@@ -144,6 +146,7 @@ class StudentBasic extends React.Component {
         const mmddyyFormat = regex.test(reversedDate);
         console.log(reversedDate, mmddyyFormat);
         return mmddyyFormat;
+
     }
 
     handleMajorInput = (event) => {
@@ -286,6 +289,7 @@ class StudentBasic extends React.Component {
         })
     }
 
+
     handleSubmitBasicInfo = (event) => {
         const submitData = {
             university: this.state.universities,
@@ -303,6 +307,7 @@ class StudentBasic extends React.Component {
         //         isReadyToSubmit: true
         //     })
         // }
+
         return (
             <BasicViewWrapper route={this.props.match.path}>
                 <div className="basicInfo-form-wrapper" id="basicInfo-student-form-wrapper">

@@ -50,4 +50,14 @@
     cursor: pointer;
 }
 
+@media (max-width: 840px) {
+
+    #register-on-success-text {
+        color: #d3d3d3;
+        font-weight: 300;
+        font-size: 1.1em;
+    }
+
+}
+
 /* http://localhost:3000/registeration-first-step-complete/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoid2lsbGlhbS5kYXJrbzEzQG15aHVudGVyLmN1bnkuZWR1IiwiZGF0ZUV4cHIiOiIyMDIwLTEwLTI4VDE5OjA2OjQ4Ljg0OVoiLCJkYXRlU2VudCI6IjIwMjAtMTAtMjdUMTk6MDY6NDkuMTQ1WiJ9LCJpYXQiOjE2MDM4MjU2MDksImV4cCI6MTYwMzkxMjAwOX0.Y9lVmpmpMHdCE52440CB7XZwf-e23LXQMy4cfsMl4G0 */

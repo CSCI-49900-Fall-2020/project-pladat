@@ -8,6 +8,7 @@ import * as allUserActions from '../../actions/UserActions';
 import { Redirect } from 'react-router-dom';
 
 import './styles/Base.css';
+import './styles/Media.css';
 
 class BasicViewWrapper extends React.Component {
     constructor(props) {
@@ -23,6 +24,7 @@ class BasicViewWrapper extends React.Component {
         let urlSplit = curUrl.split('/');
         let typeFromUrl = urlSplit[1];
 
+
         if(!this.props.user.isAuthenticated) {
             this.setState({
                 redirectToLogin: true
@@ -36,6 +38,7 @@ class BasicViewWrapper extends React.Component {
                 })
             }
         }
+
     }
 
 
