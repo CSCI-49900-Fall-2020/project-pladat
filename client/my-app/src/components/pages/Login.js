@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import './styles/Login.css';
 import './styles/Base.css';
+import './styles/Media.css';
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -54,12 +55,20 @@ class Login extends Component {
                 this.setState({
                     submitting: false,
                     successFullLogin: true,
-                    redirectParam1: user.uni_Id,
-                    redirectParam2: user.uni
+                    canRedirect: true,
+                    redirectCompToken: this.computeRedirectUrl()
                 })
             }
-    
-            if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+            
+            if(authError !== prevProps.user.authError && errorsDidChange && (!authError || authError.length < 1) && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+                this.setState({
+                    authErrors: [],
+                    authErrorsMapper: [],
+                    errorsLoaded: false,
+                    submitting: false
+                })
+            }
+            else if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
                 if(authError !== this.state.authErrors[0]) {
                     let tempArr = [];
                     tempArr.push({msg: authError});
@@ -88,6 +97,15 @@ class Login extends Component {
             }
         }
 
+    }
+
+    computeRedirectUrl = () => {
+        let userType = this.props.user.user.typeOfUser.toLowerCase();
+        let basicComplete = this.props.user.user.basicProfileInfoComplete;
+
+        let url = basicComplete ? "/login" : `${userType}/basicInfo`;
+
+        return url;
     }
 
     errorOnShowAnimation = () => {
@@ -171,6 +189,7 @@ class Login extends Component {
 
         const { email, password } = this.state;
         const userCred = { email, password };
+        // console.log(userCred);
 
         // setTimeout(() => {
         //     this.props.actions.userActions.logInUser(userCred);

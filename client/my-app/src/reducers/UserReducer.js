@@ -88,7 +88,7 @@ function user(state = initialState, action) {
                 authMessage: action.msg,
                 authError: [],
                 authState: UserConstants.LOADING_USER_SUCCESS,
-                emailIsValidated: action.userInfo.data.emailVerified,
+                emailIsValidated: action.userInfo.data.isVerified,
                 loggedIn: true
             }
         case UserConstants.USER_LOGGING_IN:
@@ -112,11 +112,13 @@ function user(state = initialState, action) {
                 isAuthenticated: action.isAuth,
                 user: action.userInfo,
                 authMessage: action.msg,
-                emailIsValidated: action.userInfo.emailVerified,
+                emailIsValidated: action.userInfo.isVerified,
                 userLoginVerified: true,
                 userLoginVerificationFail: false,
                 loggedIn: true,
-                hashedToStore: true
+                hashedToStore: true,
+                authError: [],
+                errorsDidChange: true,
             };
         case UserConstants.VERIFYING_USER_LOGIN_FAILURE:
             return {
@@ -141,7 +143,9 @@ function user(state = initialState, action) {
               authState: UserConstants.HASHED_TO_STORAGE,
               isAuthenticated: true,
               authMessage: action.msg,
-              hashedToStore: true
+              hashedToStore: true,
+              authError: [],
+              errorsDidChange: true
             };
         case UserConstants.HASHING_TO_STORAGE_FAIL:
             return {
@@ -158,10 +162,11 @@ function user(state = initialState, action) {
                 loggingInUser: false,
                 authMessage: action.msg,
                 // isAuthenticated: true,
-                emailIsValidated: action.userInfo.emailVerified,
+                emailIsValidated: action.userInfo.isVerified,
                 user: action.userInfo,
                 authState: UserConstants.USER_LOGGED_IN,
                 authError: [],
+                errorsDidChange: true,
                 loggedIn: true
             };
         case UserConstants.USER_LOGIN_FAILURE:

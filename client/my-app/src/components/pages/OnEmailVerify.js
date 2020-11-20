@@ -11,7 +11,8 @@ import * as allUserActions from '../../actions/UserActions';
 
 import './styles/OnEmailVerify.css';
 import './styles/Base.css';
-import ViewLoader from '../uiComponents/ViewLoader.';
+import './styles/Media.css';
+import ViewLoader from '../uiComponents/ViewLoader';
 
 class OnEmailVerify extends React.Component {
     constructor(props) {

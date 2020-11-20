@@ -1,4 +1,4 @@
-function configureEmailVerification(username, link) {
+function recruiterConfigEmail(username, link, companyName, recruiterEmail, recruiterName) {
     let email = `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -121,7 +121,19 @@ function configureEmailVerification(username, link) {
                                                 <td class="body_section_td upper">
                                                         <h2 style="font-weight: 300;">Hi ${username}!</h2> <br>
                 
-                                                        <h3 style="font-weight: 300;">To complete your registration, please click on the 'Verify email' button below to verify your account.</h3> <br>
+                                                        <h3 style="font-weight: 300;">To verify this recruiter as part of your company ${companyName}, and authorise them to overlook employment 
+                                                            matters, click on the button below, or copy and paste the link below into your browser</h3> <br>
+
+                                                        <h3 class="employerInfo">
+                                                            Recruiter's Name: ${recruiterName}
+                                                        </h3>
+                                                        <h3 class="employerInfo">
+                                                            Recruiter's Email: ${recruiterEmail}
+                                                        </h3>
+                                                        <br>
+
+                                                        <br>
+
                                                         <a id="buttonLink" style="cursor:pointer; outline: none; text-decoration: none;" href="${link}">
                                                             <button id="verifyEmailButton" style="font-weight: 300; font-family: 'Montserrat', sans-serif;
                                                                 font-weight: 500;
@@ -140,14 +152,14 @@ function configureEmailVerification(username, link) {
                                                                 color: rgb(20, 20, 20);
                                                                 font-size: 17px;
                                                                 outline: none; 
-                                                                cursor: pointer;">Verify Email
+                                                                cursor: pointer;">Verify
                                                                 
                                                             </button>
                                                         </a><br><br>
                                             
                                                         <h3 style="font-weight: 300;">or, you can click the link below, or copy it into your browser</h3> 
                                             
-                                                        <a id="textLink" style="color:  #00a68a; text-decoration: underline; outline: #7DE2FC; cursor: pointer;" href="${link}">
+                                                        <a id="textLink" style="color: #00a68a; text-decoration: underline; outline: #7DE2FC; cursor: pointer;" href="${link}">
                                                             <h3 style="font-weight: 300; text-overflow: ellipsis;">${link}</h3>
                                                         </a> <br>
                                             
@@ -163,7 +175,6 @@ function configureEmailVerification(username, link) {
                                                     <p style="font-weight: 300; font-size: 7px;">Contact us on social media; we'll respond.</p> 
                                                     <span>
                                                         <img width="20px" height="20px" style="margin-right: 2px;" src="https://i.ibb.co/86MTyt9/001-instagram.png" alt="Instagram" class="insta_logo"/>
-
                                                         <img width="20px" height="20px" src="https://i.ibb.co/99x9gp5/002-twitter.png" alt="Twitter" class="twitter_logo"/>
                                                     </span>
                                                     <p style="font-weight: 300; font-size: 7px;">Earth, Solar System, Milky Way Galaxy.</p>
@@ -185,5 +196,5 @@ function configureEmailVerification(username, link) {
 }
 
 module.exports = {
-    configureEmailVerification
+    recruiterConfigEmail
 }

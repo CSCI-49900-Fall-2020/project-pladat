@@ -10,6 +10,7 @@ import Login from './components/pages/Login';
 import Register from './components/pages/Register';
 import OnRegister from './components/pages/OnRegister';
 import OnEmailVerify from './components/pages/OnEmailVerify';
+import BasicInfo from './components/pages/BasicInfo';
 
 
 // router dependencies
@@ -34,7 +35,7 @@ const router = (
                   <Route exact path="/register" component={Register}/>
                   <Route exact path="/complete-registeration/email-verification/:token" component={OnEmailVerify} />
                   <Route exact path="/registeration-first-step-complete/:prelims" component={OnRegister} />
-                  
+                  <Route path="/(student|recruiter|employer)/basicInfo" component={BasicInfo}/>
               </Switch>
           </Route>
 
