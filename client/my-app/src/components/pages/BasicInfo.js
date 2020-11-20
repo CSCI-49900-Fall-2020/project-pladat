@@ -17,6 +17,7 @@ import ViewLoader from '../uiComponents/ViewLoader';
 
 import './styles/BasicInfo.css';
 import './styles/Base.css';
+import './styles/MediaPages.css';
 
 
 class BasicInfo extends React.Component {
@@ -53,7 +54,7 @@ class BasicInfo extends React.Component {
                     return { loadingUser: false }
                 })
             })
-        }, 5000);
+        }, 3000);
 
         if(this.props.user.user && this.props.user.loggedIn && this.props.user.isAuthenticated) {
             clearTimeout(waitForUserInfo);

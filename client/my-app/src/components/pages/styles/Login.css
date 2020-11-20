@@ -17,9 +17,3 @@
 #auth-login-passInput-container input {
     width: 100%;
 }
-
-@media (max-width: 840px) {
-    #auth-login-form-container-right {
-        color: blue;
-    }
-}
