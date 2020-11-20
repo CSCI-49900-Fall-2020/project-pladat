@@ -3,7 +3,7 @@ import TypingText from '../uiComponents/TypingText';
 
 import './styles/Landing.css';
 import './styles/Base.css';
-import './styles/Media.css';
+import './styles/MediaPages.css';
 
 import { Link, Redirect } from 'react-router-dom';
 

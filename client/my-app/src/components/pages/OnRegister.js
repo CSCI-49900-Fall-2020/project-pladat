@@ -4,7 +4,7 @@ import { ON_REGISTER_SUCCESS_KEY } from '../../staticData/config';
 
 import './styles/Base.css';
 import './styles/OnRegister.css';
-import './styles/Media.css';
+import './styles/MediaPages.css';
 import { setInterval } from 'timers';
 
 
