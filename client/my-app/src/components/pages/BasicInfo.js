@@ -17,6 +17,7 @@ import ViewLoader from '../uiComponents/ViewLoader';
 
 import './styles/BasicInfo.css';
 import './styles/Base.css';
+import './styles/MediaPages.css';
 
 
 class BasicInfo extends React.Component {

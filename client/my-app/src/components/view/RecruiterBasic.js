@@ -9,6 +9,7 @@ import BasicViewWrapper from './BasicViewWrapper';
 
 import './styles/RecruiterBasic.css';
 import './styles/Base.css';
+import './styles/Media.css';
 
 
 class RecruiterBasic extends React.Component {

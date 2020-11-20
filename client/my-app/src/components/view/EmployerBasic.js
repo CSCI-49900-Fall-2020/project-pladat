@@ -10,6 +10,8 @@ import BasicViewWrapper from './BasicViewWrapper';
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
+import './styles/Media.css';
+
 
 
 class EmployerBasic extends React.Component {

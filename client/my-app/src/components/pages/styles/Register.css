@@ -36,25 +36,3 @@
 #auth-register-passInputGroup-container input {
     width: 43%;
 }
-
-@media (max-width: 840px) {
-
-    #auth-register-userTypeInput-container span h2 {
-        font-weight: 300;
-        font-size: 16px;
-    }
-
-    #auth-register-userTypeInput-container span label {
-        margin-right: 4px;
-        font-size: 13px;
-    }
-
-    #auth-register-nameInputGroup-container input{
-        width: 38%;
-    }
-
-    #auth-register-passInputGroup-container input {
-        width: 38%;
-    }
-
-}

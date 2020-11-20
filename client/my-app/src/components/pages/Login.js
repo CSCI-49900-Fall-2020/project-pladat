@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import './styles/Login.css';
 import './styles/Base.css';
+import './styles/MediaPages.css';
 
 import { Link, Redirect } from 'react-router-dom';
 
