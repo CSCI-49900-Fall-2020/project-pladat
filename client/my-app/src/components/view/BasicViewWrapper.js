@@ -15,7 +15,8 @@ class BasicViewWrapper extends React.Component {
         super(props);
         this.state = {
             redirect: false,
-            correctType: null
+            correctType: null,
+            redirectToLogin: false
         }
     }
     componentDidMount() {
@@ -23,18 +24,30 @@ class BasicViewWrapper extends React.Component {
         let urlSplit = curUrl.split('/');
         let typeFromUrl = urlSplit[1];
 
-        if(this.props.user.user.typeOfUser.toLowerCase() !== typeFromUrl) {
+
+        if(!this.props.user.isAuthenticated) {
             this.setState({
-                redirect: true,
-                correctType: this.props.user.user.typeOfUser.toLowerCase()
+                redirectToLogin: true
             })
         }
+        else {
+            if(this.props.user.user.typeOfUser.toLowerCase() !== typeFromUrl) {
+                this.setState({
+                    redirect: true,
+                    correctType: this.props.user.user.typeOfUser.toLowerCase()
+                })
+            }
+        }
+
     }
 
 
     render() {
         if(this.state.redirect) {
             return <Redirect to={`/${this.state.correctType}/basicInfo`}/>;
+        }
+        if(this.state.redirectToLogin) {
+            return <Redirect to='/login'/>;
         }
         return (
             <div className="BasicViewWrapper">
