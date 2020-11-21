@@ -11,8 +11,10 @@ const socket = require('socket.io');
 const events = require('events');
 const connectMongo = require('connect-mongo');
 
+const path = require('path');
+
 const { PORT, MONGO_URI, CLIENT_ORIGIN } = require('./configs/prodConfig');
-const { SESSION_OPTIONS, IN_PROD } = require('./configs')
+const { SESSION_OPTIONS, IN_PROD } = require('./configs');
 
 const app = express();
 app.use(cors({
