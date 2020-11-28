@@ -58,6 +58,9 @@ app.use(passport.session());
 /* Server routes */
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/jobs', require('./routes/api/jobs'));
+app.use('/api/employer', require('./routes/api/employer'));
+app.use('/api/student', require('./routes/api/student'));
+app.use('/api/recruiter', require('./routes/api/recruiter'));
 
 
 if (process.env.NODE_ENV === 'production') {

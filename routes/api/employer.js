@@ -10,7 +10,9 @@ const Recruiter = require('../../models/Recruiter');
 const Employer = require('../../models/Employer');
 const Job = require('../../models/Job');
 
-import { ensureAuthenticated, ensureAuthorisation } from '../../configs/authorise';
+const { ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
+
+const { JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER } = require('../../configs/prodConfig');
 
 
 router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => {
@@ -39,43 +41,338 @@ router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => 
     })
 });
 
-router.put('/employer/verify-recruiter/:rId', ensureAuthorisation, (req, res) => {
-    Recruiter.findOneAndUpdate(
-        {_id: req.params.rId},
+router.put('/employer/editMatchProfile', ensureAuthorisation, (req, res) => {
+    const { matchProfile } = req.body;
+    Employer.findOneAndUpdate(
+        {_id: req.user._id},
         {
-            $set: {isCompanyVerified: true}
+            $set: { matchProfile: matchProfile}
         },
         {
             new: true,
             returnNewDocument: true
         }
     )
-    .then(recruiter => {
-        if(recruiter && recruiter.companyId === req.user._id) {
-            Employer.findOneAndUpdate(
-                {_id: req.user.id},
-                {
-                    $push: {recruiters: recruiter._id}
-                },
-                {
-                    new: true,
-                    returnNewDocument: true
-                }
-            )
-            .then(employer => {
-                return res.status(200).json({success: true, msg: "We've verified your recruiter.", employer});
-            })
-            .catch(err => {
-                return res.status(422).json({success: false, msg: "Couldn't add recruiter to list.", err});
-            })
-        }
-        else {
-            return res.status(403).json({success: false, msg: "This recruiter appears to no longer be registered on PlaceMint."});
-        }
+    .then(employer => {
+        res.status(200).json({success: true, msg: "Edited match profile.", employer});
     })
     .catch(err => {
-        return res.status(422).json({success: false, msg: "Something went wrong, couldn't verify recruiter", err});
+        res.status(422).json({success: false, msg: "Couldn't edit match profile.", err});
     })
+})
+
+router.put('/employer/editProfile', ensureAuthorisation, (req, res) => {
+    const {
+        companyGrowthStage,
+        approxNumEmployees,
+        yearFounded,
+        socials
+    } = req.body;
+
+    Employer.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                companyGrowthStage: companyGrowthStage,
+                approxNumEmployees: approxNumEmployees,
+                yearFounded: yearFounded,
+                socials: socials
+            }
+        },
+        {
+            returnNewDocument: true,
+            new: true
+        }
+    )
+    .then(employer => {
+        res.status(200).json({success: true, msg: "Edited profile", employer});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; couldn't edit profile", err});
+    })
+})
+
+router.put('/employer/verify-recruiter/:empId/:rToken', ensureAuthorisation, (req, res) => {
+    if(!req.params.empId === req.user._id) {
+        return res.status(403).json({success: false, msg: "You're not the employer this was meant for"})
+    }
+
+    jwt.verify(req.params.rToken, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, { }, (err, data) => {
+        if(err) {
+            return res.status(500).json({success: false, msg: "Something went wrong, couldn't verify recruiter.", err});
+        }
+
+        let rId = data.signUserInfo.uId;
+        let recruiterInfo = data.signUserInfo;
+
+        Recruiter.findOneAndUpdate(
+            {_id: rId},
+            {
+                $set: {isCompanyVerified: true}
+            },
+            {
+                new: true,
+                returnNewDocument: true
+            }
+        )
+        .then(recruiter => {
+            if(recruiter && recruiter.companyId === req.user._id) {
+                Employer.findOneAndUpdate(
+                    {_id: req.user.id},
+                    {
+                        $push: {recruiters: recruiter._id}
+                    },
+                    {
+                        new: true,
+                        returnNewDocument: true
+                    }
+                )
+                .then(employer => {
+                    return res.status(200).json({success: true, msg: "We've verified your recruiter.", employer, recruiter: recruiterInfo});
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Couldn't add recruiter to list.", err});
+                })
+            }
+            else {
+                return res.status(403).json({success: false, msg: "This recruiter appears to no longer be registered on PlaceMint."});
+            }
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong, couldn't verify recruiter", err});
+        })
+    })    
+});
+
+router.get('/employer/getEmployer/:employerId', ensureAuthenticated, (req, res) => {
+    Employer.findOne({_id: req.params.employerId})
+    .then(employer => {
+        if(!employer) {
+            return res.status(422).json({success: false, msg: "Employer not found."});
+        }
+        return res.status(200).json({success: true, msg: "Employer found.", employer});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong couldn't do employer search.", err});
+    })
+});
+
+router.get('/employer/getAllEmployers/:skip', ensureAuthenticated, (req, res) => {
+    Employer.find()
+    .sort({companyName: 1})
+    .skip(Number(req.params.skip))
+    .limit(21)
+    .then(employers => {
+        if(!employers || employers.length === 0) {
+            return res.status(422).json({success: false, msg: Number(req.params.skip) > 21 ? "No employers left to load": "No employers registered", employers});
+        }
+        return res.status(200).json({success: true, msg: "Employers loaded", employers});
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong; couldn't load employers.", err});
+    })
+});
+
+router.get('/employer/getByIndustry/:industry/:skip', ensureAuthenticated, (req, res) => {
+    Employer.find({industry: req.params.industry})
+    .sort({companyName: 1})
+    .skip(Number(req.params.skip))
+    .limit(21)
+    .then(employers => {
+        if(!employers || employers.length === 0) {
+            return res.status(422).json({success: false, msg: Number(req.params.skip) > 21 ? `No ${req.params.industry} employers left to load`: `No ${req.params.industry} employers registered`, employers});
+        }
+        return res.status(200).json({success: true, msg: `${req.params.industry} employers loaded`, employers});
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: `Something went wrong; couldn't load ${req.params.industry} employers.`, err});
+    })
+});
+
+router.get('/employer/queryByName/:query', ensureAuthenticated, (req, res) => {
+    Employer.find({companyName: { $regex:  '/'+req.params.query+'/i'} })
+    .then(employers => {
+        return res.status(200).json({success: true, msg: "Search query done.", employers});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't query employers", err});
+    })
+})
+
+router.post('/employer/createJob', ensureAuthorisation, (req, res) => {
+    const {
+        title,
+        description,
+        company = req.user.companyName,
+        dateOpen,
+        location,
+        todo,
+        mustHaveSkills,
+        recommendSkills,
+        dateClose,
+        matchProfile = req.user.matchProfile,
+        matchLimit,
+        typeOfJob,
+        assignedRecruiters,
+        industry
+    } = req.body;
+
+    const newJob = new Job({
+        title, description, company, dateClose, location, todo, mustHaveSkills, recommendSkills, matchProfile,
+        matchLimit, typeOfJob, isOpen: true, dateOpen, assignedRecruiters, industry: industry.toLowerCase()
+    });
+    newJob.save()
+    .then(job => {
+        return res.status(200).json({success: true, msg: "Created a new job listing.", job});
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong, couldn't create jobs"});
+    })
+});
+
+router.put('/employer/editJob/:jobId', ensureAuthorisation, (req, res) => {
+    const {
+        title,
+        description,
+        location,
+        todo,
+        mustHaveSkills,
+        recommendSkills,
+        dateClose,
+        matchLimit,
+        typeOfJob,
+        assignedRecruiters
+    } = req.body;
+    Job.findOneAndUpdate(
+        {_id: req.params.jobId, company: req.user._id},
+        {
+            $set: {
+                title: title,
+                description: description,
+                location: location,
+                todo: todo,
+                mustHaveSkills: mustHaveSkills,
+                recommendSkills: recommendSkills,
+                dateClose: dateClose,
+                matchLimit: matchLimit,
+                typeOfJob: typeOfJob,
+                assignedRecruiters: assignedRecruiters
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(job => {
+        if(!job) {
+            return res.status(401).json({success: false, msg: "Must be the employer to edit job info."});
+        }
+        return res.status(200).json({success: true, msg: "Job info has been edited.", job});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't edit job info.", err});
+    })
+});
+
+router.put('/employer/unlistJob/:jobId', ensureAuthorisation, (req, res) => {
+    Job.findOneAndUpdate(
+        {_id: req.params.jobId, company: req.user._id},
+        {
+            $set: { isOpen: false }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(job => {
+        if(!job) {
+            return res.status(422).json({success: false, msg: "Job doesn't exist, or you're not authorised."});
+        }
+        return res.status(200).json({success: true, msg: "Job has been unlisted.", job});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't unlist job", err});
+    })
+});
+
+router.put('/employer/relistJob/:jobId', ensureAuthorisation, (req, res) => {
+    Job.findOneAndUpdate(
+        {_id: req.params.jobId, company: req.user._id},
+        {
+            $set: { isOpen: true }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(job => {
+        if(!job) {
+            return res.status(422).json({success: false, msg: "Job doesn't exist, or you're not authorised."});
+        }
+        return res.status(200).json({success: true, msg: "Job has been listed.", job});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't list job", err});
+    })
+});
+
+router.delete('/employer/removeJob/:jobId', ensureAuthorisation, (req, res) => {
+    Job.findOneAndDelete({_id: req.params.jobId, company: req.user._id})
+    .then(job => {
+        if(!job) {
+            return res.status(401).json({success: false, msg: "Must be company admin to delete job"});
+        }
+        res.status(200).json({success: false, msg: "Job has been removed.", job});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't remove job.", err});
+    })
+});
+
+router.put('/employer/assignRecruiter/:jobId/:recruiterId', ensureAuthorisation, (req, res) => {
+   Recruiter.findOneAndUpdate(
+       {_id: req.params.recruiterId, companyId: req.user._id},
+       {
+           $push: {jobsAssigned: req.params.jobId}
+       },
+       {
+           new: true,
+           returnNewDocument: true
+       }
+    )
+   .then(recruiter => {
+       if(!recruiter || !recruiter.companyId === req.user._id) {
+            return res.status(401).json({success: false, msg: "Can only assign recruiters you employ."})
+       }
+       Job.findOneAndUpdate(
+        {_id: req.params.jobId, company: req.user._id},
+        {
+            $set: { assignedRecruiter: req.params.recruiterId }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(job => {
+        if(!job) {
+            return res.status(401).json({success: false, msg: "Must be the employer to assign recruiters."});
+        }
+        return res.status(200).json({success: true, msg: "Recruiters have been assigend.", job});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't assign recruiters to job.", err});
+    })
+   })
+})
+
+router.put('/employer/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
+});
+
+router.put('/employer/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
 });
 
 

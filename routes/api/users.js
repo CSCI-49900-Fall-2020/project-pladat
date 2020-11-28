@@ -153,7 +153,7 @@ router.post('/register/verifyEmail/:token', verifyToken, (req, res) => {
                                 return res.status(500).json({success: false, msg: 'Something went wrong, cannnot complete your registeration yet', err});
                             }
                             else {
-                                console.log(validUser.password);
+                                // console.log(validUser.password);
                                 validUser.password = hash;
                                 validUser.save()
                                 .then(user => {
