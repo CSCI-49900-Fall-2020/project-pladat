@@ -1,0 +1,60 @@
+.buttons {
+    position: fixed;
+    bottom: 10vh;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    line-height: 3vh;
+    box-sizing: border-box;
+}
+
+.button_1 {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+}
+
+.button_2 {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+}
+
+.button_3 {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+}
+
+.button_4 {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    opacity: 8;
+    border: transparent;
+}
+
+.button_5 {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+}
+
+.buttonimg {
+    height: 40px;
+}

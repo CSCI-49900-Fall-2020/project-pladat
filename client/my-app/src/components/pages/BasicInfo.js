@@ -19,7 +19,6 @@ import './styles/BasicInfo.css';
 import './styles/Base.css';
 import './styles/MediaPages.css';
 
-
 class BasicInfo extends React.Component {
     constructor(props) {
         super(props);

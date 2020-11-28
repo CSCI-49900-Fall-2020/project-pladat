@@ -13,6 +13,7 @@ import { preferredRoles } from '../../staticData/preferredRoles';
 import { experienceArr } from '../../staticData/experience';
 import { majorsArr } from '../../staticData/majors';
 
+import { Link, Redirect } from 'react-router-dom';
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
@@ -384,6 +385,13 @@ class StudentBasic extends React.Component {
                         </div>
 
                         <div className="basicInfo-form-inner-right">
+                            
+                            <Link to="/student/mainpage">
+                                <button>
+                                    <h3>Go to main page testing.</h3>  
+                                </button>
+                            </Link>
+
                             {
                                 (this.state.experiences.length > 0 && this.state.gradDate.length > 0 && this.handleDateValid() && this.state.majors.length > 0 && this.state.roles.length > 0 && this.state.universities.length > 0 && this.state.shortDesc.length > 0) ?
 
