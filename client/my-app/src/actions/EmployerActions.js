@@ -411,6 +411,35 @@ export const assignRecruiter = (jobId, rId) => dispatch => {
     })
 }
 
+export const employerSearchQuery = (query) => dispatch => {
+    dispatch({type: EmployerConstants.SEARCHING_EMPLOYERS});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+    axios.get(`/api/employer/queryByName/${query}`, {...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.SEARCH_QUERY_SUCCESS,
+            msg: res.data.msg,
+            employers: res.data.employers
+        })
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.SEARCH_QUERY_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}
+
 export const swipeRight = (studentId) => dispatch => {
     return;
 }

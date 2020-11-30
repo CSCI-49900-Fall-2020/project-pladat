@@ -4,6 +4,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as allUserActions from '../../actions/UserActions';
+import * as allRecruiterActions from '../../actions/RecruiterActions';
+import * as allEmployerActions from '../../actions/EmployerActions';
 
 import BasicViewWrapper from './BasicViewWrapper';
 
@@ -28,6 +30,22 @@ class RecruiterBasic extends React.Component {
             uniArrIdx: 0,
             jobTitle: "",
             shortDesc: "",
+            company: "",
+            companyId: "",
+            companyList: []
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props !== prevProps) {
+            const { searchResults,  searchResultsLoaded } = this.props.employers;
+            if(searchResultsLoaded && this.state.companyList !== searchResults) {
+                this.setState({
+                    companyList: searchResults,
+                }, () => {
+                    // document.querySelector('#company-options').style.visibility = 'visible';
+                })
+            }
         }
     }
 
@@ -121,6 +139,38 @@ class RecruiterBasic extends React.Component {
         })
     }
 
+    handleCompanyChange = (event) => {
+        event.preventDefault();
+        this.setState({
+            company: event.target.value,
+            companyList: []
+        })
+    }
+    handleCompanySearch = (event) => {
+        event.preventDefault();
+        this.props.actions.employerActions.employerSearchQuery(this.state.company);
+    }
+    handleCompanyChoose = (event) => {
+        event.preventDefault();
+        let compId = event.target.dataset.compid;
+        let compName = event.target.dataset.compname;
+        this.setState({
+            company: compName,
+            companyId: compId
+        })
+    }
+    toggleDataListOnBioFocus = (event) => {
+        event.preventDefault();
+        this.setState({companyList: []})
+    }
+
+    hanldeBasicInfoSubmit = (event) => {
+        event.preventDefault();
+        const { companyId, jobTitle, universities, shortDesc } = this.state;
+        const editedProfile = { company: companyId, education: universities, jobTitle, shortDesc};
+        this.props.actions.recruiterActions.completeBasicProfile(editedProfile);
+    }
+
     render() {
         return (
             <BasicViewWrapper route={this.props.match.path}>
@@ -148,7 +198,7 @@ class RecruiterBasic extends React.Component {
 
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-jobTitle">
                                         <label htmlFor="jobtitle" className="text basicInfo-form-inputLabel">What's your job title</label>
-                                        <input list="role-options" name="jobtitle" className="basicInfo-form-input" placeholder="job title"/>
+                                        <input value={this.state.jobTitle} list="role-options" name="jobtitle" className="basicInfo-form-input" placeholder="job title" onChange={this.handleAddJobTitle}/>
                                         <datalist id="role-options">
                                             {
                                                 preferredRoles.map((role, index) => {
@@ -159,20 +209,23 @@ class RecruiterBasic extends React.Component {
                                 </div>
 
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-companyName">
-                                        <label htmlFor="companyName" className="text basicInfo-form-inputLabel">What's company d'you work for?</label>
-                                        <input list="company-options" name="companyName" className="basicInfo-form-input" placeholder="company"/>
-                                        <span id="basicInfo-form-searchCompanyBtn" className="basicInfo-form-addBtn" onClick={this.handleUniAddMore}>Search <span>&#128269;</span></span>
-                                        <datalist id="company-options">
+                                        <label htmlFor="companyName" className="text basicInfo-form-inputLabel">What company do you work for?</label>
+                                        <input autoComplete="off" value={this.state.company} list="company-options" name="companyName" className="basicInfo-form-input" id="basicInfo-form-input-recruiterCompanyInput" placeholder="company name/id" onChange={this.handleCompanyChange}/>
+                                        <span id="basicInfo-form-searchCompanyBtn" className="basicInfo-form-addBtn" onClick={this.handleCompanySearch}>Search <span>&#128269;</span></span>
+                                        <div id="company-options" className="basicInfo-from-customDatalist" style={this.state.companyList.length > 0 ? {visibility: 'visible'}: {visibility: 'hidden'}}>
                                             {
-                                                preferredRoles.map((role, index) => {
-                                                    return <option value={role} key={"school-"+index}/>
+                                                this.state.companyList.map((company, index) => {
+                                                    return <span key={"company-"+index} className="customDataList-option" data-compid={company._id} data-compname={company.companyName} onClick={this.handleCompanyChoose}>
+                                                        <span data-compid={company._id} data-compname={company.companyName} className="customDataListSpan1">{company.companyName}</span>
+                                                        <span data-compid={company._id} data-compname={company.companyName} className="customDataListSpan2">{company.location}</span>
+                                                    </span>
                                                 })
                                             }
-                                        </datalist>
+                                        </div>
                                 </div>
 
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-shortDesc">
-                                    <textarea maxLength="280" value={this.state.shortDesc} onChange={this.handleShortBioInput} name="majorInput" className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise.">
+                                    <textarea maxLength="280" value={this.state.shortDesc} onChange={this.handleShortBioInput} className="basicInfo-form-input" placeholder="Tell us about yourself; keep it short and concise." onFocus={this.toggleDataListOnBioFocus}>
                                     </textarea>
                                     <span className="baiscInfoShortDesc-charCount">{280-this.state.shortDesc.length}</span>
                                 </div>
@@ -180,6 +233,66 @@ class RecruiterBasic extends React.Component {
                         </div>
 
                         <div className="basicInfo-form-inner-right">
+                            {
+                                (this.state.universities.length > 0 && this.state.shortDesc.length > 0 && this.state.company.length > 0 && this.state.jobTitle.length > 0) ?
+
+                                <div className="baiscInfo-form-inner-right-submitBtn">
+                                    <h3>
+                                        Next 
+                                    </h3>
+                                    <span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                            <path d="M0 0h24v24H0z" fill="none"/>
+                                            <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                        </svg>
+                                    </span>
+                                </div>
+                                
+
+                                : ""
+
+                            }
+
+                            <div className="basicInfo-form-inner-right-innerWrapper">
+                                {
+                                    this.state.universities.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-unis">
+                                        <label>You've attended: </label>
+                                        {this.state.universities.map((uni, idx) => {
+                                            return <span className="basicInfo-form-right-slot" key={idx} id={idx+""}>
+                                                {uni}  <span onClick={this.handleUniRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
+                                            </span>
+                                        })}
+                                    </div> 
+                                    : ""
+                                }
+                                {
+                                    this.state.jobTitle.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-jobTitle">
+                                        <label>Job title: </label>
+                                        <span className="basicInfo-form-right-slot">{this.state.jobTitle}</span>
+                                    </div> 
+                                    : ""
+                                }
+                                {
+                                    this.state.company.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-companyName">
+                                        <label>Company: </label>
+                                        <span className="basicInfo-form-right-slot">{this.state.company}</span>
+                                    </div> 
+                                    : ""
+                                }
+
+                                {
+                                    this.state.shortDesc.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-shortDesc">
+                                        <label>Bio: </label><br/>
+                                        <span className="basicInfo-form-right-slot"><p>{this.state.shortDesc}</p></span>
+                                    </div>
+
+                                    :""
+                                }
+                            </div>
                         </div>
                     </div>
 
@@ -191,7 +304,9 @@ class RecruiterBasic extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        recruiters: state.recruiters,
+        employers: state.employers
     }
 }
         
@@ -199,6 +314,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             userActions: bindActionCreators(allUserActions, dispatch),
+            recruiterActions: bindActionCreators(allRecruiterActions, dispatch),
+            employerActions: bindActionCreators(allEmployerActions, dispatch)
         }
     };
 }

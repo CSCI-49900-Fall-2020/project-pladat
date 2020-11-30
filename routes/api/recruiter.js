@@ -17,7 +17,7 @@ const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PRO
 
 
 
-router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) => {
+router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
     const { education, jobTitle, shortDesc, company } = req.body;
 
     if(!education || !jobTitle || !shortDesc || !company) {
@@ -62,7 +62,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                         $set: {
                             education: education,
                             jobTitle: jobTitle,
-                            company: company,
+                            company: employer.companyName,
                             shortDesc: shortDesc,
                             basicProfileInfoComplete: true,
                             companyId: employer._id
@@ -89,7 +89,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
     })
 })
 
-router.put('/recruiter/completeMatchProfile', ensureAuthorisation, (req, res) => {
+router.put('/completeMatchProfile', ensureAuthorisation, (req, res) => {
     const { automatedMatchMsg, matchProfile } = req.body;
     Recruiter.findOneAndUpdate(
         {_id: req.user._id},
@@ -113,7 +113,7 @@ router.put('/recruiter/completeMatchProfile', ensureAuthorisation, (req, res) =>
     
 });
 
-router.put('/recruiter/editProfile', ensureAuthorisation, (req, res) => {
+router.put('/editProfile', ensureAuthorisation, (req, res) => {
     const {
         education,
         jobTitle,
@@ -143,7 +143,7 @@ router.put('/recruiter/editProfile', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.get('/recruiter/getRecruiter/:rId', ensureAuthenticated, (req, res) => {
+router.get('/getRecruiter/:rId', ensureAuthenticated, (req, res) => {
     Recruiter.findOne({_id: req.params.rId})
     .then(recruiter => {
         if(!recruiter) {
@@ -157,7 +157,7 @@ router.get('/recruiter/getRecruiter/:rId', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.get('/recruiter/getRecruiterOnJob/:jobId', ensureAuthenticated, (req, res) => {
+router.get('/getRecruiterOnJob/:jobId', ensureAuthenticated, (req, res) => {
     Job.findOne({_id: req.params.jobId})
     .then(job => {
         if(!job) {
@@ -171,7 +171,7 @@ router.get('/recruiter/getRecruiterOnJob/:jobId', ensureAuthenticated, (req, res
     })
 });
 
-router.get('/recruiter/getRecruitersForCompany/:empId', ensureAuthenticated, (req, res) => {
+router.get('/getRecruitersForCompany/:empId', ensureAuthenticated, (req, res) => {
     Recruiter.find({companyId: req.params.empId})
     .then(recruiters => {
         if(!recruiters) {
@@ -185,11 +185,11 @@ router.get('/recruiter/getRecruitersForCompany/:empId', ensureAuthenticated, (re
 });
 
 
-router.put('/recruiter/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
    
 });
 
-router.put('/recruiter/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
    
 })
 

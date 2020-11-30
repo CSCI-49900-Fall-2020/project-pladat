@@ -15,8 +15,8 @@ const { ensureAuthenticated, ensureAuthorisation } = require('../../configs/auth
 const { JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER } = require('../../configs/prodConfig');
 
 
-router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => {
-    const { companyName, industry, location } = req.body;
+router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
+    const { companyName, industry, location, shortDesc } = req.body;
     Employer.findOneAndUpdate(
         {_id: req.user.id},
         {
@@ -25,6 +25,7 @@ router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => 
                 industry: industry,
                 location: location,
                 basicProfileInfoComplete: true,
+                shortDesc: shortDesc,
                 isVerifiedCompany: true
             }
         },
@@ -41,7 +42,7 @@ router.put('/employer/completeBaiscProfile', ensureAuthorisation, (req, res) => 
     })
 });
 
-router.put('/employer/editMatchProfile', ensureAuthorisation, (req, res) => {
+router.put('/editMatchProfile', ensureAuthorisation, (req, res) => {
     const { matchProfile } = req.body;
     Employer.findOneAndUpdate(
         {_id: req.user._id},
@@ -59,9 +60,9 @@ router.put('/employer/editMatchProfile', ensureAuthorisation, (req, res) => {
     .catch(err => {
         res.status(422).json({success: false, msg: "Couldn't edit match profile.", err});
     })
-})
+});
 
-router.put('/employer/editProfile', ensureAuthorisation, (req, res) => {
+router.put('/editProfile', ensureAuthorisation, (req, res) => {
     const {
         companyGrowthStage,
         approxNumEmployees,
@@ -90,9 +91,9 @@ router.put('/employer/editProfile', ensureAuthorisation, (req, res) => {
     .catch(err => {
         res.status(422).json({success: false, msg: "Something went wrong; couldn't edit profile", err});
     })
-})
+});
 
-router.put('/employer/verify-recruiter/:empId/:rToken', ensureAuthorisation, (req, res) => {
+router.put('/verify-recruiter/:empId/:rToken', ensureAuthorisation, (req, res) => {
     if(!req.params.empId === req.user._id) {
         return res.status(403).json({success: false, msg: "You're not the employer this was meant for"})
     }
@@ -144,12 +145,13 @@ router.put('/employer/verify-recruiter/:empId/:rToken', ensureAuthorisation, (re
     })    
 });
 
-router.get('/employer/getEmployer/:employerId', ensureAuthenticated, (req, res) => {
+router.get('/getEmployer/:employerId', ensureAuthenticated, (req, res) => {
     Employer.findOne({_id: req.params.employerId})
     .then(employer => {
         if(!employer) {
             return res.status(422).json({success: false, msg: "Employer not found."});
         }
+        employer.password = null;
         return res.status(200).json({success: true, msg: "Employer found.", employer});
     })
     .catch(err => {
@@ -157,7 +159,7 @@ router.get('/employer/getEmployer/:employerId', ensureAuthenticated, (req, res) 
     })
 });
 
-router.get('/employer/getAllEmployers/:skip', ensureAuthenticated, (req, res) => {
+router.get('/getAllEmployers/:skip', ensureAuthenticated, (req, res) => {
     Employer.find()
     .sort({companyName: 1})
     .skip(Number(req.params.skip))
@@ -173,7 +175,7 @@ router.get('/employer/getAllEmployers/:skip', ensureAuthenticated, (req, res) =>
     })
 });
 
-router.get('/employer/getByIndustry/:industry/:skip', ensureAuthenticated, (req, res) => {
+router.get('/getByIndustry/:industry/:skip', ensureAuthenticated, (req, res) => {
     Employer.find({industry: req.params.industry})
     .sort({companyName: 1})
     .skip(Number(req.params.skip))
@@ -189,17 +191,34 @@ router.get('/employer/getByIndustry/:industry/:skip', ensureAuthenticated, (req,
     })
 });
 
-router.get('/employer/queryByName/:query', ensureAuthenticated, (req, res) => {
-    Employer.find({companyName: { $regex:  '/'+req.params.query+'/i'} })
+router.get('/queryByName/:query', ensureAuthenticated, (req, res) => {
+    Employer.find({companyName: { $regex: req.params.query, $options: 'i'} })
     .then(employers => {
-        return res.status(200).json({success: true, msg: "Search query done.", employers});
+        if(!employers) {
+            return res.status(422).json({success: false, msg: "Employers not found."});
+        }
+        if(employers.length < 1) {
+            Employer.find({_id: req.params.query})
+            .then(employersById => {
+                if(!employersById) {
+                    return res.status(422).json({success: false, msg: "Employers not found."});
+                }
+                return res.status(200).json({success: true, msg: "Employer found by id.", employers: employersById})
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Something went wrong; couldn't find employers.", err});
+            })
+        }
+        else {
+            return res.status(200).json({success: true, msg: employers.length > 0 ? "Search query done." : "No employers found", employers});
+        }
     })
     .catch(err => {
         res.status(422).json({success: false, msg: "Something went wrong, couldn't query employers", err});
     })
-})
+});
 
-router.post('/employer/createJob', ensureAuthorisation, (req, res) => {
+router.post('/createJob', ensureAuthorisation, (req, res) => {
     const {
         title,
         description,
@@ -230,7 +249,7 @@ router.post('/employer/createJob', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.put('/employer/editJob/:jobId', ensureAuthorisation, (req, res) => {
+router.put('/editJob/:jobId', ensureAuthorisation, (req, res) => {
     const {
         title,
         description,
@@ -275,7 +294,7 @@ router.put('/employer/editJob/:jobId', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.put('/employer/unlistJob/:jobId', ensureAuthorisation, (req, res) => {
+router.put('/unlistJob/:jobId', ensureAuthorisation, (req, res) => {
     Job.findOneAndUpdate(
         {_id: req.params.jobId, company: req.user._id},
         {
@@ -297,7 +316,7 @@ router.put('/employer/unlistJob/:jobId', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.put('/employer/relistJob/:jobId', ensureAuthorisation, (req, res) => {
+router.put('/relistJob/:jobId', ensureAuthorisation, (req, res) => {
     Job.findOneAndUpdate(
         {_id: req.params.jobId, company: req.user._id},
         {
@@ -319,7 +338,7 @@ router.put('/employer/relistJob/:jobId', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.delete('/employer/removeJob/:jobId', ensureAuthorisation, (req, res) => {
+router.delete('/removeJob/:jobId', ensureAuthorisation, (req, res) => {
     Job.findOneAndDelete({_id: req.params.jobId, company: req.user._id})
     .then(job => {
         if(!job) {
@@ -332,7 +351,7 @@ router.delete('/employer/removeJob/:jobId', ensureAuthorisation, (req, res) => {
     })
 });
 
-router.put('/employer/assignRecruiter/:jobId/:recruiterId', ensureAuthorisation, (req, res) => {
+router.put('/assignRecruiter/:jobId/:recruiterId', ensureAuthorisation, (req, res) => {
    Recruiter.findOneAndUpdate(
        {_id: req.params.recruiterId, companyId: req.user._id},
        {
@@ -369,10 +388,10 @@ router.put('/employer/assignRecruiter/:jobId/:recruiterId', ensureAuthorisation,
    })
 })
 
-router.put('/employer/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
 });
 
-router.put('/employer/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
 });
 
 

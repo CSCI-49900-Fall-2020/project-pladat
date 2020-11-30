@@ -37,7 +37,12 @@ const initialState = {
     hashingCompsToStorageError: false,
     hashedCompsToStorage: false,
 
-    loadingCompsFromStore: false
+    loadingCompsFromStore: false,
+
+    searchingCompanys: false,
+    searchResultsLoaded: false,
+    searchResults: [],
+    searchQueryFail: false
 };
 
 function employer(state = initialState, action) {
@@ -101,7 +106,8 @@ function employer(state = initialState, action) {
                 isLoadingEmployers: false,
                 employerActionState: action.type,
                 employers: [...state.employers, ...action.employers],
-                serverMsg: action.msg
+                serverMsg: action.msg,
+                employersLoaded: true
             };
         case EmployerConstants.GETTING_EMPLOYERS_FAIL:
             return {
@@ -109,7 +115,8 @@ function employer(state = initialState, action) {
                 isLoadingEmployers: false,
                 employerActionState: action.type,
                 serverMsg: action.msg,
-                loadingEmployersError: true
+                loadingEmployersError: true,
+                employersLoaded: false
             };
         case EmployerConstants.GETTING_EMPLOYER_PROFILE:
             return {
@@ -243,6 +250,31 @@ function employer(state = initialState, action) {
                 assigningRecruiter: false,
                 serverMsg: action.msg
             };
+        case EmployerConstants.SEARCHING_EMPLOYERS:
+            return {
+                ...state,
+                employerActionState: action.type,
+                searchingCompanys: true
+            };
+        case EmployerConstants.SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                employerActionState: action.type,
+                serverMsg: action.msg,
+                searchResults: [...action.employers],
+                searchingCompanys: false,
+                searchResultsLoaded: true,
+                searchQueryFail: false
+            };
+        case EmployerConstants.SEARCH_QUERY_FAIL:
+            return {
+                ...state,
+                employerActionState: action.type,
+                serverMsg: action.msg,
+                searchingCompanys: false,
+                searchResultsLoaded: false,
+                searchQueryFail: true
+            }
         default:
             return state;
     }

@@ -46,7 +46,12 @@ let employers = {
     hashingCompsToStorageError: false,
     hashedCompsToStorage: false,
 
-    loadingCompsFromStore: false
+    loadingCompsFromStore: false,
+    
+    searchingCompanys: false,
+    searchResultsLoaded: false,
+    searchResults: [],
+    searchQueryFail: false
 };
 
 let recruiters = {

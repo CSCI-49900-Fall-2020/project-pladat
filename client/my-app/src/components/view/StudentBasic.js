@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as allUserActions from '../../actions/UserActions';
+import * as allStudentActions from '../../actions/StudentActions';
 
 
 import BasicViewWrapper from './BasicViewWrapper';
@@ -484,7 +485,8 @@ class StudentBasic extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        students: state.students
     }
 }
         
@@ -492,6 +494,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             userActions: bindActionCreators(allUserActions, dispatch),
+            studentActions: bindActionCreators(allStudentActions, dispatch)
         }
     };
 }
