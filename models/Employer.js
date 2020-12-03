@@ -13,7 +13,7 @@ const User = require('./User');
 
 const Employer = User.discriminator('Employer', new Schema({
     companyName: {type: String, required: false, defualt: null},
-    industry: {type: String, required: false, defualt: null},
+    industry: [{type: String, required: false, defualt: null}],
     companyGrowthStage: {type: String, required: false, defualt: null},
     approxNumEmployees: {type: String, required: false, defualt: null},
     location: {type: String, required: false, defualt: null},

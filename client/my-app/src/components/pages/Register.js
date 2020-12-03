@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
 
-import './styles/Register.css';
-import './styles/Base.css';
-import './styles/MediaPages.css';
+
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -16,9 +14,14 @@ import PropTypes from 'prop-types';
 
 import { ON_REGISTER_SUCCESS_KEY } from '../../staticData/config';
 
-
 import anime from 'animejs';
+
 import ButtonLoader from '../uiComponents/ButtonLoader';
+import MintAnimation from '../uiComponents/Mint';
+
+import './styles/Register.css';
+import './styles/Base.css';
+import './styles/MediaPages.css';
 
 class Register extends Component {
     constructor(props) {
@@ -352,7 +355,9 @@ class Register extends Component {
                         </div>
 
                         <div className="auth-form-container-right" id="auth-register-form-container-right">
-                            Nice logo or mint svg goes here
+                            <MintAnimation />
+
+                            <div className='auth-form-container-right-footer'> <Link to='/'><h2>Place<span>Mint</span></h2></Link> </div>
                         </div>
 
                     </div>

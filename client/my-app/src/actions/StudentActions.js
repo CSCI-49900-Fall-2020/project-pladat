@@ -4,6 +4,8 @@ import { StudentConstants } from '../constants';
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
 
+import { hashToLocalStroage } from './UserActions';
+
 export const completeBasicProfile = (basicInfo) => dispatch => {
     dispatch({type: StudentConstants.EDITING_STUDENT_PROFILE});
 
@@ -24,8 +26,10 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
         dispatch({
             type: StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
-            user: res.data.student
-        })
+            user: res.data.student,
+            isBasic: true
+        });
+        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
@@ -56,7 +60,8 @@ export const completeMatchProfile = (matchProfile) => dispatch => {
             type: StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
             user: res.data.student
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
@@ -87,7 +92,8 @@ export const editProfile = (profile) => dispatch => {
             type: StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
             user: res.data.student
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
@@ -118,7 +124,8 @@ export const swipeRight = (jobId) => dispatch => {
             msg: res.data.msg,
             user: res.data.student,
             swipedJob: res.data.job
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
@@ -150,7 +157,8 @@ export const swipeLeft = (jobId) => dispatch => {
             msg: res.data.msg,
             user: res.data.student,
             swipedJob: res.data.job
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({

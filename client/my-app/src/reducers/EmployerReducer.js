@@ -42,7 +42,8 @@ const initialState = {
     searchingCompanys: false,
     searchResultsLoaded: false,
     searchResults: [],
-    searchQueryFail: false
+    searchQueryFail: false,
+    basicSuccessEmp: false
 };
 
 function employer(state = initialState, action) {
@@ -60,7 +61,8 @@ function employer(state = initialState, action) {
                 employerActionState: action.type,
                 serverMsg: action.msg,
                 curUserIsEmployer: true,
-                curUserProfile: action.user
+                curUserProfile: action.user,
+                basicSuccessEmp: action.isBasic && action.isBasic === true ? true: false
             };
         case EmployerConstants.EDITING_EMPLOYER_PROFILE_FAIL:
             return {

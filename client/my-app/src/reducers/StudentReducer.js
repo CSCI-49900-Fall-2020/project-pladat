@@ -23,7 +23,9 @@ const initialState = {
     hashingStudsToStorageError: false,
     hashedStudsToStorage: false,
 
-    loadingStudsFromStore: false
+    loadingStudsFromStore: false,
+
+    basicSuccessStud: false
 };
 
 function student(state = initialState, action) {
@@ -43,6 +45,7 @@ function student(state = initialState, action) {
                 studentEditingError: false,
                 studentUser: action.user,
                 curUserIsStudent: true,
+                basicSuccessStud: action.isBasic && action.isBasic === true ? true: false
             };
         case StudentConstants.STUDENT_PROFILE_EDIT_FAIL:
             return {

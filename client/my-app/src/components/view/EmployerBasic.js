@@ -10,6 +10,9 @@ import BasicViewWrapper from './BasicViewWrapper';
 
 import { industries } from '../../staticData/industries';
 
+import ButtonLoader from '../uiComponents/ButtonLoader';
+
+
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
@@ -29,7 +32,8 @@ class EmployerBasic extends React.Component {
             industryAddError: "",
             industryArrIdx: 0,
             shortDesc: "",
-            locationSuggestions: []
+            locationSuggestions: [],
+            submittingData: false
         }
     }
 
@@ -156,6 +160,22 @@ class EmployerBasic extends React.Component {
         })
     }
 
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const { industries, shortDesc, companyName, location } = this.state;
+        const empProfile = {
+            companyName: companyName,
+            industry: industries,
+            shortDesc: shortDesc,
+            location: location
+        };
+        this.setState({
+            submittingData: true
+        }, () => {
+            this.props.actions.employerActions.completeBasicProfile(empProfile);
+        })
+    }
+
     render() {
         return (
             <BasicViewWrapper route={this.props.match.path}>
@@ -188,7 +208,7 @@ class EmployerBasic extends React.Component {
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-industry">
                                         <label htmlFor="industry" className="text basicInfo-form-inputLabel">What is the company's industry of work?</label>
-                                        <input value={this.state.jobTitle} list="industry-options" name="industry" className="basicInfo-form-input" placeholder="industry" onChange={this.handleIndustryInput}/>
+                                        <input value={this.state.jobTitle} list="industry-options" name="industry" className="basicInfo-form-input" placeholder="industry" onChange={this.handleIndustryInput} onFocus={this.toggleDataListOnBioFocus}/>
                                         <span className="basicInfo-input-error">{this.state.industryAddError.length > 0 ? this.state.industryAddError: ""}</span>
                                         <span className="basicInfo-form-addBtn" onClick={this.handleIndustryAddMore}>Add <span>&#43;</span></span>
                                         <datalist id="industry-options">
@@ -211,16 +231,26 @@ class EmployerBasic extends React.Component {
                             {
                                 (this.state.industries.length > 0 && this.state.shortDesc.length > 0 && this.state.location.length > 0 && this.state.companyName.length > 0) ?
 
-                                <div className="baiscInfo-form-inner-right-submitBtn">
-                                    <h3>
-                                        Next 
-                                    </h3>
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none"/>
-                                            <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
-                                        </svg>
-                                    </span>
+                                <div className="baiscInfo-form-inner-right-submitBtn" onClick={this.handleSubmit}>
+                                    {
+                                        this.state.submittingData ?
+
+                                        <ButtonLoader />
+
+                                        :
+
+                                        <span className="basicInfo-submitBtn-innerContainer">
+                                            <h3>
+                                            Next 
+                                            </h3>
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                    <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    }
                                 </div>
                                 
 

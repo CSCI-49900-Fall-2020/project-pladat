@@ -25,6 +25,8 @@ const initialState = {
     hashedRecsToStorage: false,
 
     loadingRecsFromStore: false,
+
+    basicSuccessR: false
 };
 
 function recruiter(state = initialState, action) {
@@ -36,13 +38,15 @@ function recruiter(state = initialState, action) {
                 recruiterActionState: RecruiterConstants.EDITING_RECRUITER_PROFILE
             };
         case RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS:
+        case RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT:
             return {
                 ...state,
                 editingRecruiterProfile: false,
-                recruiterActionState: RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS,
+                recruiterActionState: RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT,
                 curUserIsRecruiter: true,
                 recruiterUser: action.user,
                 serverMsg: action.msg,
+                basicSuccessR: action.isBasic && action.isBasic === true ? true: false
             };
         case RecruiterConstants.RECRUITER_PROFILE_EDIT_FAIL:
             return {

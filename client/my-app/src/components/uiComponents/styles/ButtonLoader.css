@@ -1,6 +1,11 @@
 .spinner {
     width: 80px;
     text-align: center;
+    display: flex;
+    /* flex-direction: row; */
+    justify-content: center;
+    align-content: center;
+    align-items: center;
 }
   
 .spinner > div {

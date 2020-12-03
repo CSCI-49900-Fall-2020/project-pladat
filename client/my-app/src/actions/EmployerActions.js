@@ -4,6 +4,9 @@ import { EmployerConstants } from '../constants';
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
 
+import { hashToLocalStroage } from './UserActions';
+
+
 
 
 export const completeBasicProfile = (basicInfo) => dispatch => {
@@ -21,12 +24,13 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
 
     const requestBody = JSON.stringify({...basicInfo});
 
-    axios.put('/api/employer/completeBasicProfile', requestBody, {params: {userType: 'Employer'}, ...configs})
+    axios.put('/api/employer/completeBaiscProfile', requestBody, {params: {userType: 'Employer'}, ...configs})
     .then(res => {
         dispatch({
             type: EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS,
             msg: res.data.msg,
-            user: res.data.employer
+            user: res.data.employer,
+            isBasic: true
         })
     })
     .catch(error => {

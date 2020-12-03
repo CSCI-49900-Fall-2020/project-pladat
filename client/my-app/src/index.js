@@ -11,12 +11,16 @@ import Register from './components/pages/Register';
 import OnRegister from './components/pages/OnRegister';
 import OnEmailVerify from './components/pages/OnEmailVerify';
 import BasicInfo from './components/pages/BasicInfo';
+import MainHoc from './components/pages/MainHOC';
 
+// 404 page
+import FourOFour from './components/pages/FourOFour';
 
 // router dependencies
 import { Route, Switch } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
+
 
 import store from './store';
 
@@ -36,6 +40,8 @@ const router = (
                   <Route exact path="/complete-registeration/email-verification/:token" component={OnEmailVerify} />
                   <Route exact path="/registeration-first-step-complete/:prelims" component={OnRegister} />
                   <Route path="/(student|recruiter|employer)/basicInfo" component={BasicInfo}/>
+                  <Route path="/(s|e|r)" component={MainHoc}/>
+                  <Route component={FourOFour}/>
               </Switch>
           </Route>
 

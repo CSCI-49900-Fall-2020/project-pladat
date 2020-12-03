@@ -277,6 +277,7 @@ function user(state = initialState, action) {
         case StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS:
         case EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS:
         case RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS:
+        case RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT:
             return {
                 ...state,
                 user: action.user

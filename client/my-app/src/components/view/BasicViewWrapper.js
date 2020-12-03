@@ -16,9 +16,32 @@ class BasicViewWrapper extends React.Component {
         this.state = {
             redirect: false,
             correctType: null,
-            redirectToLogin: false
+            redirectToLogin: false,
+            basicSuccessForward: false,
+            basicSuccessForwardRedirectTo: null,
+            curUserType: this.props.user.user.typeOfUser,
+            initHasBaiscComplete: this.props.user.user.basicProfileInfoComplete
         }
     }
+
+
+    componentDidUpdate(prevProps) { 
+        if(this.props !== prevProps) {
+            console.log('wrapper component update');
+            const { basicProfileInfoComplete } = this.props.user.user;
+            const { studentActionState, basicSuccessStud } = this.props.students;
+            const { employerActionState, basicSuccessEmp } = this.props.employers;
+            const { recruiterActionState, basicSuccessR } = this.props.recruiters;
+
+            if((!this.state.initHasBaiscComplete) && (basicSuccessEmp || basicSuccessStud || basicSuccessR) && (studentActionState === 'STUDENT_PROFILE_EDIT_SUCCESS' || employerActionState === 'EDITING_EMPLOYER_PROFILE_SUCCESS' || recruiterActionState === 'VERIFY_AS_RECRUITER_EMAIL_SENT')) {
+                this.setState({
+                    basicSuccessForward: true,
+                    basicSuccessForwardRedirectTo: this.handleBasicOnSuccess()
+                })
+            }
+        }
+    }
+
     componentDidMount() {
         let curUrl = this.props.route;
         let urlSplit = curUrl.split('/');
@@ -41,10 +64,25 @@ class BasicViewWrapper extends React.Component {
 
     }
 
+    handleBasicOnSuccess = () => {
+        switch(this.state.curUserType) {
+            case 'Student':
+                return `/s/me`;
+            case 'Recruiter':
+                return `/r/me`;
+            case 'Employer':
+                return `/e/me`;
+            default:
+                return;
+        }
+    }
 
     render() {
         if(this.state.redirect) {
             return <Redirect to={`/${this.state.correctType}/basicInfo`}/>;
+        }
+        if(this.state.basicSuccessForward) {
+            return <Redirect to={this.state.basicSuccessForwardRedirectTo} />
         }
         if(this.state.redirectToLogin) {
             return <Redirect to='/login'/>;
@@ -59,7 +97,10 @@ class BasicViewWrapper extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        students: state.students,
+        recruiters: state.recruiters,
+        employers: state.employers
     }
 }
         

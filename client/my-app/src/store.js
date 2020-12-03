@@ -47,11 +47,14 @@ let employers = {
     hashedCompsToStorage: false,
 
     loadingCompsFromStore: false,
-    
+
     searchingCompanys: false,
     searchResultsLoaded: false,
     searchResults: [],
-    searchQueryFail: false
+    searchQueryFail: false,
+
+    basicSuccessEmp: false
+
 };
 
 let recruiters = {
@@ -79,6 +82,8 @@ let recruiters = {
     hashedRecsToStorage: false,
 
     loadingRecsFromStore: false,
+
+    basicSuccessR: false
 };
 
 let students = {
@@ -104,7 +109,9 @@ let students = {
     hashingStudsToStorageError: false,
     hashedStudsToStorage: false,
 
-    loadingStudsFromStore: false
+    loadingStudsFromStore: false,
+
+    basicSuccessStud: false
 };
 
 let jobs = {

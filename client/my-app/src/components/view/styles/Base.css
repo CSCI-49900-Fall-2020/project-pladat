@@ -395,18 +395,39 @@ datalist option {
     right: 6px;
     border: 1px solid #00a68a;
     border-radius: 4px;
-    padding-left: 8px;
+    /* padding-left: 8px;
     padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
     display: flex;
-    flex-direction: row;
+    flex-direction: row; */
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    /* justify-items: center;
+    align-items: center; */
+
     cursor: pointer;
     background-color: #00a68a;
     background-image: url('https://i.ibb.co/0Fwh04s/light-paper-fibers.png');
     background-blend-mode: overlay;
     /* transition: 125ms cubic-bezier(.25,.1,.25,1); */
     z-index: 200;
+    width: 88.438px;
+    /* width: 4.4vw; */
+    height: 36px;
+
+    opacity: .7;
+}
+.basicInfo-submitBtn-innerContainer {
+    width: 100%;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    flex-direction: row;
 }
 .baiscInfo-form-inner-right-submitBtn h3 {
     margin: 0;
@@ -426,6 +447,9 @@ datalist option {
 }
 .baiscInfo-form-inner-right-submitBtn:hover #svgNextArrow {
     transform: translateX(4px);
+}
+.baiscInfo-form-inner-right-submitBtn:hover {
+    opacity: 1;
 }
 
 #basicInfo-form-companyName {

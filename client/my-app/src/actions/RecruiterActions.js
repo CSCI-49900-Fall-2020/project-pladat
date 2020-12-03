@@ -4,6 +4,8 @@ import { RecruiterConstants } from '../constants';
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
 
+import { hashToLocalStroage } from './UserActions';
+
 
 
 export const completeBasicProfile = (basicInfo) => dispatch => {
@@ -21,13 +23,15 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
 
     const requestBody = JSON.stringify({...basicInfo});
 
-    axios.put('/api/recruiter/completeBasicProfile', requestBody, {params: {userType: 'Recruiter'}, ...configs})
+    axios.put('/api/recruiter/completeBaiscProfile', requestBody, {params: {userType: 'Recruiter'}, ...configs})
     .then(res => {
         dispatch({
             type: RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT,
             msg: res.data.msg,
-            user: res.data.recruiter
-        })
+            user: res.data.recruiter,
+            isBasic: true
+        });
+        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
@@ -58,7 +62,8 @@ export const completeMatchProfile = (matchProfile) => dispatch => {
             type: RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
             user: res.data.recruiter
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
@@ -89,7 +94,8 @@ export const editProfile = (profile) => dispatch => {
             type: RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
             user: res.data.recruiter
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
@@ -120,14 +126,15 @@ export const swipeRight = (studentId) => dispatch => {
             msg: res.data.msg,
             user: res.data.recruiter,
             swipedStudent: res.data.student
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
             type: RecruiterConstants.RECRUITER_SWIPE_FAIL,
             msg: error.response.data.msg,
             failedSwipe: error.response.data.student
-        })
+        });
     })
 }
 
@@ -152,7 +159,8 @@ export const swipeLeft = (studentId) => dispatch => {
             msg: res.data.msg,
             user: res.data.recruiter,
             swipedStudent: res.data.student
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({

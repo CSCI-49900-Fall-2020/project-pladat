@@ -20,8 +20,9 @@ const JobSchema = new Schema({
    witnessed: [{type: Schema.Types.ObjectId, ref: 'User'}],
    numApplicants: {type: Number, default: 0, required: false},
    typeOfJob: {type: String, default: null, required: true},
-   assignedRecruiter: {type: String, required: false, ref: 'Recruiter'},
-   industry: {type: String, required: true, default: null}
+   assignedRecruiter: {type: String, required: true, ref: 'Recruiter'},
+   industry: {type: String, required: true, default: null},
+   fullJobAppLink: {type: String, required: true, default: null}
 });
 
 module.exports = Job = mongoose.model('Job', JobSchema);

@@ -14,6 +14,9 @@ import { preferredRoles } from '../../staticData/preferredRoles';
 import { experienceArr } from '../../staticData/experience';
 import { majorsArr } from '../../staticData/majors';
 
+import ButtonLoader from '../uiComponents/ButtonLoader';
+
+
 import './styles/RecruiterBasic.css';
 import './styles/Base.css';
 import './styles/Media.css';
@@ -32,7 +35,8 @@ class RecruiterBasic extends React.Component {
             shortDesc: "",
             company: "",
             companyId: "",
-            companyList: []
+            companyList: [],
+            submittingData: false
         }
     }
 
@@ -154,6 +158,8 @@ class RecruiterBasic extends React.Component {
         event.preventDefault();
         let compId = event.target.dataset.compid;
         let compName = event.target.dataset.compname;
+
+        // console.log(compId, compName);
         this.setState({
             company: compName,
             companyId: compId
@@ -167,8 +173,13 @@ class RecruiterBasic extends React.Component {
     hanldeBasicInfoSubmit = (event) => {
         event.preventDefault();
         const { companyId, jobTitle, universities, shortDesc } = this.state;
-        const editedProfile = { company: companyId, education: universities, jobTitle, shortDesc};
-        this.props.actions.recruiterActions.completeBasicProfile(editedProfile);
+        const editedProfile = { company: companyId, education: universities, jobTitle: jobTitle, shortDesc: shortDesc};
+        this.setState({
+            submittingData: true,
+            companyList: []
+        }, () => {
+            this.props.actions.recruiterActions.completeBasicProfile(editedProfile);
+        })
     }
 
     render() {
@@ -216,8 +227,8 @@ class RecruiterBasic extends React.Component {
                                             {
                                                 this.state.companyList.map((company, index) => {
                                                     return <span key={"company-"+index} className="customDataList-option" data-compid={company._id} data-compname={company.companyName} onClick={this.handleCompanyChoose}>
-                                                        <span data-compid={company._id} data-compname={company.companyName} className="customDataListSpan1">{company.companyName}</span>
-                                                        <span data-compid={company._id} data-compname={company.companyName} className="customDataListSpan2">{company.location}</span>
+                                                        <span onClick={this.handleCompanyChoose} data-compid={company._id} data-compname={company.companyName} className="customDataListSpan1">{company.companyName}</span>
+                                                        <span onClick={this.handleCompanyChoose} data-compid={company._id} data-compname={company.companyName} className="customDataListSpan2">{company.location}</span>
                                                     </span>
                                                 })
                                             }
@@ -236,17 +247,28 @@ class RecruiterBasic extends React.Component {
                             {
                                 (this.state.universities.length > 0 && this.state.shortDesc.length > 0 && this.state.company.length > 0 && this.state.jobTitle.length > 0) ?
 
-                                <div className="baiscInfo-form-inner-right-submitBtn">
-                                    <h3>
-                                        Next 
-                                    </h3>
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none"/>
-                                            <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
-                                        </svg>
-                                    </span>
-                                </div>
+                                <div className="baiscInfo-form-inner-right-submitBtn" onClick={this.hanldeBasicInfoSubmit}>
+                                    {
+                                        this.state.submittingData ?
+
+                                        <ButtonLoader />
+
+                                        :
+
+                                        <span className="basicInfo-submitBtn-innerContainer">
+                                            <h3>
+                                            Next 
+                                            </h3>
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                    <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    }
+                            </div>
+                            
                                 
 
                                 : ""

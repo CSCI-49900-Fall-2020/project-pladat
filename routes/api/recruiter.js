@@ -12,9 +12,9 @@ const Job = require('../../models/Job');
 
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 
-const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PROJECT_EMAIL} = require('../../configs/prodConfig');
+const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PROJECT_EMAIL, JWT_EMAIL_VERIFY_SIGN_OPTIONS} = require('../../configs/prodConfig');
 
-
+const { recruiterConfigEmail } = require('../../configs/RecruiterVerification');
 
 
 router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
@@ -24,7 +24,7 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
         return res.status(401).json({success: false, msg: "Please enter all the required information."});
     }
 
-    Employer.findOne({companyName: company, isVerifiedCompany: true, isVerfied: true, basicProfileInfoComplete: true})
+    Employer.findOne({_id: company, isVerifiedCompany: true, isVerified: true, basicProfileInfoComplete: true})
     .then(employer => {
         if(!employer) {
             return res.status(403).json({success: false, msg: "You're employer must be registered on this platform."}); 
@@ -34,7 +34,8 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
 
         let signUserInfo = { name: req.user.firstname + " " + req.user.lastname, email: req.user.email, uId: req.user._id};
 
-        jwt.sign({signUserInfo}, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, { }, (err, token) => {
+        jwt.sign({signUserInfo}, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, token) => {
+            // console.log('Jwt started');
             if(err) {
                 return res.status(500).json({success: false, msg: 'Something went wrong trying to verify you as a recruiter', err});
             }
@@ -52,6 +53,7 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
                 html: htmlContent
             };
             sgMail.send(msg, (err) => {
+                // console.log('emailing recruiter company...');
                 if(Object.entries(err).length > 0) {
                     return res.status(500).json({success: false, msg: "Something went wrong; can't send validation email.", err});
                 }
@@ -78,7 +80,7 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
                 })
                 .catch(err => {
                     return res.status(500).json({success: false, msg: "Couldn't edit your basic profile", err});
-                })
+                });
             });
             
         });
