@@ -1,4 +1,4 @@
-import { UserConstants } from '../constants';
+import { UserConstants, EmployerConstants, StudentConstants, RecruiterConstants } from '../constants';
 
 const initialState = {
     isLoading: false,
@@ -271,6 +271,16 @@ function user(state = initialState, action) {
                 authMessage: action.msg,
                 authState: action.authState,
                 serverStatus: action.status
+            };
+
+        //Update user when profileEdit
+        case StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS:
+        case EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS:
+        case RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS:
+        case RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT:
+            return {
+                ...state,
+                user: action.user
             };
         default:
             return state;

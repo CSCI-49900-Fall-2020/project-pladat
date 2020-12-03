@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as allUserActions from '../../actions/UserActions';
+import * as allStudentActions from '../../actions/StudentActions';
 
 
 import BasicViewWrapper from './BasicViewWrapper';
@@ -13,9 +14,12 @@ import { preferredRoles } from '../../staticData/preferredRoles';
 import { experienceArr } from '../../staticData/experience';
 import { majorsArr } from '../../staticData/majors';
 
+import ButtonLoader from '../uiComponents/ButtonLoader';
+
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
+import './styles/Media.css';
 
 
 
@@ -37,6 +41,7 @@ class StudentBasic extends React.Component {
             uniArrIdx: 0,
             roles: [],
             experiences: [],
+            submittingData: false
         }
     }
 
@@ -126,16 +131,26 @@ class StudentBasic extends React.Component {
             gradDate: event.target.value
         })
     }
-    handleDateValid = (event) => {
-        event.preventDefault();
-        setTimeout(() => {
-            const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
-            if(!regex.test(this.state.gradDate)) {
-                this.setState({
-                    dateError: "Please enter a valid date in mm/yyyy format"
-                })
-            }
-        }, 2000)
+
+    handleDateValid = () => {
+        // event.preventDefault();
+        // setTimeout(() => {
+        //     const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
+        //     if(!regex.test(this.state.gradDate)) {
+        //         this.setState({
+        //             dateError: "Please enter a valid date in mm/yyyy format"
+        //         })
+        //     }
+        // }, 2000)
+        let reversedDate = this.state.gradDate;
+        reversedDate = reversedDate.split("-").reverse().join("-");
+        // const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\/)([0-9]{4})$/g;
+        // const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\-)([0-9]{2})(\-)([0-9]{4})$/g;
+        const regex = /^([0-9]{2})(\-)([0-9]{2})(\-)([0-9]{4})$/g;
+        const mmddyyFormat = regex.test(reversedDate);
+        console.log(reversedDate, mmddyyFormat);
+        return mmddyyFormat;
+
     }
 
     handleMajorInput = (event) => {
@@ -278,7 +293,26 @@ class StudentBasic extends React.Component {
         })
     }
 
+
+    handleSubmitBasicInfo = (event) => {
+        const submitData = {
+            university: this.state.universities,
+            major: this.state.majors,
+            graduationDate: this.state.gradDate,
+            shortDesc: this.state.shortDesc,
+            preferredRoles: this.state.roles,
+            generalExperience: this.state.experiences
+        };
+
+        this.setState({
+            submittingData: true
+        }, () => {
+            this.props.actions.studentActions.completeBasicProfile(submitData);
+        })
+    }
+
     render() {
+
         return (
             <BasicViewWrapper route={this.props.match.path}>
                 <div className="basicInfo-form-wrapper" id="basicInfo-student-form-wrapper">
@@ -355,6 +389,36 @@ class StudentBasic extends React.Component {
                         </div>
 
                         <div className="basicInfo-form-inner-right">
+                            {
+                                (this.state.experiences.length > 0 && this.state.gradDate.length > 0 && this.handleDateValid() && this.state.majors.length > 0 && this.state.roles.length > 0 && this.state.universities.length > 0 && this.state.shortDesc.length > 0) ?
+
+                                <div className="baiscInfo-form-inner-right-submitBtn" onClick={this.handleSubmitBasicInfo}>
+                                    {
+                                        this.state.submittingData ?
+
+                                        <ButtonLoader />
+
+                                        :
+
+                                        <span className="basicInfo-submitBtn-innerContainer">
+                                            <h3>
+                                            Next 
+                                            </h3>
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                    <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    }
+                                </div>
+                                
+                                
+
+                                : ""
+
+                            }
                            <div className="basicInfo-form-inner-right-innerWrapper">
                            {
                                 this.state.universities.length > 0 ?
@@ -436,7 +500,8 @@ class StudentBasic extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        students: state.students
     }
 }
         
@@ -444,6 +509,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             userActions: bindActionCreators(allUserActions, dispatch),
+            studentActions: bindActionCreators(allStudentActions, dispatch)
         }
     };
 }

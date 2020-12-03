@@ -17,6 +17,12 @@ module.exports = {
         }
         return res.status(401).json({success: false, msg: 'This action is reserved for '+req.query.userType+' users.'});
     },
+    ensureIsEmployer: (req, res, next) => {
+        if(req.user && req.user.isVerified && req.user.typeOfUser === "Employer") {
+            return next()
+        }
+        return res.status(401).json({success: false, msg: "This action is reserved for employers only."});
+    }
     // ensureRecruiterAuthorisation: (req, res, next) => {
     //     if(req.user && req.user.isVerified && req.user.typeOfUser === "Recruiter") {
 

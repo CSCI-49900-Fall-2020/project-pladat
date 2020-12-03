@@ -3,6 +3,7 @@ import TypingText from '../uiComponents/TypingText';
 
 import './styles/Landing.css';
 import './styles/Base.css';
+import './styles/MediaPages.css';
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -12,6 +13,7 @@ import { connect } from 'react-redux';
 import * as allUserActions from '../../actions/UserActions';
 import AnimatedArt from '../uiComponents/Vines';
 import MintAnimation from '../uiComponents/Mint';
+import FourFourVines from '../uiComponents/FourFourVines';
 
 class Landing extends Component {
     constructor(props) {
@@ -31,7 +33,7 @@ class Landing extends Component {
                         <h1 className="text" id="landing-page-header">Place<span>Mint</span></h1>
                         <TypingText statements={["We're literally Tinder, but to help you get a job, you knobhead...", "Stop swiping on boys, and swipe on potential internship rejections", "Stop simping bro, she's not gonna text you back...", "...get on PlaceMint and message a recruiter instead."]}/>
                     </div>
-                    <div><MintAnimation/></div>
+                    {/* <div><MintAnimation/></div> */}
                     <div id="landing-button-container" className="landing-left-part">
                         <Link to="/register" className="landing-auth-btns" id="landing-signup-btn">
                             <div ><h2 className="text">Sign Up</h2></div>
@@ -43,7 +45,7 @@ class Landing extends Component {
                 </div>
 
                 <div className="wrapper-inner-container" id="landing-container-right">
-                    <AnimatedArt/>
+                    <FourFourVines dur={5000}/>
                 </div>
 
             </div>

@@ -11,10 +11,10 @@ export default class MintAnimation extends React.Component {
     playAnime = () => {
         anime({
             targets: '.mint',
-            translateY: [0, 50],
-            translateX: [0, 75],
+            translateY: [0, -30],
+            // translateX: [0, 75],
             easing: 'easeInOutSine',
-            duration: 3000,
+            duration: 2000,
             direction: 'alternate',
             loop: true
           });
@@ -22,7 +22,7 @@ export default class MintAnimation extends React.Component {
 
     render() {
         return (
-            <div><MintLogo/></div>
+            <div style={{display: 'flex', justifyContent: 'center', marginTop: '15%', textAlign:'center', alignItems: 'center'}}><MintLogo/></div>
         )
     }
 }

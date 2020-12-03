@@ -6,7 +6,7 @@ const JobSchema = new Schema({
    description: {type: String, required: true},
    company: {type: String, required: true, ref: 'Employer'},
    dateOpen: {type: String, default: new Date()},
-   location: [{type: String, required: true}],
+   locations: [{type: String, required: true}],
    todo: {type: String, required: true},
    mustHaveSkills: [{type: String, required: true}],
    recommendSkills: [{type: String, required: false}],
@@ -17,7 +17,12 @@ const JobSchema = new Schema({
    matchLimit: {type: Number, required: true},
    matches: [{type: Schema.Types.ObjectId, ref: 'Student'}],
    isOpen: {type: Boolean, required: true},
-   witnessed: [{type: Schema.Types.ObjectId, ref: 'User'}]
+   witnessed: [{type: Schema.Types.ObjectId, ref: 'User'}],
+   numApplicants: {type: Number, default: 0, required: false},
+   typeOfJob: {type: String, default: null, required: true},
+   assignedRecruiter: {type: String, required: true, ref: 'Recruiter'},
+   industry: {type: String, required: true, default: null},
+   fullJobAppLink: {type: String, required: true, default: null}
 });
 
 module.exports = Job = mongoose.model('Job', JobSchema);

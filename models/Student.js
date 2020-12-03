@@ -19,7 +19,7 @@ const User = require('./User');
 
 const Student = User.discriminator('Student', new Schema({
     university: [{type: String, required: false, defualt: null}],
-    major: {type: String, required: false, defualt: null},
+    major: [{type: String, required: false, defualt: null}],
     graduationDate: {type: String, required: false, defualt: null},
     shortDesc: {type: String, required: false, defualt: null},
     skills: [{type: String, required: false, defualt: null}],
