@@ -1,0 +1,23 @@
+.header_logo {
+    height: 8vh;
+}
+
+.main-header {
+    background-color: rgb(33, 33, 33);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px solid #00a68a;
+}
+
+.headerimg {
+    height: 50px;
+}
+
+.headerbutton {
+    background-color: rgb(33, 33, 33);
+    border: transparent;
+    height: 8vh;
+    width: 8vh;
+}

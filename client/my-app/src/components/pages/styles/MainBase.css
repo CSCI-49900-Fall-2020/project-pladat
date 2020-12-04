@@ -24,7 +24,11 @@
 }
 .grid-top-title {
     grid-area: header;
+<<<<<<< HEAD
     border-bottom: 1px solid #666666;
+=======
+    border-bottom: 4px solid #00a68a;
+>>>>>>> rahin-dev
 }
 .grid-center-main {
     grid-area: main;

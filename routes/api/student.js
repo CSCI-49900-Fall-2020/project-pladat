@@ -250,5 +250,24 @@ router.put('/swipeLeft/:jobId', ensureAuthorisation, (req, res) => {
     }
 })
 
+router.put('/generateCards', (req, res) => {
+    User.find({
+        $or: [
+            {typeOfUser: 'Employer'},
+            {typeOfUser: 'Recruiter'}
+        ]
+    })
+    .then(array.forEach(user => {
+        Student.findOneAndUpdate(
+            { email: req.user.email },
+            { 
+                $push: { 
+                    potentialMatches: user._id
+                }
+            }
+        )
+    }))
+})
+
 
 module.exports = router;

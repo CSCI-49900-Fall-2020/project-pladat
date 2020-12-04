@@ -19,12 +19,21 @@ import Settings from '../view/Settings';
 import DiscoverView from '../view/DiscoverView';
 import FourOFour from '../pages/FourOFour';
 
+<<<<<<< HEAD
 
 
+=======
+import Header from './Header'
+import Cards from './Cards'
+>>>>>>> rahin-dev
 
 import './styles/Base.css';
 import './styles/MainBase.css';
 import './styles/SMain.css';
+<<<<<<< HEAD
+=======
+import "./styles/MainPage.css"
+>>>>>>> rahin-dev
 
 class SMain extends React.Component {
     constructor(props) {
@@ -112,11 +121,19 @@ class SMain extends React.Component {
 
                                     </div>
                                 </div>
+<<<<<<< HEAD
                                 <div className='grid-top-title'>Title bar</div>
                                 <div className='grid-center-main'>
                                     Main centre view
                                         <Switch>
                                         <Route exact path = '/s' component={DiscoverView}/>
+=======
+                                <div className='main-page-wrapper'>
+                                    <Header />
+                                    <Cards />
+                                        <Switch>
+                                        <Route exact path='/s' component={DiscoverView}/>
+>>>>>>> rahin-dev
                                         <Route exact path='/s/discover/' component={DiscoverView} />
                                         <Route exact path='/s/discover/:id' component={null} />
                                         <Route exact path='/s/me' component={ProfileEdit} />
