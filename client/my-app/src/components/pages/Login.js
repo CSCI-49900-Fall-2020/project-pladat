@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 
+import MintAnimation from '../uiComponents/Mint';
+
 import './styles/Login.css';
 import './styles/Base.css';
+import './styles/MediaPages.css';
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -12,6 +15,7 @@ import * as allUserActions from '../../actions/UserActions';
 
 import anime from 'animejs';
 import ButtonLoader from '../uiComponents/ButtonLoader';
+import MintAnimation from '../uiComponents/Mint';
 
 class Login extends Component {
     constructor(props) {
@@ -54,12 +58,20 @@ class Login extends Component {
                 this.setState({
                     submitting: false,
                     successFullLogin: true,
-                    redirectParam1: user.uni_Id,
-                    redirectParam2: user.uni
+                    canRedirect: true,
+                    redirectCompToken: this.computeRedirectUrl()
                 })
             }
-    
-            if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+            
+            if(authError !== prevProps.user.authError && errorsDidChange && (!authError || authError.length < 1) && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+                this.setState({
+                    authErrors: [],
+                    authErrorsMapper: [],
+                    errorsLoaded: false,
+                    submitting: false
+                })
+            }
+            else if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
                 if(authError !== this.state.authErrors[0]) {
                     let tempArr = [];
                     tempArr.push({msg: authError});
@@ -88,6 +100,28 @@ class Login extends Component {
             }
         }
 
+    }
+
+    handleBasicOnSuccess = () => {
+        switch(this.props.user.user.typeOfUser) {
+            case 'Student':
+                return `/s/me`;
+            case 'Recruiter':
+                return `/r/me`;
+            case 'Employer':
+                return `/e/me`;
+            default:
+                return;
+        }
+    }
+
+    computeRedirectUrl = () => {
+        let userType = this.props.user.user.typeOfUser.toLowerCase();
+        let basicComplete = this.props.user.user.basicProfileInfoComplete;
+
+        let url = basicComplete ? this.handleBasicOnSuccess() : `${userType}/basicInfo`;
+
+        return url;
     }
 
     errorOnShowAnimation = () => {
@@ -171,6 +205,7 @@ class Login extends Component {
 
         const { email, password } = this.state;
         const userCred = { email, password };
+        // console.log(userCred);
 
         // setTimeout(() => {
         //     this.props.actions.userActions.logInUser(userCred);
@@ -261,7 +296,7 @@ class Login extends Component {
                                 </div>
 
                                 <div className="auth-form-redirectLinks" id="auth-login-form-redirectLinks">
-                                    <span><Link to="/login"><h3>Forgot password? <span>Send email.</span></h3></Link></span>
+                                    <span><Link to="/forgotpassword"><h3>Forgot password? <span>Reset password.</span></h3></Link></span>
                                     <span><Link to="/register"><h3>Don't have an account? <span>Sign up.</span></h3></Link></span>
                                 </div>
                             </form>
@@ -269,7 +304,13 @@ class Login extends Component {
                         </div>
 
                         <div className="auth-form-container-right" id="auth-login-form-container-right">
-                            Nice logo or mint svg goes here
+<<<<<<< HEAD
+                            <MintAnimation/>
+=======
+                            <MintAnimation />
+
+                            <div className='auth-form-container-right-footer'> <Link to='/'><h2>Place<span>Mint</span></h2></Link> </div>
+>>>>>>> 6475f444f29d1e22d078be556b3a541108f41fd0
                         </div>
 
                     </div>

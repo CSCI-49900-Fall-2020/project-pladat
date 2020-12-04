@@ -13,7 +13,7 @@ const User = require('./User');
 
 const Employer = User.discriminator('Employer', new Schema({
     companyName: {type: String, required: false, defualt: null},
-    industry: {type: String, required: false, defualt: null},
+    industry: [{type: String, required: false, defualt: null}],
     companyGrowthStage: {type: String, required: false, defualt: null},
     approxNumEmployees: {type: String, required: false, defualt: null},
     location: {type: String, required: false, defualt: null},
@@ -23,7 +23,8 @@ const Employer = User.discriminator('Employer', new Schema({
     recruiters: [{type: Schema.Types.ObjectId, required: false, ref: 'Recruiter', defualt: null}],
     internalRank: {type: Number, required: false, default: 1},
     matchProfile: {type: Schema.Types.Mixed, required: false, defualt: null},
-    isVerifiedCompany: {type: Boolean, required: false, default: false}
+    isVerifiedCompany: {type: Boolean, required: false, default: false},
+    shortDesc: {type: String, required: false, default: null}
 }))
 
 module.exports = mongoose.model('Employer');

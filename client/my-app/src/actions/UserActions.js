@@ -35,7 +35,7 @@ export const registerUser = (SignUpFormData) => dispatch => {
         })
     })
     .catch(error => {
-        console.log(error, error.response, error.response.data);
+        // console.log(error, error.response, error.response.data);
         dispatch(returnAuthErros(error.response.data.msg, error.response.data.errors, error.response.status, 'USER_SIGNUP_FALIURE'));
         dispatch({
             type: UserConstants.USER_SIGNUP_FALIURE,
@@ -95,7 +95,6 @@ export const logInUser = (loginFormData) => dispatch => {
 
     axios.post('/api/users/login', requestBody, {...configs, validateStatus: function(status) {return status >= 200 && status < 300}})
     .then(res => {
-        
         dispatch(hashToLocalStroage(res.data.userInfo));
         dispatch({
             type: UserConstants.USER_LOGGED_IN,
@@ -104,6 +103,7 @@ export const logInUser = (loginFormData) => dispatch => {
         })
     })
     .catch(error => {
+        // console.log(error.response.data);
         dispatch(returnAuthErros(error.response.data.msg, error.response.data.msg, error.response.status, 'USER_LOGIN_FAILURE'));
         dispatch({
             type: UserConstants.USER_LOGIN_FAILURE,
@@ -189,7 +189,7 @@ export const getUser = () => dispatch => {
     }
 }
 
-export const removeFromLoalStorage = () => dispatch => {
+export const removeFromLocalStorage = () => dispatch => {
     sessionStorage.removeItem('utoken');
     dispatch({ type: UserConstants.REMOVED_FROM_STORAGE});
 }
@@ -199,7 +199,7 @@ export const logOutUser = () => dispatch => {
     axios.get('/api/users/logout')
     .then(res => {
         dispatch({type: UserConstants.REMOVING_FROM_STORAGE});
-        dispatch(removeFromLoalStorage());
+        dispatch(removeFromLocalStorage());
         dispatch({
             type: UserConstants.USER_LOGGED_OUT,
             msg: res.data.msg,

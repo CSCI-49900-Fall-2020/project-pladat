@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 
-import './styles/Register.css';
-import './styles/Base.css';
+
 
 import { Link, Redirect } from 'react-router-dom';
 
@@ -15,9 +14,14 @@ import PropTypes from 'prop-types';
 
 import { ON_REGISTER_SUCCESS_KEY } from '../../staticData/config';
 
-
 import anime from 'animejs';
+
 import ButtonLoader from '../uiComponents/ButtonLoader';
+import MintAnimation from '../uiComponents/Mint';
+
+import './styles/Register.css';
+import './styles/Base.css';
+import './styles/MediaPages.css';
 
 class Register extends Component {
     constructor(props) {
@@ -146,7 +150,7 @@ class Register extends Component {
     }
 
     popErr = (idx, iteration) => {
-        if(this.state.authErrorsMapper.length == 1) {
+        if(this.state.authErrorsMapper.length === 1) {
             this.setState({
                 authErrorsMapper: [],
                 formSubmitted: false,
@@ -247,7 +251,7 @@ class Register extends Component {
         })
     }
 
-    handleFromSubmit = async (event) => {
+    handleFormSubmit = async (event) => {
         event.preventDefault();
 
         this.setState({
@@ -333,7 +337,7 @@ class Register extends Component {
                                     <input placeholder="confirm password" type="password" value={this.state.passwordConfirm} onKeyPress={this.handleFormKeyPress} onChange={this.handlePasswordConfirmInput}/>
                                 </div>
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-register-submitBtnContainer">
-                                    <button className="auth-form-submitBtn" onClick={this.handleFromSubmit}>
+                                    <button className="auth-form-submitBtn" onClick={this.handleFormSubmit}>
                                         {
                                             this.state.sumbitting ? <ButtonLoader /> :
                                             <h2 className="text">
@@ -351,7 +355,9 @@ class Register extends Component {
                         </div>
 
                         <div className="auth-form-container-right" id="auth-register-form-container-right">
-                            Nice logo or mint svg goes here
+                            <MintAnimation />
+
+                            <div className='auth-form-container-right-footer'> <Link to='/'><h2>Place<span>Mint</span></h2></Link> </div>
                         </div>
 
                     </div>

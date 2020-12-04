@@ -11,8 +11,10 @@ const socket = require('socket.io');
 const events = require('events');
 const connectMongo = require('connect-mongo');
 
+const path = require('path');
+
 const { PORT, MONGO_URI, CLIENT_ORIGIN } = require('./configs/prodConfig');
-const { SESSION_OPTIONS, IN_PROD } = require('./configs')
+const { SESSION_OPTIONS, IN_PROD } = require('./configs');
 
 const app = express();
 app.use(cors({
@@ -56,16 +58,19 @@ app.use(passport.session());
 /* Server routes */
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/jobs', require('./routes/api/jobs'));
+app.use('/api/employer', require('./routes/api/employer'));
+app.use('/api/student', require('./routes/api/student'));
+app.use('/api/recruiter', require('./routes/api/recruiter'));
 
 
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
-    app.use(express.static('client/build'));
+    app.use(express.static('client/my-app/build'));
     app.enable('trust proxy');
 
     // Catch all to handle all other requests that come into the app. 
     app.get('*', (req, res) => {
-        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+        res.sendFile(path.resolve(__dirname, 'client', 'my-app', 'build', 'index.html'));
     });
 }
 
