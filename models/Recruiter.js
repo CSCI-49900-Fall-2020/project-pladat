@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { stringify } = require("querystring");
 const Schema = mongoose.Schema;
 const User = require('./User');
 
@@ -19,6 +18,7 @@ const Recruiter = User.discriminator('Recruiter', new Schema({
     internalRank: {type: Number, required: false, default: 1},
     swipedLeft: [{type: Schema.Types.ObjectId, required: false, default: true}],
     swipedRight: [{type: Schema.Types.ObjectId, defualt: null}],
+    jobsAssigned: [{type: Schema.Types.ObjectId, default: null, ref: 'Job'}]
 }));
 
 module.exports = mongoose.model('Recruiter');

@@ -13,7 +13,7 @@ const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = requ
 
 
 
-router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
+router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
     const {
         university,
         major,
@@ -57,8 +57,7 @@ router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
     })
 })
 
-
-router.put('/student/completeMatchProfile', ensureAuthenticated, (req, res) => {
+router.put('/completeMatchProfile', ensureAuthorisation, (req, res) => {
     const { matchProfile, resume, values, socials } = req.body;
 
     Student.findOneAndUpdate(
@@ -88,7 +87,7 @@ router.put('/student/completeMatchProfile', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.put('/student/editProfile', ensureAuthenticated, (req, res) => {
+router.put('/editProfile', ensureAuthorisation, (req, res) => {
     const {
         university,
         major,
@@ -133,7 +132,22 @@ router.put('/student/editProfile', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.put('/student/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
+router.get('/getStudent/:sId', ensureAuthenticated, (req, res) => {
+    Student.findOne({_id: req.params.sId})
+    .then(student => {
+        if(!student) {
+            return res.status(422).json({success: false, msg: "Student not found"})
+        }
+        const returnedStudent = { ...student, password: null};
+        return res.status(200).json({success: true, msg: "Student found", student: {...returnedStudent}});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; couldn't find student.", err});
+    })
+})
+
+
+router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
     let srs = req.user.swipedRight;
     let sls = req.user.swipedLeft;
 
@@ -185,7 +199,7 @@ router.put('/student/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
     }
 });
 
-router.put('/student/swipeLeft/:jobId', ensureAuthenticated, (req, res) => {
+router.put('/swipeLeft/:jobId', ensureAuthorisation, (req, res) => {
     let srs = req.user.swipedRight;
     let sls = req.user.swipedLeft;
 

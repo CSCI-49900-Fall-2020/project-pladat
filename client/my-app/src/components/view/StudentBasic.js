@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import * as allUserActions from '../../actions/UserActions';
+import * as allStudentActions from '../../actions/StudentActions';
 
 
 import BasicViewWrapper from './BasicViewWrapper';
@@ -13,7 +14,8 @@ import { preferredRoles } from '../../staticData/preferredRoles';
 import { experienceArr } from '../../staticData/experience';
 import { majorsArr } from '../../staticData/majors';
 
-import { Link, Redirect } from 'react-router-dom';
+import ButtonLoader from '../uiComponents/ButtonLoader';
+
 
 import './styles/StudentBasic.css';
 import './styles/Base.css';
@@ -39,6 +41,7 @@ class StudentBasic extends React.Component {
             uniArrIdx: 0,
             roles: [],
             experiences: [],
+            submittingData: false
         }
     }
 
@@ -299,15 +302,16 @@ class StudentBasic extends React.Component {
             shortDesc: this.state.shortDesc,
             preferredRoles: this.state.roles,
             generalExperience: this.state.experiences
-        }
+        };
+
+        this.setState({
+            submittingData: true
+        }, () => {
+            this.props.actions.studentActions.completeBasicProfile(submitData);
+        })
     }
 
     render() {
-        // if() {
-        //     this.setState({
-        //         isReadyToSubmit: true
-        //     })
-        // }
 
         return (
             <BasicViewWrapper route={this.props.match.path}>
@@ -385,27 +389,31 @@ class StudentBasic extends React.Component {
                         </div>
 
                         <div className="basicInfo-form-inner-right">
-                            
-                            <Link to="/student/mainpage">
-                                <button>
-                                    <h3>Go to main page testing.</h3>  
-                                </button>
-                            </Link>
-
                             {
                                 (this.state.experiences.length > 0 && this.state.gradDate.length > 0 && this.handleDateValid() && this.state.majors.length > 0 && this.state.roles.length > 0 && this.state.universities.length > 0 && this.state.shortDesc.length > 0) ?
 
-                                <div className="baiscInfo-form-inner-right-submitBtn">
-                                    <h3>
-                                        Next 
-                                    </h3>
-                                    <span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
-                                            <path d="M0 0h24v24H0z" fill="none"/>
-                                            <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
-                                        </svg>
-                                    </span>
+                                <div className="baiscInfo-form-inner-right-submitBtn" onClick={this.handleSubmitBasicInfo}>
+                                    {
+                                        this.state.submittingData ?
+
+                                        <ButtonLoader />
+
+                                        :
+
+                                        <span className="basicInfo-submitBtn-innerContainer">
+                                            <h3>
+                                            Next 
+                                            </h3>
+                                            <span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                    <path id="svgNextArrow" d="M16.01 11H4v2h12.01v3L20 12l-3.99-4z"/>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    }
                                 </div>
+                                
                                 
 
                                 : ""
@@ -492,7 +500,8 @@ class StudentBasic extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user
+        user: state.user,
+        students: state.students
     }
 }
         
@@ -500,6 +509,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         actions: {
             userActions: bindActionCreators(allUserActions, dispatch),
+            studentActions: bindActionCreators(allStudentActions, dispatch)
         }
     };
 }

@@ -395,18 +395,39 @@ datalist option {
     right: 6px;
     border: 1px solid #00a68a;
     border-radius: 4px;
-    padding-left: 8px;
+    /* padding-left: 8px;
     padding-right: 8px;
     padding-top: 4px;
     padding-bottom: 4px;
     display: flex;
-    flex-direction: row;
+    flex-direction: row; */
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    /* justify-items: center;
+    align-items: center; */
+
     cursor: pointer;
     background-color: #00a68a;
     background-image: url('https://i.ibb.co/0Fwh04s/light-paper-fibers.png');
     background-blend-mode: overlay;
     /* transition: 125ms cubic-bezier(.25,.1,.25,1); */
     z-index: 200;
+    width: 88.438px;
+    /* width: 4.4vw; */
+    height: 36px;
+
+    opacity: .7;
+}
+.basicInfo-submitBtn-innerContainer {
+    width: 100%;
+    height: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    display: flex;
+    flex-direction: row;
 }
 .baiscInfo-form-inner-right-submitBtn h3 {
     margin: 0;
@@ -427,3 +448,144 @@ datalist option {
 .baiscInfo-form-inner-right-submitBtn:hover #svgNextArrow {
     transform: translateX(4px);
 }
+.baiscInfo-form-inner-right-submitBtn:hover {
+    opacity: 1;
+}
+
+#basicInfo-form-companyName {
+    position: relative;
+    /* visibility: hidden; */
+}
+.basicInfo-from-customDatalist {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(36, 37, 40);
+    background: rgb(36, 37, 40);
+    bottom: -48px;
+    color: rgb(215, 218, 221);
+    width: 50%;
+    /* padding: 10px 14px 12px; */
+    font-weight: 400;
+    border-radius: 4px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 1000;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.20);
+}
+.basicInfo-from-customDatalist .customDataList-option {
+    /* background: rgb(66, 67, 69); */
+    /* width: 100%; */
+    padding: 8px 12px 10px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    z-index: inherit;
+}
+.basicInfo-from-customDatalist .customDataList-option .customDataListSpan2 {
+    font-size: 12px;
+    padding-left: 1px;
+    color: #00a68a;
+}
+.basicInfo-from-customDatalist .customDataList-option:hover {
+    background: rgb(66, 67, 69);
+}
+
+
+
+/*  */
+
+#basicInfo-empsFrom {
+    position: relative;
+}
+
+#basicInfo-form-location {
+    position: relative !important;
+    /* visibility: hidden; */
+    /* overflow-y: hidden; */
+}
+.basicInfo-from-customDatalist2 {
+    position: absolute !important;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgb(36, 37, 40);
+    background: rgb(36, 37, 40);
+    top: 84px;
+    color: rgb(215, 218, 221);
+    width: 50%;
+    height: 300px;
+    /* padding: 10px 14px 12px; */
+    font-weight: 400;
+    border-radius: 4px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    z-index: 300;
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12), 0 2px 4px -1px rgba(0,0,0,0.20);
+    overflow-y: auto !important;
+}
+.basicInfo-from-customDatalist2 .customDataList-option {
+    /* background: rgb(66, 67, 69); */
+    /* width: 100%; */
+    padding: 8px 12px 10px;
+    font-weight: 400;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+.basicInfo-from-customDatalist2 .customDataList-option .customDataListSpan2 {
+    font-size: 12px;
+    padding-left: 1px;
+    color: #00a68a;
+}
+.basicInfo-from-customDatalist2 .customDataList-option:hover {
+    background: rgb(66, 67, 69);
+}
+.basicInfo-from-customDatalist::-webkit-scrollbar {
+    width: .5em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    /* cursor: pointer; */
+    outline: none !important;
+  }
+   
+.basicInfo-from-customDatalist::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+    border-radius: 4px;
+    /* cursor: pointer; */
+    outline: none !important;
+}
+   
+.basicInfo-from-customDatalist::-webkit-scrollbar-thumb {
+    background-color: rgb(156, 156, 156);
+    outline: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none !important;
+}
+
+.basicInfo-from-customDatalist2::-webkit-scrollbar {
+    width: .5em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    /* cursor: pointer; */
+    outline: none !important;
+  }
+   
+.basicInfo-from-customDatalist2::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+    border-radius: 4px;
+    /* cursor: pointer; */
+    outline: none !important;
+}
+   
+.basicInfo-from-customDatalist2::-webkit-scrollbar-thumb {
+    background-color: rgb(156, 156, 156);
+    outline: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none !important;
+}
+
