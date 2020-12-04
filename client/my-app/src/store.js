@@ -156,7 +156,9 @@ let user = {
     authError: [],
     errorsDidChange: false,
     authState: null,
-    serverStatus: null
+    serverStatus: null,
+
+    userMatches: []
 };
 
 const defaultState = {

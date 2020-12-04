@@ -19,7 +19,9 @@ const initialState = {
     authError: [],
     errorsDidChange: false,
     authState: null,
-    serverStatus: null
+    serverStatus: null,
+
+    userMatches: []
 };
 
 function user(state = initialState, action) {

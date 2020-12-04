@@ -36,13 +36,20 @@ class SMain extends React.Component {
 
         this.state = {
             studentUser: this.props.user.user,
+            studentUserName: this.props.user.user ? this.props.user.user.firstname : 'PlaceMint User',
+            studentUserLastName: this.props.user.user ? this.props.user.user.lastname : "",
+            studentUserMatches: this.props.user.userMatches,
+            studentUserImages: this.props.user.user ? this.props.user.user.images : [],
             userType: this.props.user.user ? this.props.user.user.typeOfUser : null,
             loadingJobs: false,
             loadingUser: true,
             redirectToLogin: false,
             redirect: false,
             redirectTo: null,
-            possibUrlUsrTypes: 'sre'
+            possibUrlUsrTypes: 'sre',
+
+            curLocation: this.props.location.pathname,
+            headerText: 'PlaceMint'
         }
     }
 
@@ -63,6 +70,52 @@ class SMain extends React.Component {
                     loadingUser: false
                 })
             }
+
+            if(prevProps.location !== this.props.location) {
+                this.setState({
+                    curLocation: this.props.location.pathname
+                });
+
+                if(this.props.location.pathname === '/s/settings') {
+                    this.setState({
+                        headerText: "Settings"
+                    })
+                }
+                else if(this.props.location.pathname === '/s/me' || this.props.location.pathname === '/s/me/preview_profile') {
+                    this.setState({
+                        headerText: "PlaceMint Profile"
+                    })
+                }
+                else {
+                    this.setState({
+                        headerText: 'PlaceMint'
+                    })
+                }
+            }
+        }
+    }
+
+    componentDidMount() {
+        if(this.props.location) {
+            this.setState({
+                curLocation: this.props.location.pathname
+            });
+
+            if(this.props.location.pathname === '/s/settings') {
+                this.setState({
+                    headerText: "Settings"
+                })
+            }
+            else if(this.props.location.pathname === '/s/me' || this.props.location.pathname === '/s/me/preview_profile') {
+                this.setState({
+                    headerText: "PlaceMint Profile"
+                })
+            }
+            else {
+                this.setState({
+                    headerText: 'PlaceMint'
+                })
+            }
         }
     }
 
@@ -80,7 +133,41 @@ class SMain extends React.Component {
         return pathCombine;
     }
 
+    handleCreateAvatar = () => {
+        if(this.state.studentUserImages.length > 0) {
+            return (
+                <div className='grid-left-avatarRealPic'>
+                    <img src={this.state.studentUserImages[0]} />
+                </div>
+            )
+        }
+        else {
+            if(this.state.studentUserName !== 'PlaceMint User') {
+                return (
+                    <div className='grid-left-avatarGenerated'>
+                        <h4>{this.state.studentUserName.substring(0,1).toUpperCase() + this.state.studentUserLastName.substring(0,1).toUpperCase()}</h4>
+                    </div>
+                )
+            }
+            else {
+                return (
+                    <div className='grid-left-avatarGenerated'>
+                        <h4>PU</h4>
+                    </div>
+                )
+            }
+        }
+    }
+
+
+    handleLogOut = (event) => {
+        event.preventDefault();
+        return;
+    }
+
+
     render() {
+        let tempAvatar = this.handleCreateAvatar();
         if(this.state.redirectToLogin) {
             return <Redirect to='/login'/>
         }
@@ -106,16 +193,42 @@ class SMain extends React.Component {
                             <div className="inner-gridContainer">
                                 <div className='grid-left-sidebar'>
                                     <div className='grid-left-nameHolder'>
-                                        <h1>{}</h1>
+                                        <h1 className='text'>{this.state.studentUserName}</h1>
+                                        {tempAvatar}
                                     </div>
                                     <div className='grid-left-contentHolder'>
+                                       {
+                                           this.state.curLocation === '/s/me/preview_profile' ?
 
+                                           <h2>Matches go here</h2>
+
+                                           :
+
+                                           <div className='grid-left-editProfileTabs'>
+                                               <span className='text' style={this.state.curLocation === '/s/me' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                    <Link to='/s/me'><h3>Edit Profile</h3></Link>
+                                                </span>
+                                               <span className='text' style={this.state.curLocation === '/s/settings' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                   <Link to='/s/settings'><h3>Settings</h3></Link>
+                                                </span>
+                                               <span className='text grid-left-editProfileTabSlotText' onClick={this.handleLogOut}><h3>Log out</h3></span>
+                                           </div>
+                                       }
                                     </div>
                                 </div>
-                                <div className='grid-top-title'>Title bar</div>
+                                <div className='grid-top-title'>
+                                    {
+                                        this.state.headerText.indexOf('PlaceMint') >=0 ?
+
+                                            <h1 className='text'>{this.state.headerText.substring(0,5)}<span className='grid-top-title-headerEmphasis'>{this.state.headerText.substring(5,9)}</span>{this.state.headerText.substring(9)}</h1>
+
+                                        :
+                                        
+                                        <h1 className='text'>{this.state.headerText}</h1>
+                                    }
+                                </div>
                                 <div className='grid-center-main'>
-                                    Main centre view
-                                        <Switch>
+                                    <Switch>
                                         <Route exact path = '/s' component={DiscoverView}/>
                                         <Route exact path='/s/discover/' component={DiscoverView} />
                                         <Route exact path='/s/discover/:id' component={null} />

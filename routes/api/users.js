@@ -240,6 +240,84 @@ router.get('/verifyAuth/:userId', (req, res) => {
     return res.status(401).json({success: false, userAuthenticated: false, userInfo: null});
 });
 
+router.put('/addImage', ensureAuthenticated, (req, res) => {
+    let url = req.query.imgViewUrl;
+    if(req.user.images.length === req.user.maxNumImages) {
+        return res.status(403).json({success: false, msg: 'Not allowed to add more than '+req.user.maxNumImages+ ' images.'})
+    }
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $push: {
+                images: url
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        return res.status(200).json({success: true, msg: "New image has been added to your profile", user})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't add you new image", err});
+    })
+});
+
+router.put('/replaceImage', ensureAuthenticated, (req, res) => {
+    let curImgArr = req.user.images;
+    let imgToReplace = req.query.idx;
+    let newImg = req.query.newImg;
+
+    curImgArr = [...curImgArr.slice(0, imgToReplace), newImg, ...curImgArr.slice(imgToReplace+1)];
+
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                images: [...curImgArr]
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        return res.status(200).json({success: true, msg: "New image has been added to your profile", user})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't add you new image", err});
+    })
+});
+
+router.put('/deleteImage', ensureAuthenticated, (req, res) => {
+    let curImgArr = req.user.images;
+    let imgToDelete = req.query.idx;
+
+    curImgArr = [...curImgArr.slice(0, imgToDelete), ...curImgArr.slice(imgToDelete+1)];
+
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                images: [...curImgArr]
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        return res.status(200).json({success: true, msg: "Image has been deleted from your profile", user})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't delete image", err});
+    })
+});
+
 router.put('/resetPasswordRequest', ensureAuthenticated, (req, res) => {
     
 });

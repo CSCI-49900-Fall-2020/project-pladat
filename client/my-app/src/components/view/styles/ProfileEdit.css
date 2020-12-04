@@ -1,0 +1,96 @@
+#ProfileEdit-wrapper {
+    width: 100%;
+    height: 96%;
+    padding-top: 3%;
+    padding-bottom: 1%;
+    /* border: 1px solid red; */
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    /* justify-content: center; */
+    align-content: center;
+    align-items: center;
+}
+
+.ProfileEdit-cut {
+    width: 70%;
+    /* border: 1px solid #666666; */
+    height: auto;
+}
+
+.ProfileEdit-imageContainer {
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: 33% 33 33%;
+    /* grid-template-areas: 
+    "sidebar header header header"
+    "sidebar main main main"; */
+    height: 415px;
+    width: 416px;
+    grid-gap: 1%;
+}
+.ProfileEdit-imgItem1 {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+.ProfileEdit-imgItem2 {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+.ProfileEdit-imgItem3 {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+.ProfileEdit-imgItem4 {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+.ProfileEdit-imgItem5 {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+.ProfileEdit-imgItem6 {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    border: 1px solid #666666;
+    border-radius: 4px;
+}
+
+.ProfileEdit-img span {
+    width: 100%;
+    height: 100% !important;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+}
+.ProfileEdit-img span svg{
+    transform: scale(2.5);
+}
+.ProfileEdit-img {
+    cursor: pointer;
+}
