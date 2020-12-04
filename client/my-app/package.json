@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "animejs": "^3.2.1",
     "axios": "^0.20.0",
+    "imgbb-uploader": "^1.1.0",
     "jsonwebtoken": "^8.5.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

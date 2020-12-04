@@ -17,6 +17,7 @@ const GeneralUser = new Schema({
     infoComplete: {type: Boolean, default: false},
     basicProfileInfoComplete: {type: Boolean, default: false},
     images: [{type: String, required: false, default: null}], 
+    maxNumImages: {type: Number, required: false, default: 6},
 }, baseOptions);
 
 module.exports = User = mongoose.model('User', GeneralUser);
