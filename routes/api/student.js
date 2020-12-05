@@ -96,7 +96,9 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
         skills,
         resume,
         values,
-        matchProfile
+        preferredRoles,
+        generalExperience,
+        socials
     } = req.body;
 
     Student.findOneAndUpdate(
@@ -110,8 +112,9 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
                 skills,
                 resume,
                 values,
-                matchProfile,
-                socials
+                socials,
+                generalExperience,
+                preferredRoles
             }
         },
         {

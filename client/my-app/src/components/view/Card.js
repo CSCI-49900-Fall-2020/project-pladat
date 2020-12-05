@@ -15,7 +15,7 @@ class Card extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            user: this.props.user.user
         }
     }
 

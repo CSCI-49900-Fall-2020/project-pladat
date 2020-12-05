@@ -46,6 +46,9 @@ export const UserConstants = {
     SWIPE_RIGHT_FAIL: 'SWIPE_RIGHT_FAIL',
     SWIPE_RIGHT_SUCCESS: 'SWIPE_RIGHT_SUCCESS',
     
+    UPLOADING_IMG: 'UPLOADING_IMG',
+    IMG_UPLOAD_SUCCESS: 'IMG_UPLOAD_SUCCESS',
+    IMG_UPLOAD_FAIL: 'IMG_UPLOAD_FAIL'
 };
 
 export const RecruiterConstants = {

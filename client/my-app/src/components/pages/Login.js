@@ -21,8 +21,8 @@ class Login extends Component {
         super(props);
         this.errRef = React.createRef();
         this.state = {
-            email: null,
-            password: null,
+            email: '',
+            password: '',
             authErrors: [],
             authErrorsMapper: [],
             formSubmitted: false,
@@ -104,11 +104,11 @@ class Login extends Component {
     handleBasicOnSuccess = () => {
         switch(this.props.user.user.typeOfUser) {
             case 'Student':
-                return `/s/me`;
+                return this.props.user.user.hasAtLeastOneImage ? `/s/discover` : `/s/me`;
             case 'Recruiter':
-                return `/r/me`;
+                return this.props.user.user.hasAtLeastOneImage ? `/r/discover` : `/r/me`;
             case 'Employer':
-                return `/e/me`;
+                return this.props.user.user.hasAtLeastOneImage ? `/e/discover` : `/e/me`;
             default:
                 return;
         }

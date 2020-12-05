@@ -16,8 +16,9 @@ const GeneralUser = new Schema({
     typeOfUser: {type: String, required: true},
     infoComplete: {type: Boolean, default: false},
     basicProfileInfoComplete: {type: Boolean, default: false},
-    images: [{type: String, required: false, default: null}], 
+    images: [{type: Schema.Types.Mixed, required: false, default: null}], 
     maxNumImages: {type: Number, required: false, default: 6},
+    hasAtLeastOneImage: {type: Number, required: false, default: false}
 }, baseOptions);
 
 module.exports = User = mongoose.model('User', GeneralUser);

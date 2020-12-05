@@ -5,15 +5,25 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const passport = require('passport');
 
+// const fs = require('fs');
+
+const cloudinary = require('cloudinary').v2;
+
+
+const fileupload = require('express-fileupload');
+const imgbbUploader = require('imgbb-uploader');
+
 const User = require('../../models/User');
 const Student = require('../../models/Student');
 const Employer = require('../../models/Employer');
 const Recruiter = require('../../models/Recruiter');
 
-const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL } = require('../../configs/prodConfig');
+const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL, IMAGE_UPLOAD_KEY } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 const { configureEmailVerification } = require('../../configs/EmailTemplate');
 const { dateInFuture2 } = require('../../configs/DateFunctions');
+
+const { CLOUDINARY_API_KEY, CLOUDINARY_NAME, CLOUDINARY_SECRET } = require('../../configs/prodConfig');
 
 
 function verifyToken(req, res, next) {
@@ -241,7 +251,8 @@ router.get('/verifyAuth/:userId', (req, res) => {
 });
 
 router.put('/addImage', ensureAuthenticated, (req, res) => {
-    let url = req.query.imgViewUrl;
+    let { public_id, secure_url, url } = req.body;
+    let pusher = { public_id, secure_url, url};
     if(req.user.images.length === req.user.maxNumImages) {
         return res.status(403).json({success: false, msg: 'Not allowed to add more than '+req.user.maxNumImages+ ' images.'})
     }
@@ -249,8 +260,9 @@ router.put('/addImage', ensureAuthenticated, (req, res) => {
         {_id: req.user._id},
         {
             $push: {
-                images: url
-            }
+                images: pusher
+            },
+            $set: {hasAtLeastOneImage: true}
         },
         {
             new: true,
@@ -258,7 +270,7 @@ router.put('/addImage', ensureAuthenticated, (req, res) => {
         }
     )
     .then(user => {
-        return res.status(200).json({success: true, msg: "New image has been added to your profile", user})
+        return res.status(200).json({success: true, msg: "New image has been added to your profile", user, imgData: pusher})
     })
     .catch(err => {
         return res.status(422).json({success: false, msg: "Something went wrong couldn't add you new image", err});
@@ -292,11 +304,12 @@ router.put('/replaceImage', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.put('/deleteImage', ensureAuthenticated, (req, res) => {
+router.put('/deleteImage/:idx/:pId', ensureAuthenticated, (req, res) => {
     let curImgArr = req.user.images;
-    let imgToDelete = req.query.idx;
+    let imgToDelete = Number(req.params.idx);
+    let public_id = req.params.pId;
 
-    curImgArr = [...curImgArr.slice(0, imgToDelete), ...curImgArr.slice(imgToDelete+1)];
+    curImgArr = [...curImgArr.slice(0, imgToDelete), ...curImgArr.slice(imgToDelete+1, curImgArr.length)];
 
     User.findOneAndUpdate(
         {_id: req.user._id},
@@ -311,12 +324,91 @@ router.put('/deleteImage', ensureAuthenticated, (req, res) => {
         }
     )
     .then(user => {
-        return res.status(200).json({success: true, msg: "Image has been deleted from your profile", user})
+        cloudinary.config({
+            cloud_name: CLOUDINARY_NAME,
+            api_key: CLOUDINARY_API_KEY,
+            api_secret: CLOUDINARY_SECRET
+        });
+
+        cloudinary.uploader.destroy(public_id, function(error, result) {
+            if(error) {
+                console.log(error, public_id);
+                return res.status(500).json({success: false, msg: 'removed img from account, but not cloud', error});
+            }
+
+            return res.status(200).json({success: true, msg: "Image has been deleted from your profile", user, result});
+        })
+
     })
     .catch(err => {
         return res.status(422).json({success: false, msg: "Something went wrong couldn't delete image", err});
     })
 });
+
+
+router.post('/upLoadImage', ensureAuthenticated, (req, res) => {
+    if(!req.files) {
+        return res.status(422).json({success: false, msg: "No files were uploaded"});
+    }
+
+    const file = req.files.file;
+
+    const filePath = `${__dirname}/../../client/uploads/${file.name}`;
+
+    console.log(filePath);
+
+    file.mv(filePath, err => {
+        if(err) {
+            return res.status(422).json({success: false, msg: "Something happened, couldn't upload file", err});
+        }
+        
+        imgbbUploader(IMAGE_UPLOAD_KEY, filePath)
+        .then(returnedData => {
+            let imgData = { url: returnedData.image.url, deleteUrl: returnedData.delete_url };
+            return res.status(200).json({success: true, msg: "Image uploaded", imgData, unlinkPath: filePath});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong couldn't upload image", err})
+        })
+    })
+});
+
+router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
+    if(!req.files) {
+        return res.status(422).json({success: false, msg: "No files were uploaded"});
+    }
+
+    cloudinary.config({
+        cloud_name: CLOUDINARY_NAME,
+        api_key: CLOUDINARY_API_KEY,
+        api_secret: CLOUDINARY_SECRET
+    });
+
+    const file = req.files.file;
+
+    const filePath = `${__dirname}/../../client/uploads/${file.name}`;
+
+    file.mv(filePath, err => {
+        if(err) {
+            return res.status(422).json({success: false, msg: "Something happened, couldn't upload file", err});
+        }
+
+        cloudinary.uploader.upload(filePath, {resource_type: 'image'}, function(error, result) {
+            if(error) {
+                return res.status(500).json({success: false, msg: "Something went wrong uploading your imgs", error});
+            }
+            // console.log(result);
+
+            let { public_id, secure_url, url }  = result;
+
+            const imgData = { public_id, secure_url, url };
+
+            res.status(200).json({success: true, msg: 'img uploaded', imgData})
+        })
+
+    })
+})
+
 
 router.put('/resetPasswordRequest', ensureAuthenticated, (req, res) => {
     

@@ -67,7 +67,10 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
         companyGrowthStage,
         approxNumEmployees,
         yearFounded,
-        socials
+        socials,
+        industry,
+        location,
+        shortDesc
     } = req.body;
 
     Employer.findOneAndUpdate(
@@ -77,7 +80,10 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
                 companyGrowthStage: companyGrowthStage,
                 approxNumEmployees: approxNumEmployees,
                 yearFounded: yearFounded,
-                socials: socials
+                socials: socials,
+                industry: industry,
+                location: location,
+                shortDesc: shortDesc
             }
         },
         {

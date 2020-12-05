@@ -58,14 +58,10 @@ class SMain extends React.Component {
             const { loggedIn, isAuthenticated, userLoginVerificationFail, authState, user } = this.props.user;
 
             if(!isAuthenticated || !user && !this.state.loadingUser) {
+                // console.log('redirecting to login  from smain wrapper');
                 this.setState({ redirectToLogin: true })
             }
             else {
-                // setTimeout(() => {
-                //     this.setState({
-                //         loadingUser: false
-                //     })
-                // }, 1000)
                 this.setState({
                     loadingUser: false
                 })
@@ -137,7 +133,7 @@ class SMain extends React.Component {
         if(this.state.studentUserImages.length > 0) {
             return (
                 <div className='grid-left-avatarRealPic'>
-                    <img src={this.state.studentUserImages[0]} />
+                    <img className='avatar' src={this.state.studentUserImages[0].secure_url} />
                 </div>
             )
         }
@@ -193,12 +189,12 @@ class SMain extends React.Component {
                             <div className="inner-gridContainer">
                                 <div className='grid-left-sidebar'>
                                     <div className='grid-left-nameHolder'>
-                                        <h1 className='text'>{this.state.studentUserName}</h1>
-                                        {tempAvatar}
+                                        <span className='grid-left-nameHolder-nameLink'><Link to='/s/me'><h1 className='text'>{this.state.studentUserName}</h1></Link></span>
+                                        <span className='grid-left-nameHolder-avatarLink'><Link to='/s/me'>{tempAvatar}</Link></span>
                                     </div>
                                     <div className='grid-left-contentHolder'>
                                        {
-                                           this.state.curLocation === '/s/me/preview_profile' ?
+                                           this.state.curLocation === '/s/discover' ?
 
                                            <h2>Matches go here</h2>
 
