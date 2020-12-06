@@ -363,7 +363,18 @@ datalist option {
     background-color: #00a68a;
     border-radius: 4px;
 }
+input::-webkit-calendar-picker-indicator {
+    color: #d3d3d3;
+    fill: #d3d3d3;
+    cursor: pointer;
+    outline: none;
+    background-color: #00a68a;
+    border-radius: 4px;
+}
 #basicInfo-form-gradDate input:invalid::-webkit-datetime-edit {
+    color: #666666;
+}
+input:invalid::-webkit-datetime-edit {
     color: #666666;
 }
 

@@ -24,7 +24,12 @@ const Employer = User.discriminator('Employer', new Schema({
     internalRank: {type: Number, required: false, default: 1},
     matchProfile: {type: Schema.Types.Mixed, required: false, defualt: null},
     isVerifiedCompany: {type: Boolean, required: false, default: false},
-    shortDesc: {type: String, required: false, default: null}
+    shortDesc: {type: String, required: false, default: null},
+    values: {
+        compOffer: [{type: String, lowercase: false, trim: true}],
+        studPersPref: [{type: String, lowercase: false, trim: true}],
+        workEnv: [{type: String, lowercase: false, trim: true}],
+    }
 }))
 
 module.exports = mongoose.model('Employer');

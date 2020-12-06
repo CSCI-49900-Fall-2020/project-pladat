@@ -31,15 +31,17 @@ class MainWrapper extends React.Component {
         if(this.props !== prevProps) {
             const { loggedIn, isAuthenticated, userLoginVerificationFail, authState, user } = this.props.user;
 
-            let correctUrlUserType = this.state.userType.toLowerCase().trim().substring(0,1);
+            let correctUrlUserType = this.props.user.isAuthenticated ? this.state.userType.toLowerCase().trim().substring(0,1) : null;
 
             let curUrlArr = this.props.location && this.props.location.pathname ? this.props.location.pathname.split('/') : this.props.match.path;
             let curUrlUserType = curUrlArr[1];
 
             if(!isAuthenticated || !user) {
+                // console.log('redirecting to login from main wrapper');
                 this.setState({ redirectToLogin: true })
             }
             if(correctUrlUserType !== curUrlUserType && this.state.possibUrlUsrTypes.indexOf(curUrlUserType) >=0 && isAuthenticated) {
+                // console.log('redirecting to correct url from main wrapper');
                 this.setState({
                     redirect: true,
                     redirectTo: `/${correctUrlUserType}`+this.arrayToString(curUrlArr, 2)
@@ -49,27 +51,6 @@ class MainWrapper extends React.Component {
     }
 
     componentDidMount() {
-        // console.log(this.props.location, this.props.match);
-        // const { loggedIn, isAuthenticated, userLoginVerificationFail, authState, user } = this.props.user;
-        // if(!isAuthenticated || !user) {
-        //     this.setState({ redirectToLogin: true })
-        // }
-
-        // let correctUrlUserType = this.state.userType.toLowerCase().trim().substring(0,1);
-
-        // let curUrlArr = this.props.location && this.props.location.pathname ? this.props.location.pathname.split('/') : this.props.match.path;
-        // // let curUrlArr = '/s/me';
-        // let curUrlUserType = curUrlArr[1];
-
-        // if(!isAuthenticated || !user) {
-        //     this.setState({ redirectToLogin: true })
-        // }
-        // if(correctUrlUserType !== curUrlUserType && this.state.possibUrlUsrTypes.indexOf(curUrlUserType) >=0 && isAuthenticated) {
-        //     this.setState({
-        //         redirect: true,
-        //         redirectTo: `/${correctUrlUserType}`+this.arrayToString(curUrlArr, 2)
-        //     })
-        // }
     }
 
     arrayToString = (arr, startIdx) => {

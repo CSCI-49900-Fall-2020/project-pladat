@@ -28,6 +28,12 @@
 }
 .grid-center-main {
     grid-area: main;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
 }
 
 .inner-gridWrapper {
@@ -51,20 +57,37 @@
     display: flex;
     flex-direction: row;
 }
-.grid-left-sidebar .grid-left-nameHolder h1{
-   font-weight: 300;
+.grid-left-sidebar .grid-left-nameHolder a {
+    text-decoration: none;
+    outline: none;
+    color: #d3d3d3;
+}
+.grid-left-sidebar .grid-left-nameHolder .grid-left-nameHolder-nameLink{
     margin-left: 3%;
     margin-right: 6%;
+}
+.grid-left-sidebar .grid-left-nameHolder h1{
+   font-weight: 300;
     color: #d3d3d3;
 }
 .grid-left-sidebar .grid-left-nameHolder .grid-left-avatarGenerated{
-    border: 2px solid #00a68a;
+    border: 3px solid #00a68a;
     padding: 0;
-    height: min-content;
-    padding: 8.5px;
+    width: 38px;
+    height: 38px;
+    /* padding: 8.5px;
     padding-top: 15px;
-    padding-bottom: 15px;
-    border-radius: 100%;
+    padding-bottom: 15px; */
+    border-radius: 50%;
+    
+    text-align: center;
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.grid-left-nameHolder-avatarLink {
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -130,6 +153,33 @@
 .grid-top-title h1 .grid-top-title-headerEmphasis {
     color: #00a68a !important;
 }
+
+.grid-left-avatarRealPic {
+    overflow: hidden !important;
+    border: 3px solid #00a68a;
+    padding: 0;
+    width: 38px;
+    height: 38px;
+    /* padding: 8.5px;
+    padding-top: 15px;
+    padding-bottom: 15px; */
+    border-radius: 50%;
+    margin-top: auto;
+    margin-bottom: auto;
+    text-align: center;
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+.grid-left-avatarRealPic .avatar{
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100% !important;
+}
+
 
 
 

@@ -120,7 +120,8 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
         education,
         jobTitle,
         shortDesc,
-        socials
+        socials,
+        automatedMatchMsg
     } = req.body;
     Recruiter.findOneAndUpdate(
         {_id: req.user._id},
@@ -129,7 +130,8 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
                 education: education,
                 jobTitle: jobTitle,
                 shortDesc: shortDesc,
-                socials: socials
+                socials: socials,
+                automatedMatchMsg: automatedMatchMsg
             }
         },
         {
