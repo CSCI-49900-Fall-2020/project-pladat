@@ -25,7 +25,13 @@ const Student = User.discriminator('Student', new Schema({
     skills: [{type: String, required: false, defualt: null}],
     socials: {linkedin: String, personalSite: String, otherWeb: Schema.Types.Mixed},
     resume: {type: String, required: false, defualt: null},
-    values: {type: Schema.Types.Mixed, required: false, defualt: null},
+    values: {
+        compVals: [{type: String, lowercase: true, trim: true}],
+        personality: [{type: String, lowercase: true, trim: true}],
+        workEnv: [{type: String, lowercase: true, trim: true}],
+        compStage: [{type: String, lowercase: true, trim: true}],
+        industry: [{type: String, lowercase: true, trim: true}]
+    },
     internalRank: {type: Number, required: false, default: 1},
     swipedRight: [{type: Schema.Types.ObjectId, defualt: null}],
     matched: [{type: Schema.Types.ObjectId, required: false, default: true}],

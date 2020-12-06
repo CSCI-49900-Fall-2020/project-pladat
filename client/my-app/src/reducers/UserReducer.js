@@ -94,6 +94,40 @@ function user(state = initialState, action) {
             };
         case UserConstants.LOADING_USER_SUCCESS:
             let uInfo = action.userInfo.data;
+            let efs = null;
+            if(uInfo.typeOfUser === 'Student') {
+                efs = { 
+                    university: uInfo.university, major: uInfo.major,
+                    graduationDate: uInfo.graduationDate,
+                    shortDesc: uInfo.shortDesc,
+                    skills: uInfo.skills,
+                    resume: uInfo.resume,
+                    values: uInfo.values,
+                    socials: uInfo.socials,
+                    generalExperience: uInfo.generalExperience,
+                    preferredRoles: uInfo.preferredRoles 
+                };
+            }
+            else if(uInfo.typeOfUser === 'Employer') {
+                efs = {
+                    companyGrowthStage: uInfo.companyGrowthStage,
+                    approxNumEmployees: uInfo.approxNumEmployees,
+                    yearFounded: uInfo.yearFounded,
+                    socials: uInfo.socials,
+                    industry: uInfo.industry,
+                    location: uInfo.location,
+                    shortDesc: uInfo.shortDesc
+                }
+            }
+            else {
+                efs = {
+                    education: uInfo.education,
+                    jobTitle: uInfo.jobTitle,
+                    shortDesc: uInfo.shortDesc,
+                    socials: uInfo.socials,
+                    automatedMatchMsg: uInfo.automatedMatchMsg
+                }
+            }
             return {
                 ...state,
                 isLoading: false,
@@ -105,39 +139,7 @@ function user(state = initialState, action) {
                 authState: UserConstants.LOADING_USER_SUCCESS,
                 emailIsValidated: action.userInfo.data.isVerified,
                 loggedIn: true,
-                editFields: uInfo.typeOfUser === 'Student' ? 
-                { 
-                    university: uInfo.university, major: uInfo.major,
-                    graduationDate: uInfo.graduationDate,
-                    shortDesc: uInfo.shortDesc,
-                    skills: uInfo.skills,
-                    resume: uInfo.resume,
-                    values: uInfo.values,
-                    socials: uInfo.socials,
-                    generalExperience: uInfo.generalExperience,
-                    preferredRoles: uInfo.preferredRoles 
-                }
-                :
-                (
-                    uInfo.typeOfUser === 'Recruiter' ?
-                    {
-                        education: uInfo.education,
-                        jobTitle: uInfo.jobTitle,
-                        shortDesc: uInfo.shortDesc,
-                        socials: uInfo.socials,
-                        automatedMatchMsg: uInfo.automatedMatchMsg
-                    }
-                    :
-                    {
-                        companyGrowthStage: uInfo.companyGrowthStage,
-                        approxNumEmployees: uInfo.approxNumEmployees,
-                        yearFounded: uInfo.yearFounded,
-                        socials: uInfo.socials,
-                        industry: uInfo.industry,
-                        location: uInfo.location,
-                        shortDesc: uInfo.shortDesc
-                    }
-                )
+                editFields: { ...efs}
             }
         case UserConstants.USER_LOGGING_IN:
             return {

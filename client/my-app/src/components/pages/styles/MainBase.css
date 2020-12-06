@@ -28,6 +28,12 @@
 }
 .grid-center-main {
     grid-area: main;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
 }
 
 .inner-gridWrapper {

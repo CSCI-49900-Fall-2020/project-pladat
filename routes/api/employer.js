@@ -16,7 +16,7 @@ const { JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER } = require('../../configs/prodConfi
 
 
 router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
-    const { companyName, industry, location, shortDesc } = req.body;
+    const { companyName, industry, location, shortDesc, yearFounded, companyGrowthStage, approxNumEmployees } = req.body;
     Employer.findOneAndUpdate(
         {_id: req.user.id},
         {
@@ -26,6 +26,9 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
                 location: location,
                 basicProfileInfoComplete: true,
                 shortDesc: shortDesc,
+                yearFounded: yearFounded,
+                approxNumEmployees: approxNumEmployees,
+                companyGrowthStage: companyGrowthStage,
                 isVerifiedCompany: true
             }
         },
@@ -70,7 +73,8 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
         socials,
         industry,
         location,
-        shortDesc
+        shortDesc, 
+        values
     } = req.body;
 
     Employer.findOneAndUpdate(
@@ -83,7 +87,8 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
                 socials: socials,
                 industry: industry,
                 location: location,
-                shortDesc: shortDesc
+                shortDesc: shortDesc,
+                values: values
             }
         },
         {
