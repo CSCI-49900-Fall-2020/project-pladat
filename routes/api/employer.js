@@ -233,23 +233,23 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
     const {
         title,
         description,
-        company = req.user.companyName,
-        dateOpen,
-        location,
+        locations,
         todo,
         mustHaveSkills,
         recommendSkills,
         dateClose,
-        matchProfile = req.user.matchProfile,
         matchLimit,
         typeOfJob,
-        assignedRecruiters,
-        industry
+        assignedRecruiter,
+        fullJobAppLink,
+        unListOnMatchLimit
     } = req.body;
 
     const newJob = new Job({
-        title, description, company, dateClose, location, todo, mustHaveSkills, recommendSkills, matchProfile,
-        matchLimit, typeOfJob, isOpen: true, dateOpen, assignedRecruiters, industry: industry.toLowerCase()
+        title: title, description: description, locations: locations, todo: todo, mustHaveSkills: mustHaveSkills, recommendSkills: recommendSkills,
+        dateClose: dateClose, matchLimit: matchLimit, typeOfJob: typeOfJob, assignedRecruiter: assignedRecruiter, fullJobAppLink: fullJobAppLink,
+        unListOnMatchLimit: unListOnMatchLimit, companyId: req.user._id, companyName: req.user.companyName, dateOpen: Date.now(), matchProfile: req.user.matchProfile,
+        isOpen: true, industry: req.user.industry
     });
     newJob.save()
     .then(job => {

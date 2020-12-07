@@ -56,6 +56,7 @@
     height: 10%;
     display: flex;
     flex-direction: row;
+    
 }
 .grid-left-sidebar .grid-left-nameHolder a {
     text-decoration: none;
@@ -65,6 +66,11 @@
 .grid-left-sidebar .grid-left-nameHolder .grid-left-nameHolder-nameLink{
     margin-left: 3%;
     margin-right: 6%;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
 }
 .grid-left-sidebar .grid-left-nameHolder h1{
    font-weight: 300;
@@ -180,6 +186,21 @@
     height: 100% !important;
 }
 
+
+.grid-left-backToDiscoverBtn{
+    width: max-content;
+    height: 100% !important;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    margin-right: 1%;
+}
+.grid-left-backToDiscoverBtn svg{
+    transform: scale(1.5);
+}
 
 
 

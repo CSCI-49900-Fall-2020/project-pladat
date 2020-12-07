@@ -44,7 +44,17 @@ class ProfileEdit extends React.Component {
             studCompStage: this.props.user.user.typeOfUser === 'Student' ? this.props.user.user.values.compStage: [],
             studIndus: this.props.user.user.typeOfUser === 'Student' ? this.props.user.user.values.industry: [],
             studResume: this.props.user.user.typeOfUser === 'Student' ? (this.props.user.user.resume ? this.props.user.user.resume: '') : '',
-            studSocials: this.props.user.user.typeOfUser === 'Student' ? this.props.user.user.socials: ''
+            studSocials: this.props.user.user.typeOfUser === 'Student' ? this.props.user.user.socials: '',
+
+
+            empOffer: this.props.user.user.typeOfUser === 'Employer' ? this.props.user.user.values.compOffer: [],
+            empStudsPref: this.props.user.user.typeOfUser === 'Employer' ? this.props.user.user.values.studPersPref: [],
+            empWorkEnv: this.props.user.user.typeOfUser === 'Employer' ? this.props.user.user.values.workEnv: [],
+
+
+            prevProfUrl: '/'
+
+
         }
 
         this.handleAddImg = this.handleAddImg.bind(this);
@@ -84,7 +94,8 @@ class ProfileEdit extends React.Component {
 
     componentDidMount() {
         this.setState({
-            profileEditFields: this.props.user.editFields
+            profileEditFields: this.props.user.editFields,
+            prevProfUrl: this.getPrevProfLink(this.props.user.user.typeOfUser)
         })
     }
 
@@ -326,6 +337,106 @@ class ProfileEdit extends React.Component {
         })
     }
 
+
+    handleEmpOffer = (event) => {
+        event.preventDefault();
+        let clickedRole = event.target.dataset.experiencetype;
+        if(this.state.empOffer.includes(clickedRole)) {
+            let popper = this.state.empOffer;
+            let clickedIdx = popper.indexOf(clickedRole);
+            popper = [...popper.slice(0, clickedIdx), ...popper.slice(clickedIdx+1)];
+            this.setState({
+                empOffer: popper,
+                toggleSaveChangesBtn: true
+            })
+        }
+        else {
+            if(this.state.empOffer.length === 4) {
+                let popper = this.state.empOffer;
+                popper.pop();
+                popper.push(clickedRole);
+                this.setState({
+                    empOffer: popper,
+                    toggleSaveChangesBtn: true
+                })
+            }
+            else {
+                let pusher = this.state.empOffer;
+                pusher.push(clickedRole);
+                this.setState({
+                    empOffer: pusher,
+                    toggleSaveChangesBtn: true
+                })
+            }
+        }
+    }
+
+    handleCompWorkEnv = (event) => {
+        event.preventDefault();
+        let clickedRole = event.target.dataset.experiencetype;
+        if(this.state.empWorkEnv.includes(clickedRole)) {
+            let popper = this.state.empWorkEnv;
+            let clickedIdx = popper.indexOf(clickedRole);
+            popper = [...popper.slice(0, clickedIdx), ...popper.slice(clickedIdx+1)];
+            this.setState({
+                empWorkEnv: popper,
+                toggleSaveChangesBtn: true
+            })
+        }
+        else {
+            if(this.state.empWorkEnv.length === 4) {
+                let popper = this.state.empWorkEnv;
+                popper.pop();
+                popper.push(clickedRole);
+                this.setState({
+                    empWorkEnv: popper,
+                    toggleSaveChangesBtn: true
+                })
+            }
+            else {
+                let pusher = this.state.empWorkEnv;
+                pusher.push(clickedRole);
+                this.setState({
+                    empWorkEnv: pusher,
+                    toggleSaveChangesBtn: true
+                })
+            }
+        }
+    }
+
+    handleEmpQualPick = (event) => {
+        event.preventDefault();
+        let clickedRole = event.target.dataset.experiencetype;
+        if(this.state.empStudsPref.includes(clickedRole)) {
+            let popper = this.state.empStudsPref;
+            let clickedIdx = popper.indexOf(clickedRole);
+            popper = [...popper.slice(0, clickedIdx), ...popper.slice(clickedIdx+1)];
+            this.setState({
+                empStudsPref: popper,
+                toggleSaveChangesBtn: true
+            })
+        }
+        else {
+            if(this.state.empStudsPref.length === 4) {
+                let popper = this.state.empStudsPref;
+                popper.pop();
+                popper.push(clickedRole);
+                this.setState({
+                    empStudsPref: popper,
+                    toggleSaveChangesBtn: true
+                })
+            }
+            else {
+                let pusher = this.state.empStudsPref;
+                pusher.push(clickedRole);
+                this.setState({
+                    empStudsPref: pusher,
+                    toggleSaveChangesBtn: true
+                })
+            }
+        }
+    }
+
     SaveChanges = (event) => {
         event.preventDefault();
         switch(this.state.curUserType) {
@@ -345,8 +456,36 @@ class ProfileEdit extends React.Component {
                 this.props.actions.studentActions.editProfile(profileEditData);
                 return;
             case 'Employer':
+                let empProfEditData = {
+                    companyGrowthStage: this.state.curUser.companyGrowthStage,
+                    approxNumEmployees: this.state.curUser.approxNumEmployees,
+                    yearFounded: this.state.curUser.yearFounded,
+                    socials: this.state.curUser.socials,
+                    industry: this.state.curUser.industry,
+                    location: this.state.curUser.location,
+                    shortDesc: this.state.curUser.shortDesc, 
+                    values: {
+                        compOffer: this.state.empOffer,
+                        studPersPref: this.state.empStudsPref,
+                        workEnv: this.state.empWorkEnv
+                    }
+                };
+                this.props.actions.employerActions.editProfile(empProfEditData);
                 return;
             case 'Recruiter':
+                return;
+        }
+    }
+
+    getPrevProfLink = (uType) => {
+        switch(uType) {
+            case "Student":
+                return '/s/me/preview_profile';
+            case "Employer":
+                return '/e/me/preview_profile';
+            case "Recruiter":
+                return '/r/me/preview_profile';
+            default:
                 return;
         }
     }
@@ -422,7 +561,7 @@ class ProfileEdit extends React.Component {
 
                 
                     <div className='ProfileEdit-previewProfileBtn ProfileEdit-cut'>
-                        <Link to='/s/me/preview_profile'>
+                        <Link to={this.state.prevProfUrl}>
                             <h2>Preview profile</h2>
                         </Link>
                     </div>
@@ -567,6 +706,16 @@ class ProfileEdit extends React.Component {
                         this.state.curUserType === 'Employer' && this.state.profileEditFields ?
 
                         <div className='ProfileEdit-inputs-employer ProfileEdit-inputsContainer'>
+                            <div className='ProfileEdit-input-group ProfileEdit-emp-compName'>
+                                <label>Company Name</label>
+                                <input type='text' placeholder='Company name' value={this.state.curUser.companyName}/>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-emp-loc'>
+                                <label>Location</label>
+                                <input type='text' placeholder='Company location' value={this.state.profileEditFields.location}/>
+                            </div>
+
                             <div className='ProfileEdit-input-group ProfileEdit-emp-ind'>
                                 <label>Industry of work</label>
                                 <div className='ProfileEdit-choice-slot-container'>
@@ -577,24 +726,64 @@ class ProfileEdit extends React.Component {
                                 <input type='text' placeholder='Enter industry of work'/>
                             </div>
 
-                            <div className='ProfileEdit-input-group ProfileEdit-emp-ind'>
-                                <label>Location</label>
-                                <input type='text' placeholder='Company location' value={this.state.profileEditFields.location}/>
-                            </div>
-
-                            <div className='ProfileEdit-input-group ProfileEdit-emp-ind'>
+                            <div className='ProfileEdit-input-group ProfileEdit-emp-bio'>
                                 <label>Bio</label>
                                 <textarea value={this.state.profileEditFields.shortDesc}></textarea>
                             </div>
                             
-                            <div className='ProfileEdit-input-group ProfileEdit-emp-ind'>
+                            <div className='ProfileEdit-input-group ProfileEdit-emp-yf'>
                                 <label>Year founded</label>
                                 <input type='date' placeholder='Year founded' value={this.state.profileEditFields.yearFounded}/>
                             </div>
 
-                            <div className='ProfileEdit-input-group ProfileEdit-emp-ind'>
+                            <div className='ProfileEdit-input-group ProfileEdit-emp-gs'>
                                 <label>Company growth stage</label>
                                 <input type='text' placeholder='Company growth stage' value={this.state.profileEditFields.companyGrowthStage}/>
+                            </div>
+
+                           <div className="ProfileEdit-input-group ProfileEdit-emp-studQuals">
+                            <div className='ProfileEdit-choice-slot-container'>
+                                    <label htmlFor='personalities'>What employee qualities do you prefer</label>
+                                    <fieldset name="personalities" className="ProfileEdit-valuesField">
+                                        {
+                                            studentPersonalities.map((background, index) => {
+                                                return <div data-experiencetype={background} className="ProfileEdit-valuesOption" onClick={this.handleEmpQualPick} key={index} style={this.state.empStudsPref.includes(background) ? {backgroundColor: "#00a68a"} : {}}>
+                                                    <span data-experiencetype={background} className="ProfileEdit-valuesOption-type" >{background}</span>
+                                                </div>
+                                            })
+                                        }
+                                    </fieldset>
+                                </div>
+                           </div>
+                            
+                            <div className="ProfileEdit-input-group ProfileEdit-emp-offer">
+                                <div className='ProfileEdit-choice-slot-container'>
+                                    <label>What will your company offer?</label>
+                                    <fieldset name="backgroundInput" className="ProfileEdit-valuesField">
+                                        {
+                                            studentValues.map((background, index) => {
+                                                return <div data-experiencetype={background} className="ProfileEdit-valuesOption" onClick={this.handleEmpOffer} key={index} style={this.state.empOffer.includes(background) ? {backgroundColor: "#00a68a"} : {}}>
+                                                    <span data-experiencetype={background} className="ProfileEdit-valuesOption-type" >{background}</span>
+                                                </div>
+                                            })
+                                        }
+                                    </fieldset>
+                                </div>
+                            </div>
+
+                            <div className="ProfileEdit-input-group ProfileEdit-emp-workEnv">
+                                <div className='ProfileEdit-choice-slot-container'>
+                                    <label>How would best describe the work environment at {this.state.curUser.companyName} </label>
+                                    <fieldset name="backgroundInput" className="ProfileEdit-valuesField">
+                                        {
+                                            workEnvironment.map((background, index) => {
+                                                return <div data-experiencetype={background} className="ProfileEdit-valuesOption" onClick={this.handleCompWorkEnv} key={index} style={this.state.empWorkEnv.includes(background) ? {backgroundColor: "#00a68a"} : {}}>
+                                                    <span data-experiencetype={background} className="ProfileEdit-valuesOption-type" >{background}</span>
+                                                </div>
+                                            })
+                                        }
+                                    </fieldset>
+                                </div>
                             </div>
 
                         </div>
