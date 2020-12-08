@@ -15,3 +15,13 @@ exports.CLIENT_ORIGIN = process.env.NODE_ENV === 'production'
   : 'http://localhost:3000';
 
 exports.PROJECT_EMAIL = process.env.NODE_ENV === 'production' ? process.env.PROJECT_EMAIL_PROD : process.env.PROJECT_EMAIL_DEV;
+
+exports.IMAGE_UPLOAD_KEY = process.env.IMGBB_API_KEY;
+
+exports.CLOUDINARY_NAME = process.env.CLOUD_NAME;
+
+exports.CLOUDINARY_API_KEY = process.env.CLOUD_API_KEY;
+
+exports.CLOUDINARY_SECRET = process.env.CLOUD_API_SECRET;
+
+exports.CLOUDINARY_ENV_VAR = process.env.CLOUDINARY_URL;

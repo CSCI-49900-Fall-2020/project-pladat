@@ -4,12 +4,17 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+const fileupload = require('express-fileupload');
+const imgbbUploader = require('imgbb-uploader');
+
 const dotenv = require('dotenv').config();
 const passport = require('passport');
 const cors = require('cors');
 const socket = require('socket.io');
 const events = require('events');
 const connectMongo = require('connect-mongo');
+
+
 
 const path = require('path');
 
@@ -23,6 +28,8 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(fileupload());
 
 /* Passport config */
 require('./configs/passport')(passport);
@@ -58,6 +65,10 @@ app.use(passport.session());
 /* Server routes */
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/jobs', require('./routes/api/jobs'));
+app.use('/api/employer', require('./routes/api/employer'));
+app.use('/api/student', require('./routes/api/student'));
+app.use('/api/recruiter', require('./routes/api/recruiter'));
+app.use('/api/users/upLoadImage', require('./routes/api/users'));
 
 
 if (process.env.NODE_ENV === 'production') {

@@ -160,6 +160,9 @@
 
 .auth-form-container-right {
     width: 40%;
+    position: relative;
+    align-items: center; 
+    justify-items: center;       
 }
 
 .auth-form-submitBtn-container {
@@ -218,6 +221,30 @@
     font-weight: 300;
 }
 .auth-form-redirectLinks span h3 span {
+    color: #00a68a;
+}
+
+.auth-form-container-right-footer {
+    position: absolute;
+    bottom: 0;
+    align-items: center;
+    align-self: center;
+    text-align: center;
+    width: 90%;
+    margin-left: auto;
+    right: 5%;
+    left: 5%;
+}
+.auth-form-container-right-footer a {
+    text-decoration: none;
+    outline: none;
+}
+.auth-form-container-right-footer h2 {
+    color: #666666;
+    font-weight: 300;
+    margin-bottom: 8px;
+}
+.auth-form-container-right-footer span {
     color: #00a68a;
 }
 

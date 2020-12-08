@@ -1,4 +1,4 @@
-import { UserConstants } from '../constants';
+import { UserConstants, EmployerConstants, StudentConstants, RecruiterConstants } from '../constants';
 
 const initialState = {
     isLoading: false,
@@ -19,7 +19,23 @@ const initialState = {
     authError: [],
     errorsDidChange: false,
     authState: null,
-    serverStatus: null
+    serverStatus: null,
+
+    userMatches: [],
+
+    uploadingImg: false,
+    imgUploadError: false,
+    upLoadedImg: null,
+
+    editingDefaultUser: false,
+    defaultEditFail: false,
+    defaultEditSuccess: false,
+
+    imagesUpdated: false,
+
+    editFields: {},
+
+    matchProfile: null
 };
 
 function user(state = initialState, action) {
@@ -79,6 +95,41 @@ function user(state = initialState, action) {
                 authMessage: "Something went wrong; please refresh page."
             };
         case UserConstants.LOADING_USER_SUCCESS:
+            let uInfo = action.userInfo.data;
+            let efs = null;
+            if(uInfo.typeOfUser === 'Student') {
+                efs = { 
+                    university: uInfo.university, major: uInfo.major,
+                    graduationDate: uInfo.graduationDate,
+                    shortDesc: uInfo.shortDesc,
+                    skills: uInfo.skills,
+                    resume: uInfo.resume,
+                    values: uInfo.values,
+                    socials: uInfo.socials,
+                    generalExperience: uInfo.generalExperience,
+                    preferredRoles: uInfo.preferredRoles 
+                };
+            }
+            else if(uInfo.typeOfUser === 'Employer') {
+                efs = {
+                    companyGrowthStage: uInfo.companyGrowthStage,
+                    approxNumEmployees: uInfo.approxNumEmployees,
+                    yearFounded: uInfo.yearFounded,
+                    socials: uInfo.socials,
+                    industry: uInfo.industry,
+                    location: uInfo.location,
+                    shortDesc: uInfo.shortDesc
+                }
+            }
+            else {
+                efs = {
+                    education: uInfo.education,
+                    jobTitle: uInfo.jobTitle,
+                    shortDesc: uInfo.shortDesc,
+                    socials: uInfo.socials,
+                    automatedMatchMsg: uInfo.automatedMatchMsg
+                }
+            }
             return {
                 ...state,
                 isLoading: false,
@@ -89,7 +140,8 @@ function user(state = initialState, action) {
                 authError: [],
                 authState: UserConstants.LOADING_USER_SUCCESS,
                 emailIsValidated: action.userInfo.data.isVerified,
-                loggedIn: true
+                loggedIn: true,
+                editFields: { ...efs}
             }
         case UserConstants.USER_LOGGING_IN:
             return {
@@ -271,6 +323,56 @@ function user(state = initialState, action) {
                 authMessage: action.msg,
                 authState: action.authState,
                 serverStatus: action.status
+            };
+        //Update user when profileEdit
+        case UserConstants.EDITING_PROFILE:
+            return {
+                ...state,
+                editingDefaultUser: true,
+                defaultEditSuccess: false,
+                defaultEditSuccess: false
+            };
+        case UserConstants.EDITING_PROFILE_FAIL:
+            return {
+                ...state,
+                editingDefaultUser: false,
+                defaultEditFail: true,
+                defaultEditSuccess: false
+            };
+        case UserConstants.EDITING_PROFILE_SUCCESS:
+        case StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS:
+        case EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS:
+        case RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS:
+        case RecruiterConstants.VERIFY_AS_RECRUITER_EMAIL_SENT:
+            return {
+                ...state,
+                user: action.user,
+                defaultEditSuccess: true,
+                defaultEditFail: false,
+                editingDefaultUser: false,
+                imagesUpdated: action.imgData ? true : false,
+                upLoadedImg: action.imgData ? action.imgData : state.upLoadedImg,
+                matchProfile: action.matchProfile ? action.matchProfile : state.matchProfile
+            };
+        case UserConstants.UPLOADING_IMG:
+            return {
+                ...state,
+                uploadingImg: true,
+                imgUploadError: false
+            };
+        case UserConstants.IMG_UPLOAD_SUCCESS:
+            return {
+                ...state,
+                uploadingImg: false,
+                upLoadedImg: action.imgData,
+                imgUploadError: false
+            };
+        case UserConstants.IMG_UPLOAD_FAIL:
+            return {
+                ...state,
+                uploadingImg: false,
+                upLoadedImg: null,
+                imgUploadError: true
             };
         default:
             return state;

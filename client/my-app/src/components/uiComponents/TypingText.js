@@ -14,7 +14,7 @@ export default class TypingText extends React.Component {
             forward: false,
             curSentenceIndex: 0,
             typingSpeed: 50,
-            afterForwardPause: 6400,
+            afterForwardPause: this.props.fpause ? this.props.fpause : 6400,
             afterBackwardPause: 400,
             typeIteration: 0,
             loaded: false,

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import MintAnimation from '../uiComponents/Mint';
+
 import './styles/Login.css';
 import './styles/Base.css';
 import './styles/MediaPages.css';
@@ -19,8 +21,8 @@ class Login extends Component {
         super(props);
         this.errRef = React.createRef();
         this.state = {
-            email: null,
-            password: null,
+            email: '',
+            password: '',
             authErrors: [],
             authErrorsMapper: [],
             formSubmitted: false,
@@ -99,11 +101,24 @@ class Login extends Component {
 
     }
 
+    handleBasicOnSuccess = () => {
+        switch(this.props.user.user.typeOfUser) {
+            case 'Student':
+                return this.props.user.user.hasAtLeastOneImage ? `/s/discover` : `/s/me`;
+            case 'Recruiter':
+                return this.props.user.user.hasAtLeastOneImage ? `/r/discover` : `/r/me`;
+            case 'Employer':
+                return this.props.user.user.hasAtLeastOneImage ? `/e/discover` : `/e/me`;
+            default:
+                return;
+        }
+    }
+
     computeRedirectUrl = () => {
         let userType = this.props.user.user.typeOfUser.toLowerCase();
         let basicComplete = this.props.user.user.basicProfileInfoComplete;
 
-        let url = basicComplete ? "/login" : `${userType}/basicInfo`;
+        let url = basicComplete ? this.handleBasicOnSuccess() : `${userType}/basicInfo`;
 
         return url;
     }
@@ -288,7 +303,9 @@ class Login extends Component {
                         </div>
 
                         <div className="auth-form-container-right" id="auth-login-form-container-right">
-                            Nice logo or mint svg goes here
+                            <MintAnimation />
+
+                            <div className='auth-form-container-right-footer'> <Link to='/'><h2>Place<span>Mint</span></h2></Link> </div>
                         </div>
 
                     </div>

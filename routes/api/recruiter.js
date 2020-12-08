@@ -12,20 +12,19 @@ const Job = require('../../models/Job');
 
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 
-const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PROJECT_EMAIL} = require('../../configs/prodConfig');
+const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PROJECT_EMAIL, JWT_EMAIL_VERIFY_SIGN_OPTIONS} = require('../../configs/prodConfig');
 
 const { recruiterConfigEmail } = require('../../configs/RecruiterVerification');
 
 
-
-router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) => {
+router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
     const { education, jobTitle, shortDesc, company } = req.body;
 
     if(!education || !jobTitle || !shortDesc || !company) {
         return res.status(401).json({success: false, msg: "Please enter all the required information."});
     }
 
-    Employer.findOne({companyName: company, isVerifiedCompany: true, isVerfied: true, basicProfileInfoComplete: true})
+    Employer.findOne({_id: company, isVerifiedCompany: true, isVerified: true, basicProfileInfoComplete: true})
     .then(employer => {
         if(!employer) {
             return res.status(403).json({success: false, msg: "You're employer must be registered on this platform."}); 
@@ -35,7 +34,8 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
 
         let signUserInfo = { name: req.user.firstname + " " + req.user.lastname, email: req.user.email, uId: req.user._id};
 
-        jwt.sign({signUserInfo}, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, { }, (err, token) => {
+        jwt.sign({signUserInfo}, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, JWT_EMAIL_VERIFY_SIGN_OPTIONS, (err, token) => {
+            // console.log('Jwt started');
             if(err) {
                 return res.status(500).json({success: false, msg: 'Something went wrong trying to verify you as a recruiter', err});
             }
@@ -53,6 +53,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                 html: htmlContent
             };
             sgMail.send(msg, (err) => {
+                // console.log('emailing recruiter company...');
                 if(Object.entries(err).length > 0) {
                     return res.status(500).json({success: false, msg: "Something went wrong; can't send validation email.", err});
                 }
@@ -63,7 +64,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                         $set: {
                             education: education,
                             jobTitle: jobTitle,
-                            company: company,
+                            company: employer.companyName,
                             shortDesc: shortDesc,
                             basicProfileInfoComplete: true,
                             companyId: employer._id
@@ -79,7 +80,7 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
                 })
                 .catch(err => {
                     return res.status(500).json({success: false, msg: "Couldn't edit your basic profile", err});
-                })
+                });
             });
             
         });
@@ -90,23 +91,109 @@ router.put('/recruiter/completeBaiscProfile', ensureAuthorisation, (req, res) =>
     })
 })
 
-
-router.put('/recruiter/completeMatchProfile', ensureAuthenticated, (req, res) => {
+router.put('/completeMatchProfile', ensureAuthorisation, (req, res) => {
     const { automatedMatchMsg, matchProfile } = req.body;
+    Recruiter.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                automatedMatchMsg: automatedMatchMsg,
+                matchProfile: matchProfile
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(recruiter => {
+        return res.status(200).json({success: true, msg: "Edited match profile.", recruiter});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; couldn't edit match profile.", err});
+    })
     
 });
 
-router.put('/recruiter/editProfile', ensureAuthenticated, (req, res) => {
+router.put('/editProfile', ensureAuthorisation, (req, res) => {
     const {
-     
+        education,
+        jobTitle,
+        shortDesc,
+        socials,
+        automatedMatchMsg
     } = req.body;
+    Recruiter.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                education: education,
+                jobTitle: jobTitle,
+                shortDesc: shortDesc,
+                socials: socials,
+                automatedMatchMsg: automatedMatchMsg
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(recruiter => {
+        res.status(200).json({success: true, msg: "Changed profile.", recruiter});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; couldn't edit profile.", err});
+    })
 });
 
-router.put('/recruiter/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
+router.get('/getRecruiter/:rId', ensureAuthenticated, (req, res) => {
+    Recruiter.findOne({_id: req.params.rId})
+    .then(recruiter => {
+        if(!recruiter) {
+            return res.status(422).json({success: false, msg: "Recruiter doesn't exist"})
+        }
+        let returnedRecruiter = { ...recruiter, password: null };
+        return res.status(200).json({success: true, msg: "Recruiter found.", recruiter: {...returnedRecruiter}})
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; couldn't find recruiter.", err});
+    })
+});
+
+router.get('/getRecruiterOnJob/:jobId', ensureAuthenticated, (req, res) => {
+    Job.findOne({_id: req.params.jobId})
+    .then(job => {
+        if(!job) {
+            return res.status(422).json({success: false, msg: "Job doesn't exist"});
+        }
+        // const returnedRecruiter = { ...job.assignedRecruiter, password: null };
+        return res.status(200).json({success: true, msg: "Recruiters for job found.", recruiter: job.assignedRecruiter});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong, couldn't get recruiters for this job", err});
+    })
+});
+
+router.get('/getRecruitersForCompany/:empId', ensureAuthenticated, (req, res) => {
+    Recruiter.find({companyId: req.params.empId})
+    .then(recruiters => {
+        if(!recruiters) {
+            return res.status(422).json({success: false, msg: "recruiters not found for this company"});
+        }
+        return res.status(200).json({success: true, msg: "Recruiters found for company.", recruiters});
+    })
+    .catch(err => {
+        res.status(422).json({success: false, msg: "Something went wrong; recruiters not found for this company", err});
+    })
+});
+
+
+router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
    
 });
 
-router.put('/recruiter/swipeLeft/:jobId', ensureAuthenticated, (req, res) => {
+router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
    
 })
 

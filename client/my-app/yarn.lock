@@ -4952,6 +4952,11 @@ fs.realpath@^1.0.0:
   resolved "https://registry.yarnpkg.com/fs.realpath/-/fs.realpath-1.0.0.tgz#1504ad2523158caa40db4a2787cb01411994ea4f"
   integrity sha1-FQStJSMVjKpA20onh8sBQRmU6k8=
 
+fs@0.0.1-security:
+  version "0.0.1-security"
+  resolved "https://registry.yarnpkg.com/fs/-/fs-0.0.1-security.tgz#8a7bd37186b6dddf3813f23858b57ecaaf5e41d4"
+  integrity sha1-invTcYa23d84E/I4WLV+yq9eQdQ=
+
 fsevents@2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.1.2.tgz#4c0a1fb34bc68e543b4b82a9ec392bfbda840805"
@@ -5474,6 +5479,13 @@ ignore@^4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-4.0.6.tgz#750e3db5862087b4737ebac8207ffd1ef27b25fc"
   integrity sha512-cyFDKrqc/YdcWFniJhzI42+AzS+gNwmUzOSFcRCQYwySuBBBy/KjuxWLZ/FHEH6Moq1NizMOBWyTcv8O4OZIMg==
+
+imgbb-uploader@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/imgbb-uploader/-/imgbb-uploader-1.1.0.tgz#962eae5079954bb9cf26db0be384afa4b71a016a"
+  integrity sha512-i3cnDOE+hEy4Q4ZjYknUJTIJO67Ottgr7w+Dfud/dIA+Cbr9MoN2hBlk0rE3TErk93PgMQmmps7djzzCZ/blcw==
+  dependencies:
+    fs "0.0.1-security"
 
 immer@1.10.0:
   version "1.10.0"
