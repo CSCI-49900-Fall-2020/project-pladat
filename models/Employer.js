@@ -2,15 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const User = require('./User');
 
-// const EmployerSchema = new Schema({
-    // companyName: {type: String, required: true},
-    // activeListed: [{type: Schema.Types.ObjectId, ref: 'Job'}],
-    // recruiters: [{type: Schema.Types.ObjectId, ref: 'Recruiter'}],
-    // internalRank: {type: Number, default: 1},
-    // profile: {type: Schema.Types.Mixed, required: true},
-    // isVerified: {type: Boolean, default: false}
-// });
-
 const Employer = User.discriminator('Employer', new Schema({
     companyName: {type: String, required: false, defualt: null},
     industry: [{type: String, required: false, defualt: null}],
@@ -22,7 +13,7 @@ const Employer = User.discriminator('Employer', new Schema({
     activeListed: [{type: Schema.Types.ObjectId, required: false, ref: 'Job', defualt: null}],
     recruiters: [{type: Schema.Types.ObjectId, required: false, ref: 'Recruiter', defualt: null}],
     internalRank: {type: Number, required: false, default: 1},
-    matchProfile: {type: Schema.Types.Mixed, required: false, defualt: null},
+    matchProfile: {type: Schema.Types.ObjectId, required: false, ref: 'MatchProfile'},
     isVerifiedCompany: {type: Boolean, required: false, default: false},
     shortDesc: {type: String, required: false, default: null},
     values: {

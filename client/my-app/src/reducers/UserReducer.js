@@ -34,6 +34,8 @@ const initialState = {
     imagesUpdated: false,
 
     editFields: {},
+
+    matchProfile: null
 };
 
 function user(state = initialState, action) {
@@ -349,7 +351,8 @@ function user(state = initialState, action) {
                 defaultEditFail: false,
                 editingDefaultUser: false,
                 imagesUpdated: action.imgData ? true : false,
-                upLoadedImg: action.imgData
+                upLoadedImg: action.imgData ? action.imgData : state.upLoadedImg,
+                matchProfile: action.matchProfile ? action.matchProfile : state.matchProfile
             };
         case UserConstants.UPLOADING_IMG:
             return {

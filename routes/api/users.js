@@ -230,10 +230,11 @@ router.post('/login', (req, res, next) => {
 
 router.post('/logout', ensureAuthenticated, (req, res) => {
     User.findOneAndUpdate(
-        { email: req.user.email },
+        { _id: req.user._id },
         { $set: { isActive: false } }
     )
     .then(user => {
+        console.log(user);
         req.logout();
         return res.status(200).json({success: true, msg: "You've been logged out."});
     })

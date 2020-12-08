@@ -203,6 +203,7 @@
     align-content: center;
     justify-items: center;
     align-items: center;
+    padding-bottom: 0;
     /* border: 1px solid #666666; */
 }
 .ProfileEdit-input-group input {

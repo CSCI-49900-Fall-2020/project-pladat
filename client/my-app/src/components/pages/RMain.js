@@ -158,6 +158,7 @@ class RMain extends React.Component {
 
     handleLogOut = (event) => {
         event.preventDefault();
+        this.props.actions.userActions.logOutUser();
         return;
     }
 
@@ -189,6 +190,19 @@ class RMain extends React.Component {
                             <div className="inner-gridContainer">
                                 <div className='grid-left-sidebar'>
                                     <div className='grid-left-nameHolder'>
+                                        {
+                                            this.state.curLocation.indexOf('/r/discover') < 0 ?
+
+                                            <span className="grid-left-backToDiscoverBtn" title="Discover">
+                                                <Link to='/r/discover/'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                        <path d="M0 0h24v24H0z" fill="#00a68a"/>
+                                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                                    </svg>
+                                                </Link>
+                                            </span>
+                                            : ''
+                                        }
                                         <span className='grid-left-nameHolder-nameLink'><Link to='/r/me'><h1 className='text'>{this.state.recruiterUserName}</h1></Link></span>
                                         <span className='grid-left-nameHolder-avatarLink'><Link to='/r/me'>{tempAvatar}</Link></span>
                                     </div>
