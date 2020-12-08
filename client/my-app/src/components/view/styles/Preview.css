@@ -1,0 +1,144 @@
+.preview-wrapper {
+
+}
+
+.buttons-container {
+    bottom: 2vh;
+    align-items: center;
+    display: flex;
+    overflow-x: hidden;
+    justify-content: center;
+}
+
+.card-wrapper {
+    display: absolute;
+    justify-content: center;
+}
+
+.card {
+    background-color: #00a186;
+    /* background-color: #00a68a; */
+    position: relative;
+    width: 68vw;
+    height: 75vh;
+    padding: 20px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0px 18px 53px 0px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: row;
+    overflow-y: scroll;
+}
+
+#card-pic {
+    width: 30vw;
+    height: 75vh;
+    box-shadow: 0px 18px 53px 0px rgba(0,0,0,0.3);
+}
+
+.card-picture {
+    background-size: cover;
+    background-position: center;
+}
+
+.card > h1 {
+    top: 275px;
+    left: 34vw;
+    overflow-y:auto;
+    position: absolute;
+    color: white;
+    font-family: Montserrat, sans-serif;
+}
+
+.card > h2 {
+    top: 325px;
+    left: 34vw;
+    overflow-y:auto;
+    position: absolute;
+    color: white;
+    font-family: Montserrat, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.card > h3 {
+    top: 1350px;
+    position: absolute;
+    color: white;
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+}
+
+.card > h4 {
+    top: 1400px;
+    position: absolute;
+    color:white;
+    font-family: Montserrat, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.card > h5 {
+    top: 950px;
+    position: absolute;
+    color:white;
+    font-family: Montserrat, sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+}
+
+.card > h6 {
+    top: 1000px;
+    position: absolute;
+    color:white;
+    font-family: Montserrat, sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+}
+
+.like_button {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    object-fit: cover;
+}
+
+.dislike_button {
+    background-color: rgb(40, 40, 40);
+    box-shadow: 0px 10px 53px 0px rgba(0, 0, 0,0.3) !important;
+    color: #00a68a !important;
+    height: 10vh;
+    width: 10vh;
+    border: transparent;
+}
+
+.card::-webkit-scrollbar {
+    width: .5em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    /* cursor: pointer; */
+    outline: none !important;
+  }
+   
+.card::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+    border-radius: 4px;
+    /* cursor: pointer; */
+    outline: none !important;
+}
+   
+.card::-webkit-scrollbar-thumb {
+    background-color: #666666;
+    outline: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none !important;
+}
