@@ -158,6 +158,7 @@ class EMain extends React.Component {
 
     handleLogOut = (event) => {
         event.preventDefault();
+        this.props.actions.userActions.logOutUser();
         return;
     }
 

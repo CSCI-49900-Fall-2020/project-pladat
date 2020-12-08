@@ -41,8 +41,7 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
     })
 }
 
-
-export const editMatchProfile = (matchProfile) => dispatch => {
+export const editMatchProfile = () => dispatch => {
     dispatch({type: EmployerConstants.EDITING_EMPLOYER_PROFILE});
 
     const configs = {
@@ -55,14 +54,14 @@ export const editMatchProfile = (matchProfile) => dispatch => {
         },
     };
 
-    const requestBody = JSON.stringify({...matchProfile});
+    // const requestBody = JSON.stringify({...matchProfile});
 
-    axios.put('/api/employer/editMatchProfile', requestBody, {params: {userType: 'Employer'}, ...configs})
+    axios.put('/api/employer/editMatchProfile', {params: {userType: 'Employer'}, ...configs})
     .then(res => {
         dispatch({
             type: EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS,
             msg: res.data.msg,
-            user: res.data.employer
+            matchProfile: res.data.matchProf
         })
     })
     .catch(error => {

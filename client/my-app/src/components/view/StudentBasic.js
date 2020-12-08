@@ -13,6 +13,7 @@ import { usSchoolNames } from '../../staticData/universites';
 import { preferredRoles } from '../../staticData/preferredRoles';
 import { experienceArr } from '../../staticData/experience';
 import { majorsArr } from '../../staticData/majors';
+import { skillsArr } from '../../staticData/skills';
 
 import ButtonLoader from '../uiComponents/ButtonLoader';
 
@@ -20,6 +21,7 @@ import ButtonLoader from '../uiComponents/ButtonLoader';
 import './styles/StudentBasic.css';
 import './styles/Base.css';
 import './styles/Media.css';
+import { industries } from '../../staticData/industries';
 
 
 
@@ -41,7 +43,10 @@ class StudentBasic extends React.Component {
             uniArrIdx: 0,
             roles: [],
             experiences: [],
-            submittingData: false
+            submittingData: false,
+            skills:[],
+            skill: "",
+            skillArrIdx: 0,
         }
     }
 
@@ -148,7 +153,7 @@ class StudentBasic extends React.Component {
         // const regex = /^((0[1-9]{1})|(1[0-2]{1}))(\-)([0-9]{2})(\-)([0-9]{4})$/g;
         const regex = /^([0-9]{2})(\-)([0-9]{2})(\-)([0-9]{4})$/g;
         const mmddyyFormat = regex.test(reversedDate);
-        console.log(reversedDate, mmddyyFormat);
+        // console.log(reversedDate, mmddyyFormat);
         return mmddyyFormat;
 
     }
@@ -214,6 +219,7 @@ class StudentBasic extends React.Component {
     handleMajorRemove = (event) => {
         event.preventDefault();
         let id = event.target.id;
+        // console.log(id);
         id = Number(id);
 
         let majs = this.state.majors;
@@ -294,6 +300,48 @@ class StudentBasic extends React.Component {
     }
 
 
+    handleSkillInput = (event) => {
+        event.preventDefault();
+        this.setState({
+            skill: event.target.value,
+            skills: this.state.skills.length <= 1 && this.state.skillArrIdx === 0 ?  [event.target.value] : this.state.skills
+        })
+    }
+    handleAddSkill = (event) => {
+        event.preventDefault();
+       if(this.state.skill.length > 0) {
+           if(this.state.skills.length === 1 && this.state.skills.includes(this.state.skill)) {
+               this.setState({
+                   skill: '',
+                   skills: this.state.skills,
+                   skillArrIdx: 1
+               })
+           }
+           else {
+               if(this.state.skills.length >=1 && !this.state.skills.includes(this.state.skill)) {
+                   let pusher = this.state.skills;
+                   pusher.push(this.state.skill);
+                   this.setState({
+                       skills: pusher,
+                       skill: '',
+                       skillArrIdx: this.state.skillArrIdx+1
+                   })
+               }
+           }
+       }
+    }
+    handleSkillRemove = (event) => {
+        event.preventDefault();
+        let id = event.target.dataset.idx;
+        let popper = this.state.skills;
+        popper.splice(id,1);
+        this.setState({
+            skills: popper,
+            skillArrIdx: this.state.skillArrIdx > 0 ? this.state.skillArrIdx-1: 0
+        })
+    }
+
+
     handleSubmitBasicInfo = (event) => {
         const submitData = {
             university: this.state.universities,
@@ -301,7 +349,8 @@ class StudentBasic extends React.Component {
             graduationDate: this.state.gradDate,
             shortDesc: this.state.shortDesc,
             preferredRoles: this.state.roles,
-            generalExperience: this.state.experiences
+            generalExperience: this.state.experiences,
+            skills: this.state.skills
         };
 
         this.setState({
@@ -368,6 +417,19 @@ class StudentBasic extends React.Component {
                                         }
                                     </fieldset>
                                 </div>
+                                {/* skills */}
+                                <div className="basicInfo-form-inputContainer" id="basicInfo-form-skills">
+                                    <label htmlFor="skillsInput" className="text basicInfo-form-inputLabel">What is you skillset?</label>
+                                    <input value={this.state.skill} onChange={this.handleSkillInput} name="skillsInput" list="skillsList" className="basicInfo-form-input" placeholder="skills"/>
+                                    <span className="basicInfo-form-addBtn" onClick={this.handleAddSkill}>Add <span>&#43;</span></span>
+                                    <datalist id="skillsList">
+                                        {
+                                            skillsArr.map((skill, index) => {
+                                                return <option value={skill} key={'skill'+index} />
+                                            })
+                                        }
+                                    </datalist>
+                                </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-preferred">
                                     <label htmlFor="preferred" className="text basicInfo-form-inputLabel">What's your preferred work role?</label>
                                     <fieldset name="preferred" className="basicInfo-form-optionsBox" id="basicInfo-form-preferredRolesContainer">
@@ -425,8 +487,8 @@ class StudentBasic extends React.Component {
                                 <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-unis">
                                     <label>You've attended: </label>
                                     {this.state.universities.map((uni, idx) => {
-                                        return <span className="basicInfo-form-right-slot" key={idx} id={idx+""}>
-                                            {uni}  <span onClick={this.handleUniRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
+                                        return <span className="basicInfo-form-right-slot" key={idx} >
+                                            {uni}  <span id={idx+""} onClick={this.handleUniRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
                                         </span>
                                     })}
                                 </div> 
@@ -447,8 +509,8 @@ class StudentBasic extends React.Component {
                                 <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-majors">
                                     <label>You're majoring in: </label>
                                     {this.state.majors.map((major, idx) => {
-                                        return <span className="basicInfo-form-right-slot" key={idx} id={idx+""}>
-                                            {major}  <span onClick={this.handleMajorRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
+                                        return <span className="basicInfo-form-right-slot" key={idx}>
+                                            {major}  <span id={idx+""} onClick={this.handleMajorRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
                                         </span>
                                     })}
                                 </div> 
@@ -461,6 +523,18 @@ class StudentBasic extends React.Component {
                                     {this.state.experiences.map((exp, idx) => {
                                         return <span className="basicInfo-form-right-slot" key={idx} id={idx+"exp"}>
                                             {exp} 
+                                        </span>
+                                    })}
+                                </div> 
+                                : ""
+                            }
+                            {
+                                this.state.skills.length > 0 ?
+                                <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-skills">
+                                    <label>Skillset: </label>
+                                    {this.state.skills.map((skill, idx) => {
+                                        return <span className="basicInfo-form-right-slot" key={idx} >
+                                            {skill}  <span data-idx={idx} onClick={this.handleSkillRemove} title="Remove" className="basicInfo-form-right-slotRemoveBtn">&#10006;</span>
                                         </span>
                                     })}
                                 </div> 

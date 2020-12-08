@@ -32,7 +32,8 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
     let prefRoles = preferredRoles.reduce((a, b) => (a[b]=0,a),{});
     let studMatchProfile = new MatchProfile({
         userId: req.user._id,
-        psychType: 'Student',
+        psychType: req.user.typeOfUser,
+        psychTarget: 'Employer',
         candidates: [],
         university: university,
         majors: major,
@@ -69,7 +70,7 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
                    shortDesc: shortDesc,
                    graduationDate: graduationDate,
                    preferredRoles: preferredRoles,
-                   generalExperience: generalExperience
+                   generalExperience: generalExperience,
                }
            },
            {

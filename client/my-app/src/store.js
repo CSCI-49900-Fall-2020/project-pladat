@@ -169,7 +169,9 @@ let user = {
     defaultEditSuccess: false,
 
     imagesUpdated: false,
-    editFields: {}
+    editFields: {},
+
+    matchProfile: null
 };
 
 const defaultState = {

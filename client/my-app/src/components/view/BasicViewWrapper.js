@@ -27,7 +27,7 @@ class BasicViewWrapper extends React.Component {
 
     componentDidUpdate(prevProps) { 
         if(this.props !== prevProps) {
-            console.log('wrapper component update');
+            // console.log('wrapper component update');
             const { basicProfileInfoComplete } = this.props.user.user;
             const { studentActionState, basicSuccessStud } = this.props.students;
             const { employerActionState, basicSuccessEmp } = this.props.employers;

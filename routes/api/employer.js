@@ -13,56 +13,104 @@ const Job = require('../../models/Job');
 const { ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 
 const { JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER } = require('../../configs/prodConfig');
+const MatchProfile = require('../../models/MatchProfile');
+const Match = require('../../models/Match');
 
 
 router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
     const { companyName, industry, location, shortDesc, yearFounded, companyGrowthStage, approxNumEmployees } = req.body;
-    Employer.findOneAndUpdate(
-        {_id: req.user.id},
-        {
-            $set: {
-                companyName: companyName,
-                industry: industry,
-                location: location,
-                basicProfileInfoComplete: true,
-                shortDesc: shortDesc,
-                yearFounded: yearFounded,
-                approxNumEmployees: approxNumEmployees,
-                companyGrowthStage: companyGrowthStage,
-                isVerifiedCompany: true
+    let newMatchProf = new MatchProfile({
+        userId: req.user._id,
+        psychType: req.user.typeOfUser,
+        psychTarget: 'Student',
+        candidates: [],
+        companyName: companyName,
+        industries: [...industry],
+        locations: [location],
+        cgs: companyGrowthStage,
+        approxNumEmployees,
+        compOffers: [],
+        ir: req.user.internalRank,
+        jobsListed: [],
+        todos: [],
+        workEnv: [],
+        roles: [],
+
+        universityPref: {},
+        majorPref: {},
+        skillsPref: {},
+        experiencePref: {},
+        personalityPref: {}
+    });
+    newMatchProf.save()
+    .then(empMatchProf => {
+        Employer.findOneAndUpdate(
+            {_id: req.user.id},
+            {
+                $set: {
+                    companyName: companyName,
+                    industry: industry,
+                    location: location,
+                    basicProfileInfoComplete: true,
+                    shortDesc: shortDesc,
+                    yearFounded: yearFounded,
+                    approxNumEmployees: approxNumEmployees,
+                    companyGrowthStage: companyGrowthStage,
+                    isVerifiedCompany: true,
+                    matchProfile: empMatchProf._id
+                }
+            },
+            {
+                new: true,
+                returnNewDocument: true
             }
-        },
-        {
-            new: true,
-            returnNewDocument: true
-        }
-    )
-    .then(employer => {
-        return res.status(200).json({success: true, msg: "Completed employer basic profile.", employer});
+        )
+        .then(employer => {
+            return res.status(200).json({success: true, msg: "Completed employer basic profile.", employer, matchProf: empMatchProf});
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(422).json({success: false, msg: "Something went wrong; couldn't complete your employer basic profile.", err});
+        })
     })
     .catch(err => {
-        return res.status(422).json({success: false, msg: "Something went wrong; couldn't complete your employer basic profile.", err});
+        return res.status(422).json({success: false, msg: "Something went wrong; couldn't create match profile"}, err);
     })
+    
 });
 
 router.put('/editMatchProfile', ensureAuthorisation, (req, res) => {
-    const { matchProfile } = req.body;
-    Employer.findOneAndUpdate(
-        {_id: req.user._id},
-        {
-            $set: { matchProfile: matchProfile}
-        },
-        {
-            new: true,
-            returnNewDocument: true
-        }
-    )
-    .then(employer => {
-        res.status(200).json({success: true, msg: "Edited match profile.", employer});
-    })
-    .catch(err => {
-        res.status(422).json({success: false, msg: "Couldn't edit match profile.", err});
-    })
+   const {compOffer, studPersPref, workEnv} = req.user.values;
+   MatchProfile.findOne({_id: req.user.matchProfile})
+   .then(empMatchProf => {
+       let curEmpProf = empMatchProf;
+       curEmpProf.compOffers = [...compOffer];
+       studPersPref.map((pref, idx) => {
+           curEmpProf.personalityPref[pref] ? curEmpProf.personalityPref[pref]++ : curEmpProf.personalityPref[pref] = 0
+       });
+       curEmpProf.workEnv = [...workEnv];
+       MatchProfile.findOneAndUpdate(
+           {_id: empMatchProf._id},
+           {
+               $set: {
+                   ...curEmpProf
+               }
+           },
+           {
+               new: true,
+               returnNewDocument: true
+           }
+       )
+       .then(editedEmpMatchProf => {
+           return res.status(200).json({success: false, msg: "Successfully edited match profile", matchProf: editedEmpMatchProf});
+       })
+       .catch(err => {
+           return res.status(422).json({success: false, msg: 'Something went wrong; could not edit match profile', err});
+       })
+   })
+   .catch(err => {
+       return res.status(422).json({success: false, msg: "Something went wrong trying to edit match profile", err});
+   })
 });
 
 router.put('/editProfile', ensureAuthorisation, (req, res) => {
@@ -230,34 +278,62 @@ router.get('/queryByName/:query', ensureAuthenticated, (req, res) => {
 });
 
 router.post('/createJob', ensureAuthorisation, (req, res) => {
-    const {
-        title,
-        description,
-        locations,
-        todo,
-        mustHaveSkills,
-        recommendSkills,
-        dateClose,
-        matchLimit,
-        typeOfJob,
-        assignedRecruiter,
-        fullJobAppLink,
-        unListOnMatchLimit
-    } = req.body;
+   const {
+    title,
+    description,
+    companyName,
+    locations,
+    skillsRequired,
+    typeOfJob,
+    industry,
+    assignedRecruiter,
+    fullJobAppLink,
+    dateClose
+   } = req.body;
 
-    const newJob = new Job({
-        title: title, description: description, locations: locations, todo: todo, mustHaveSkills: mustHaveSkills, recommendSkills: recommendSkills,
-        dateClose: dateClose, matchLimit: matchLimit, typeOfJob: typeOfJob, assignedRecruiter: assignedRecruiter, fullJobAppLink: fullJobAppLink,
-        unListOnMatchLimit: unListOnMatchLimit, companyId: req.user._id, companyName: req.user.companyName, dateOpen: Date.now(), matchProfile: req.user.matchProfile,
-        isOpen: true, industry: req.user.industry
-    });
-    newJob.save()
-    .then(job => {
-        return res.status(200).json({success: true, msg: "Created a new job listing.", job});
-    })
-    .catch(err => {
-        return res.status(422).json({success: false, msg: "Something went wrong, couldn't create jobs"});
-    })
+   const newJobPost = new Job({
+       title, description, companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
+       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile
+   });
+
+   newJobPost.save()
+   .then(job => {
+       MatchProfile.findOne({_id: req.user.matchProfile})
+       .then(empMatchProf => {
+           let curEmpProf = empMatchProf;
+           curEmpProf.jobsListed.push(job._id);
+           curEmpProf.industries.includes(industry) ? curEmpProf.industries = curEmpProf.industries : [...curEmpProf.industries, industry];
+           locations.map((loc, idx) => {
+               if(!curEmpProf.locations.includes(loc)) {
+                   curEmpProf.locations.push(loc);
+               }
+           });
+           MatchProfile.findOneAndUpdate(
+               {_id: req.user.matchProfile},
+               {
+                   $set: {
+                       ...curEmpProf
+                   }
+               },
+               {
+                   new: true,
+                   returnNewDocument: true
+               }
+           )
+           .then(editedMp => {
+               return res.status(200).json({success: true, msg: "created job, and edited match profile", job, matchProf: editedMp});
+           })
+           .catch(err => {
+               return res.status(422).json({success: false, msg: "Someting went wrong; created job, but couldn't edit match profile.", err, job});
+           }) 
+       })
+       .catch(err => {
+           return res.status(422).json({success: false, msg: "Created job but couldn't edit match profile"});
+       })
+   })
+   .catch(err => {
+       return res.status(422).json({success: false, msg: "Couldn't create job something went wrong", err});
+   })
 });
 
 router.put('/editJob/:jobId', ensureAuthorisation, (req, res) => {
