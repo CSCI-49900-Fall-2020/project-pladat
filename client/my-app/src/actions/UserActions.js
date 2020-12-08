@@ -196,7 +196,7 @@ export const removeFromLoalStorage = () => dispatch => {
 
 export const logOutUser = () => dispatch => {
     dispatch(userLoggingOut());
-    axios.get('/api/users/logout')
+    axios.put('/api/users/logout')
     .then(res => {
         dispatch({type: UserConstants.REMOVING_FROM_STORAGE});
         dispatch(removeFromLoalStorage());

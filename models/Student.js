@@ -11,11 +11,11 @@ const Student = User.discriminator('Student', new Schema({
     socials: {linkedin: String, personalSite: String, otherWeb: Schema.Types.Mixed},
     resume: {type: String, required: false, defualt: null},
     values: {
-        compVals: [{type: String, lowercase: true, trim: true}],
-        personality: [{type: String, lowercase: true, trim: true}],
-        workEnv: [{type: String, lowercase: true, trim: true}],
-        compStage: [{type: String, lowercase: true, trim: true}],
-        industry: [{type: String, lowercase: true, trim: true}]
+        compVals: [{type: String, lowercase: false, trim: true}],
+        personality: [{type: String, lowercase: false, trim: true}],
+        workEnv: [{type: String, lowercase: false, trim: true}],
+        compStage: [{type: String, lowercase: false, trim: true}],
+        industry: [{type: String, lowercase: false, trim: true}]
     },
     internalRank: {type: Number, required: false, default: 1},
     

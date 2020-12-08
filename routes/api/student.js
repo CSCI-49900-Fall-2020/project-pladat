@@ -56,7 +56,7 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
     });
     studMatchProfile.save()
     .then(matchProf => {
-       if(!matchProfile) {
+       if(!matchProf) {
            return res.status(422).json({success: false, msg: "Couldn't edit basic profile"});
        }
        Student.findOneAndUpdate(
@@ -79,14 +79,14 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
            }
        )
        .then(student => {
-            return res.status(200).json({success: true, msg: "Created match profile, and edited basic", student, matchProf});
+            return res.status(200).json({success: true, msg: "Created match profile, and edited basic", student: student, matchProf});
        })
        .catch(err => {
            return res.status(422).json({success: false, msg: "Created match profile, but couldn't edit basic.", err});
        })
     })
     .catch(err => {
-        return res.status(422).json({success: false, msg: 'Edited basic info, but failed to make match profile.', err, student});
+        return res.status(422).json({success: false, msg: 'Edited basic info, but failed to make match profile.', err});
     });
 });
 
