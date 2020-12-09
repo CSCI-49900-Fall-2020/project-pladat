@@ -57,11 +57,13 @@ const listenForNewJobs = () => {
     const jobWatchPipeline = [
         {
             '$match': {
-                // '$or:': [
-                //     {'$and': [{'operationType': 'insert'}]},
-                //     {'$and': [{'operationType': 'update'}]},
-                //     {'$and': [{'operationType': 'delete'}]},
-                // ]
+                '$expr': {
+                    '$or:': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
             }
         }
     ];
@@ -95,11 +97,13 @@ const listenForMatchProfileChanges = () => {
     const profPipeLine = [
         {
             '$match': {
-                // '$or:': [
-                //     {'$and': [{'operationType': 'insert'}]},
-                //     {'$and': [{'operationType': 'update'}]},
-                //     {'$and': [{'operationType': 'delete'}]},
-                // ]
+                '$expr': {
+                    '$or:': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
             }
         }
     ];
