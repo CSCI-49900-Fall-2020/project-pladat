@@ -40,6 +40,7 @@ const JobSchema = new Schema({
    skillsRequired: [{type: String, required: true}],
    typeOfJob: {type: String, required: true},
    industry: {type: String, required: true},
+   role: {type: String, required: true},
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},
