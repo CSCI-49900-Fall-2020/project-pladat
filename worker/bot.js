@@ -43,8 +43,7 @@ mongoose
 const workServer = workerApp.listen(PORT, () => {
     console.log('worker running on port: ', PORT);
     eventEmmiter.emit('startBot');
-
-});//
+});
 
 
 
@@ -111,6 +110,7 @@ const listenForMatchProfileChanges = () => {
         switch(next.operationType) {
             case 'insert':
                 if(next.fullDocument.psychType === 'Student') {
+                    console.log('Student match profile inserted');
                     eventEmmiter.emit('qStudent', next.fullDocument._id);
                 }
                 else {
@@ -151,7 +151,7 @@ const listenForJobQueueChange = () => {
         else {
             console.log(`No JobQueue change... Status---> running cron: ${START_JOB_CRON}`)
         }
-    }, 6000);
+    }, 180000);
 };
 const listenForEmpQueueChange = () => {
     setInterval(() => {
