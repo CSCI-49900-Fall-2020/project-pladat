@@ -34,7 +34,6 @@ mongoose
 })
 .then(() => {
     console.log("worker connected to mongo cluster");
-    eventEmmiter.emit('startBot');
 })
 .catch(err => {
     console.log(err);
@@ -42,8 +41,9 @@ mongoose
 
 
 const workServer = workerApp.listen(PORT, () => {
-    // eventEmmiter.emit('startBot');
     console.log('worker running on port: ', PORT);
+    // eventEmmiter.emit('startBot');
+
 });//
 // eventEmmiter.emit('startBot');
 
