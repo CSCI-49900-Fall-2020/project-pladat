@@ -39,7 +39,7 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
     })
 }
 
-export const completeMatchProfile = (matchProfile) => dispatch => {
+export const updateMatchProfile = () => dispatch => {
     dispatch({type: StudentConstants.EDITING_STUDENT_PROFILE});
 
     const configs = {
@@ -52,14 +52,14 @@ export const completeMatchProfile = (matchProfile) => dispatch => {
         },
     };
 
-    const requestBody = JSON.stringify({...matchProfile});
+    // const requestBody = JSON.stringify({...matchProfile});
 
-    axios.put('/api/student/completeMatchProfile', requestBody, {params: {userType: 'Student'}, ...configs})
+    axios.put('/api/student/updateMatchProfile', {params: {userType: 'Student'}, ...configs})
     .then(res => {
         dispatch({
             type: StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
-            user: res.data.student
+            matchProf: res.data.mp
         });
         dispatch(hashToLocalStroage(res.data.student));
     })
@@ -93,6 +93,7 @@ export const editProfile = (profile) => dispatch => {
             msg: res.data.msg,
             user: res.data.student
         });
+        dispatch(updateMatchProfile());
         dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {

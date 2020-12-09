@@ -90,35 +90,41 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
 
 
 router.put('/updateMatchProfile', ensureAuthorisation, (req, res) => {
-    const { values } = req.user;
+    Student.findOne({_id: req.user._id})
+    .then(student => {
+        const { values } = student.values;
 
-    let offers = [...values.compVals];
-    let workEnv = [...values.workEnv];
-    let stage = [...values.compStage];
-    let inds = [...values.industry];
-    let pers = values.personality;
-
-    MatchProfile.findOneAndUpdate(
-        {_id: req.user.matchProfile},
-        {
-            $set: {
-                personality: pers,
-                cgs: stage,
-                industries: inds,
-                workEnv: workEnv,
-                compOffers: offers,
+        let offers = [...values.compVals];
+        let workEnv = [...values.workEnv];
+        let stage = [...values.compStage];
+        let inds = [...values.industry];
+        let pers = values.personality;
+    
+        MatchProfile.findOneAndUpdate(
+            {_id: student.matchProfile},
+            {
+                $set: {
+                    personality: pers,
+                    cgs: stage,
+                    industries: inds,
+                    workEnv: workEnv,
+                    compOffers: offers,
+                }
+            },
+            {
+                new: true,
+                returnNewDocument: true
             }
-        },
-        {
-            new: true,
-            returnNewDocument: true
-        }
-    )
-    .then(mp => {
-        return res.status(200).json({success: true, msg: 'updated match profile', mp});
+        )
+        .then(mp => {
+            return res.status(200).json({success: true, msg: 'updated match profile', mp});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "couldn't update match profile", err});
+        })
     })
     .catch(err => {
-        return res.status(422).json({success: false, msg: "couldn't update match profile", err});
+        res.status(422).json({success: true, msg: "Something went wrong couldn't update match profile", err});
     })
 });
 

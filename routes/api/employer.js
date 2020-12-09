@@ -86,7 +86,9 @@ router.put('/editMatchProfile', ensureAuthorisation, (req, res) => {
        let curEmpProf = empMatchProf;
        curEmpProf.compOffers = [...compOffer];
        studPersPref.map((pref, idx) => {
-           curEmpProf.personalityPref[pref] ? curEmpProf.personalityPref[pref]++ : curEmpProf.personalityPref[pref] = 0
+            if(!curEmpProf.includes(pref)) {
+                curEmpProf.push(pref);
+            }
        });
        curEmpProf.workEnv = [...workEnv];
        MatchProfile.findOneAndUpdate(
