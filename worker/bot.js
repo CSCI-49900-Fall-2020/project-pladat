@@ -383,6 +383,7 @@ eventEmmiter.once('startBot', () => {
     // .catch(err => {
     //     console.log('promise all error ', err);
     // })
+    //
     listenForNewJobs();
     listenForMatchProfileChanges();
     listenForStudQueueChange();
