@@ -393,3 +393,8 @@ eventEmmiter.once('startBot', () => {
     listenForStudQueueChange();
     listenForJobQueueChange();
 });
+
+listenForNewJobs();
+listenForMatchProfileChanges();
+listenForStudQueueChange();
+listenForJobQueueChange();
