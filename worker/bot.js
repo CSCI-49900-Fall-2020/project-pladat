@@ -18,10 +18,10 @@ const Queue = require('./Queue');
 let eventEmmiter = new events.EventEmitter();
 
 
-const workerApp = http.createServer();
+const workerApp = experss();
 
-// workerApp.use(express.json());
-// workerApp.use(bodyParser.urlencoded({extended: true}));
+workerApp.use(express.json());
+workerApp.use(bodyParser.urlencoded({extended: true}));
 
 
 const dbUri = process.env.MONGO_URI_DEV;
@@ -34,6 +34,7 @@ mongoose
 })
 .then(() => {
     console.log("worker connected to mongo cluster");
+    eventEmmiter.emit('startBot');
 })
 .catch(err => {
     console.log(err);
@@ -43,7 +44,6 @@ mongoose
 const workServer = workerApp.listen(PORT, () => {
     // eventEmmiter.emit('startBot');
     console.log('worker running on port: ', PORT);
-    eventEmmiter.emit('startBot');
 });//
 // eventEmmiter.emit('startBot');
 
