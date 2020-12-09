@@ -391,6 +391,7 @@ router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
 
     file.mv(filePath, err => {
         if(err) {
+            // console.log(err);
             return res.status(422).json({success: false, msg: "Something happened, couldn't upload file", err});
         }
 
@@ -401,6 +402,7 @@ router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
                 } catch(err) {
                     console.error(err);
                 }
+                // console.log(error);
                 return res.status(500).json({success: false, msg: "Something went wrong uploading your imgs", error});
             }
 

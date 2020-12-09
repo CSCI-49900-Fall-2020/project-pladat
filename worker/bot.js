@@ -53,23 +53,23 @@ let StudentQueue = new Queue();
 let CompanyQueue = new Queue();
 
 const listenForNewJobs = () => {
-    // const jobWatchPipeline = [
-    //     {
-    //         '$match': {
-    //             '$expr': {
-    //                 '$or:': [
-    //                     {'$eq': ['operationType', 'insert']},
-    //                     {'$eq': ['operationType', 'update']},
-    //                     {'$eq': ['operationType', 'delete']}
-    //                 ]
-    //             }
-    //         }
-    //     }
-    // ];
-
     const jobWatchPipeline = [
-        {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
+        {
+            '$match': {
+                '$expr': {
+                    '$or': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
+            }
+        }
     ];
+
+    // const jobWatchPipeline = [
+    //     {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
+    // ];
 
     const options = { 'fullDocument': 'updateLookup' };
 
@@ -97,9 +97,24 @@ const listenForNewJobs = () => {
 }
 
 const listenForMatchProfileChanges = () => {
+    // const profPipeLine = [
+    //     {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
+    // ];
+
     const profPipeLine = [
-        {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
+        {
+            '$match': {
+                '$expr': {
+                    '$or': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
+            }
+        }
     ];
+
         
 
     const options = { 'fullDocument': 'updateLookup' };
