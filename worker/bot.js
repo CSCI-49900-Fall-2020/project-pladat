@@ -59,9 +59,9 @@ const listenForNewJobs = () => {
         {
             '$match': {
                 '$or:': [
-                    {'operationType': 'insert'},
-                    {'operationType': 'update'},
-                    {'operationType': 'delete'}
+                    {'$and': [{'operationType': 'insert'}]},
+                    {'$and': [{'operationType': 'update'}]},
+                    {'$and': [{'operationType': 'delete'}]},
                 ]
             }
         }
@@ -97,9 +97,9 @@ const listenForMatchProfileChanges = () => {
         {
             '$match': {
                 '$or:': [
-                    {'operationType': 'insert'},
-                    {'operationType': 'update'},
-                    {'operationType': 'delete'}
+                    {'$and': [{'operationType': 'insert'}]},
+                    {'$and': [{'operationType': 'update'}]},
+                    {'$and': [{'operationType': 'delete'}]},
                 ]
             }
         }
