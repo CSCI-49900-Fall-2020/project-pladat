@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const passport = require('passport');
-
+const fs = require('fs');
 // const fs = require('fs');
 
 const cloudinary = require('cloudinary').v2;
@@ -396,9 +396,19 @@ router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
 
         cloudinary.uploader.upload(filePath, {resource_type: 'image'}, function(error, result) {
             if(error) {
+                try {
+                    fs.unlinkSync(filePath);
+                } catch(err) {
+                    console.error(err);
+                }
                 return res.status(500).json({success: false, msg: "Something went wrong uploading your imgs", error});
             }
-            // console.log(result);
+
+            try {
+                fs.unlinkSync(filePath);
+            } catch(err) {
+                console.error(err);
+            }
 
             let { public_id, secure_url, url }  = result;
 
