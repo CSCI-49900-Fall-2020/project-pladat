@@ -4,15 +4,19 @@ const bodyParser = require('body-parser');
 const events = require('events');
 const express = require('express');
 const dotenv = require("dotenv").config();
+const http = require('http');
 
 
-const PORT = process.env.PORT ? process.env.PORT : 7000;
+const PORT = process.env.PORT || 8080;
 
 const Job =  require('../models/Job');
 const MatchProfile = require('../models/MatchProfile');
 const Student = require('../models/Student');
 
 const Queue = require('./Queue');
+
+let eventEmmiter = new events.EventEmitter();
+
 
 const workerApp = experss();
 
@@ -35,12 +39,12 @@ mongoose
     console.log(err);
 });
 
-let eventEmmiter = new events.EventEmitter();
 
 const workServer = workerApp.listen(PORT, () => {
-    eventEmmiter.emit('startBot');
     console.log('worker running on port: ', PORT);
+    eventEmmiter.emit('startBot');
 });
+
 
 
 
@@ -49,16 +53,22 @@ let StudentQueue = new Queue();
 let CompanyQueue = new Queue();
 
 const listenForNewJobs = () => {
+    // const jobWatchPipeline = [
+    //     {
+    //         '$match': {
+    //             '$expr': {
+    //                 '$or:': [
+    //                     {'$eq': ['operationType', 'insert']},
+    //                     {'$eq': ['operationType', 'update']},
+    //                     {'$eq': ['operationType', 'delete']}
+    //                 ]
+    //             }
+    //         }
+    //     }
+    // ];
+
     const jobWatchPipeline = [
-        {
-            '$match': {
-                '$or:': [
-                    {'operationType': 'insert'},
-                    {'operationType': 'update'},
-                    {'operationType': 'delete'}
-                ]
-            }
-        }
+        {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
     ];
 
     const options = { 'fullDocument': 'updateLookup' };
@@ -88,16 +98,9 @@ const listenForNewJobs = () => {
 
 const listenForMatchProfileChanges = () => {
     const profPipeLine = [
-        {
-            '$match': {
-                '$or:': [
-                    {'operationType': 'insert'},
-                    {'operationType': 'update'},
-                    {'operationType': 'delete'}
-                ]
-            }
-        }
+        {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
     ];
+        
 
     const options = { 'fullDocument': 'updateLookup' };
 
@@ -107,6 +110,7 @@ const listenForMatchProfileChanges = () => {
         switch(next.operationType) {
             case 'insert':
                 if(next.fullDocument.psychType === 'Student') {
+                    console.log('Student match profile inserted');
                     eventEmmiter.emit('qStudent', next.fullDocument._id);
                 }
                 else {
@@ -194,7 +198,7 @@ eventEmmiter.on('SSC', () => {
                     {
                         psychType: studProfile.psychTarget,
                         'candidates._id': {$ne: student._id},
-                        $or: [
+                        '$or': [
                             { universityPref: {$in: studProfile.university} },
                             { majorPref: {$in: studProfile.majors} },
                             { skillsPref: {$in: studProfile.skills} },
@@ -228,9 +232,6 @@ eventEmmiter.on('SSC', () => {
     }
 });
 
-// eventEmmiter.on('SEC', () => {
-
-// });
 
 eventEmmiter.on('SJC', () => {
     while(START_JOB_CRON) {
@@ -246,7 +247,7 @@ eventEmmiter.on('SJC', () => {
                     {
                         psychType: matchProf.psychTarget,
                         'candidates._id': {$ne: job._id},
-                        $or: [
+                        '$or': [
                             { skills: {$in: [job.skillsRequired]} },
                             { skills: {$in: [matchProf.skillsPref]} },
                             { skills: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
@@ -326,7 +327,7 @@ eventEmmiter.on('newJob', (jobId) => {
                 {
                     psychType: matchProf.psychTarget,
                     'candidates._id': {$ne: job._id},
-                    $or: [
+                    '$or': [
                         { skills: {$in: [job.skillsRequired]} },
                         { skills: {$in: [matchProf.skillsPref]} },
                         { skills: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
@@ -371,16 +372,6 @@ eventEmmiter.on('newJob', (jobId) => {
 
 eventEmmiter.once('startBot', () => {
     console.log('starting bot event emmited...');
-    // Promise.all([listenForNewJobs, listenForMatchProfileChanges, listenForStudQueueChange, listenForJobQueueChange])
-    // .then(res => {
-    //     const lfnj = res[0];
-    //     const lfmpc = res[1];
-    //     const lftqc = res[2];
-    //     const lfjqc = res[3];
-    // })
-    // .catch(err => {
-    //     console.log('promise all error ', err);
-    // })
     listenForNewJobs();
     listenForMatchProfileChanges();
     listenForStudQueueChange();
