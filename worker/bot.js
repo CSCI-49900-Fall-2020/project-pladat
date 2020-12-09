@@ -42,10 +42,9 @@ mongoose
 
 const workServer = workerApp.listen(PORT, () => {
     console.log('worker running on port: ', PORT);
-    // eventEmmiter.emit('startBot');
+    eventEmmiter.emit('startBot');
 
 });//
-// eventEmmiter.emit('startBot');
 
 
 
@@ -58,11 +57,11 @@ const listenForNewJobs = () => {
     const jobWatchPipeline = [
         {
             '$match': {
-                '$or:': [
-                    {'$and': [{'operationType': 'insert'}]},
-                    {'$and': [{'operationType': 'update'}]},
-                    {'$and': [{'operationType': 'delete'}]},
-                ]
+                // '$or:': [
+                //     {'$and': [{'operationType': 'insert'}]},
+                //     {'$and': [{'operationType': 'update'}]},
+                //     {'$and': [{'operationType': 'delete'}]},
+                // ]
             }
         }
     ];
@@ -96,11 +95,11 @@ const listenForMatchProfileChanges = () => {
     const profPipeLine = [
         {
             '$match': {
-                '$or:': [
-                    {'$and': [{'operationType': 'insert'}]},
-                    {'$and': [{'operationType': 'update'}]},
-                    {'$and': [{'operationType': 'delete'}]},
-                ]
+                // '$or:': [
+                //     {'$and': [{'operationType': 'insert'}]},
+                //     {'$and': [{'operationType': 'update'}]},
+                //     {'$and': [{'operationType': 'delete'}]},
+                // ]
             }
         }
     ];
@@ -200,7 +199,7 @@ eventEmmiter.on('SSC', () => {
                     {
                         psychType: studProfile.psychTarget,
                         'candidates._id': {$ne: student._id},
-                        $or: [
+                        '$or': [
                             { universityPref: {$in: studProfile.university} },
                             { majorPref: {$in: studProfile.majors} },
                             { skillsPref: {$in: studProfile.skills} },
@@ -234,9 +233,6 @@ eventEmmiter.on('SSC', () => {
     }
 });
 
-// eventEmmiter.on('SEC', () => {
-
-// });
 
 eventEmmiter.on('SJC', () => {
     while(START_JOB_CRON) {
@@ -252,7 +248,7 @@ eventEmmiter.on('SJC', () => {
                     {
                         psychType: matchProf.psychTarget,
                         'candidates._id': {$ne: job._id},
-                        $or: [
+                        '$or': [
                             { skills: {$in: [job.skillsRequired]} },
                             { skills: {$in: [matchProf.skillsPref]} },
                             { skills: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
@@ -332,7 +328,7 @@ eventEmmiter.on('newJob', (jobId) => {
                 {
                     psychType: matchProf.psychTarget,
                     'candidates._id': {$ne: job._id},
-                    $or: [
+                    '$or': [
                         { skills: {$in: [job.skillsRequired]} },
                         { skills: {$in: [matchProf.skillsPref]} },
                         { skills: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
@@ -377,24 +373,9 @@ eventEmmiter.on('newJob', (jobId) => {
 
 eventEmmiter.once('startBot', () => {
     console.log('starting bot event emmited...');
-    // Promise.all([listenForNewJobs, listenForMatchProfileChanges, listenForStudQueueChange, listenForJobQueueChange])
-    // .then(res => {
-    //     const lfnj = res[0];
-    //     const lfmpc = res[1];
-    //     const lftqc = res[2];
-    //     const lfjqc = res[3];
-    // })
-    // .catch(err => {
-    //     console.log('promise all error ', err);
-    // })
-    //
     listenForNewJobs();
     listenForMatchProfileChanges();
     listenForStudQueueChange();
     listenForJobQueueChange();
 });
 
-listenForNewJobs();
-listenForMatchProfileChanges();
-listenForStudQueueChange();
-listenForJobQueueChange();
