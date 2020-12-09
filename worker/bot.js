@@ -4,9 +4,10 @@ const bodyParser = require('body-parser');
 const events = require('events');
 const express = require('express');
 const dotenv = require("dotenv").config();
+const http = require('http');
 
 
-const PORT = process.env.PORT ? process.env.PORT : 8080;
+const PORT = process.env.PORT || 8080;
 
 const Job =  require('../models/Job');
 const MatchProfile = require('../models/MatchProfile');
@@ -17,10 +18,10 @@ const Queue = require('./Queue');
 let eventEmmiter = new events.EventEmitter();
 
 
-const workerApp = experss();
+const workerApp = http.createServer();
 
-workerApp.use(express.json());
-workerApp.use(bodyParser.urlencoded({extended: true}));
+// workerApp.use(express.json());
+// workerApp.use(bodyParser.urlencoded({extended: true}));
 
 
 const dbUri = process.env.MONGO_URI_DEV;
@@ -39,11 +40,12 @@ mongoose
 });
 
 
-// const workServer = workerApp.listen(PORT, () => {
-//     eventEmmiter.emit('startBot');
-//     console.log('worker running on port: ', PORT);
-// });//
-eventEmmiter.emit('startBot');
+const workServer = workerApp.listen(PORT, () => {
+    // eventEmmiter.emit('startBot');
+    console.log('worker running on port: ', PORT);
+    eventEmmiter.emit('startBot');
+});//
+// eventEmmiter.emit('startBot');
 
 
 
@@ -151,7 +153,7 @@ const listenForJobQueueChange = () => {
         else {
             console.log(`No JobQueue change... Status---> running cron: ${START_JOB_CRON}`)
         }
-    }, 180000);
+    }, 6000);
 };
 const listenForEmpQueueChange = () => {
     setInterval(() => {
