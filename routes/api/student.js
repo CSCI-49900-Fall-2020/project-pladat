@@ -29,7 +29,6 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
     if(!university || !major || !graduationDate || !shortDesc || !preferredRoles || !generalExperience || !skills) {
         return res.status(401).json({success: false, msg: "Please enter all data."});
     }
-    let prefRoles = preferredRoles.reduce((a, b) => (a[b]=0,a),{});
     let studMatchProfile = new MatchProfile({
         userId: req.user._id,
         psychType: req.user.typeOfUser,
@@ -38,21 +37,19 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
         university: university,
         majors: major,
         skills: skills,
-        experience: generalExperience,
-        roles: {
-            ...prefRoles
-        },
+        experience: [...generalExperience],
+        roles: [...preferredRoles],
         
         ir: req.user.internalRank,
         personality: [],
-        locations: {},
-        jobTypes: {},
-        companies: {},
-        cgs: {},
-        industries: {},
-        workEnv: {},
-        compOffers: {},
-        todos: {}
+        locations: [],
+        jobTypes: [],
+        companies: [],
+        cgs: [],
+        industries: [],
+        workEnv: [],
+        compOffers: [],
+        todos: []
     });
     studMatchProfile.save()
     .then(matchProf => {
@@ -71,6 +68,7 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
                    graduationDate: graduationDate,
                    preferredRoles: preferredRoles,
                    generalExperience: generalExperience,
+                   basicProfileInfoComplete: true
                }
            },
            {
@@ -94,10 +92,10 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
 router.put('/updateMatchProfile', ensureAuthorisation, (req, res) => {
     const { values } = req.user;
 
-    let offers = Object.assign({},...values.compVals.map(key => ({[key]: 0})));
-    let workEnv = Object.assign({},...values.workEnv.map(key => ({[key]: 0})));
-    let stage = Object.assign({},...values.compStage.map(key => ({[key]: 0})));
-    let inds = Object.assign({},...values.industry.map(key => ({[key]: 0})));
+    let offers = [...values.compVals];
+    let workEnv = [...values.workEnv];
+    let stage = [...values.compStage];
+    let inds = [...values.industry];
     let pers = values.personality;
 
     MatchProfile.findOneAndUpdate(
@@ -226,20 +224,35 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
                         )
                         .then(updatedEmpMatchProf => {
                             let tempMp = studMatchProf;
-                            tempMp.companies[empMatchProf.userId] ? tempMp.companies[empMatchProf.userId]++ : tempMp.companies[empMatchProf.userId] = 0;
+                            if(!tempMp.companies.includes(empMatchProf.userId)) {
+                                tempMp.companies.push(empMatchProf.userId)
+                            }
                             empMatchProf.industries.map((ind, idx) => {
-                                tempMp.industries[ind] ? tempMp.industries[ind]++ : tempMp.industries[ind]= 0
+                                if(!tempMp.industries.includes(ind)) {
+                                    tempMp.industries.push(ind);
+                                }
                             });
                             empMatchProf.compOffers.map((offer, idx) => {
-                                tempMp.compOffers[offer] ? tempMp.compOffers[offer]++ : tempMp.compOffers[offer] = 0
+                                if(!tempMp.compOffers.includes(offer)) {
+                                    tempMp.compOffers.push(offer);
+                                }
                             });
                             empMatchProf.workEnv.map((env, idx) => {
-                                tempMp.workEnv[env] ? tempMp.workEnv[env]++ : tempMp.workEnv[env] = 0
+                                if(!tempMp.workEnv.includes(env)) {
+                                    tempMp.workEnv.push(evn);
+                                }
                             });
                             empMatchProf.cgs.map((stage, idx) => {
-                                tempMp.cgs[stage] ? tempMp.cgs[stage]++ : tempMp.cgs[stage] = 0
+                                if(!tempMp.cgs.includes(stage)) {
+                                    tempMp.cgs.push(stage);
+                                }
                             });
-                            tempMp.jobTypes[swipedJob.typeOfJob] ? tempMp.jobTypes[swipedJob.typeOfJob]++ : tempMp.jobTypes[swipedJob.typeOfJob] = 0;
+                            if(!tempMp.jobTypes.includes(swipedJob.typeOfJob)) {
+                                tempMp.jobTypes.push(swipedJob.typeOfJob);
+                            }
+                            if(!tempMp.roles.includes(swipedJob.role)) {
+                                tempMp.roles.push(swipedJob.role);
+                            }
                             MatchProfile.findOneAndUpdate(
                                 {_id: req.user.matchProfile},
                                 {
@@ -276,22 +289,37 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
                             $set: {ir: (empMatchProf.swipedRightOnMe.length+1)/empMatchProf.length.swipedLeftOnMe}
                         }
                     )
-                    .then(updatedEmpMatchProf => {
+                    .then(empMatchProf => {
                         let tempMp = studMatchProf;
-                        tempMp.companies[empMatchProf.userId] ? tempMp.companies[empMatchProf.userId]++ : tempMp.companies[empMatchProf.userId] = 0;
+                        if(!tempMp.companies.includes(empMatchProf.userId)) {
+                            tempMp.companies.push(empMatchProf.userId)
+                        }
                         empMatchProf.industries.map((ind, idx) => {
-                            tempMp.industries[ind] ? tempMp.industries[ind]++ : tempMp.industries[ind]= 0
+                            if(!tempMp.industries.includes(ind)) {
+                                tempMp.industries.push(ind);
+                            }
                         });
                         empMatchProf.compOffers.map((offer, idx) => {
-                            tempMp.compOffers[offer] ? tempMp.compOffers[offer]++ : tempMp.compOffers[offer] = 0
+                            if(!tempMp.compOffers.includes(offer)) {
+                                tempMp.compOffers.push(offer);
+                            }
                         });
                         empMatchProf.workEnv.map((env, idx) => {
-                            tempMp.workEnv[env] ? tempMp.workEnv[env]++ : tempMp.workEnv[env] = 0
+                            if(!tempMp.workEnv.includes(env)) {
+                                tempMp.workEnv.push(evn);
+                            }
                         });
                         empMatchProf.cgs.map((stage, idx) => {
-                            tempMp.cgs[stage] ? tempMp.cgs[stage]++ : tempMp.cgs[stage] = 0
+                            if(!tempMp.cgs.includes(stage)) {
+                                tempMp.cgs.push(stage);
+                            }
                         });
-                        tempMp.jobTypes[swipedJob.typeOfJob] ? tempMp.jobTypes[swipedJob.typeOfJob]++ : tempMp.jobTypes[swipedJob.typeOfJob] = 0;
+                        if(!tempMp.jobTypes.includes(swipedJob.typeOfJob)) {
+                            tempMp.jobTypes.push(swipedJob.typeOfJob);
+                        }
+                        if(!tempMp.roles.includes(swipedJob.role)) {
+                            tempMp.roles.push(swipedJob.role);
+                        }
                         MatchProfile.findOneAndUpdate(
                             {_id: req.user.matchProfile},
                             {

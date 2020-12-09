@@ -36,11 +36,11 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
         workEnv: [],
         roles: [],
 
-        universityPref: {},
-        majorPref: {},
-        skillsPref: {},
-        experiencePref: {},
-        personalityPref: {}
+        universityPref: [],
+        majorPref: [],
+        skillsPref: [],
+        experiencePref: [],
+        personalityPref: []
     });
     newMatchProf.save()
     .then(empMatchProf => {
@@ -288,12 +288,12 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
     industry,
     assignedRecruiter,
     fullJobAppLink,
-    dateClose
+    dateClose, role
    } = req.body;
 
    const newJobPost = new Job({
        title, description, companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
-       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile
+       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile, role: role
    });
 
    newJobPost.save()
