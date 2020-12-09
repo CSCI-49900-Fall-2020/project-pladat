@@ -6,13 +6,16 @@ const express = require('express');
 const dotenv = require("dotenv").config();
 
 
-const PORT = process.env.PORT ? process.env.PORT : 7000;
+const PORT = process.env.PORT ? process.env.PORT : 8080;
 
 const Job =  require('../models/Job');
 const MatchProfile = require('../models/MatchProfile');
 const Student = require('../models/Student');
 
 const Queue = require('./Queue');
+
+let eventEmmiter = new events.EventEmitter();
+
 
 const workerApp = experss();
 
@@ -35,12 +38,11 @@ mongoose
     console.log(err);
 });
 
-let eventEmmiter = new events.EventEmitter();
 
 const workServer = workerApp.listen(PORT, () => {
-    eventEmmiter.emit('startBot');
     console.log('worker running on port: ', PORT);
 });
+// eventEmmiter.emit('startBot');
 
 
 
@@ -369,6 +371,10 @@ eventEmmiter.on('newJob', (jobId) => {
     })
 });
 
+listenForNewJobs();
+    listenForMatchProfileChanges();
+    listenForStudQueueChange();
+    listenForJobQueueChange();
 eventEmmiter.once('startBot', () => {
     console.log('starting bot event emmited...');
     // Promise.all([listenForNewJobs, listenForMatchProfileChanges, listenForStudQueueChange, listenForJobQueueChange])
