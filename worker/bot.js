@@ -40,9 +40,9 @@ mongoose
 
 
 const workServer = workerApp.listen(PORT, () => {
+    eventEmmiter.emit('startBot');
     console.log('worker running on port: ', PORT);
 });
-// eventEmmiter.emit('startBot');
 
 
 
@@ -371,10 +371,6 @@ eventEmmiter.on('newJob', (jobId) => {
     })
 });
 
-listenForNewJobs();
-    listenForMatchProfileChanges();
-    listenForStudQueueChange();
-    listenForJobQueueChange();
 eventEmmiter.once('startBot', () => {
     console.log('starting bot event emmited...');
     // Promise.all([listenForNewJobs, listenForMatchProfileChanges, listenForStudQueueChange, listenForJobQueueChange])
