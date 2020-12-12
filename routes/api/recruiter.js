@@ -9,12 +9,15 @@ const User = require('../../models/User');
 const Recruiter = require('../../models/Recruiter');
 const Employer = require('../../models/Employer');
 const Job = require('../../models/Job');
+const MatchProfile = require('../../models/MatchProfile');
+const Match = require('../../models/Match');
 
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 
 const { SENDGRID_APIKEY, CLIENT_ORIGIN, JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER, PROJECT_EMAIL, JWT_EMAIL_VERIFY_SIGN_OPTIONS} = require('../../configs/prodConfig');
 
 const { recruiterConfigEmail } = require('../../configs/RecruiterVerification');
+const Student = require('../../models/Student');
 
 
 router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
@@ -91,7 +94,7 @@ router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
     })
 })
 
-router.put('/completeMatchProfile', ensureAuthorisation, (req, res) => {
+router.put('/updateMatchProfile', ensureAuthorisation, (req, res) => {
     const { automatedMatchMsg, matchProfile } = req.body;
     Recruiter.findOneAndUpdate(
         {_id: req.user._id},
@@ -190,12 +193,201 @@ router.get('/getRecruitersForCompany/:empId', ensureAuthenticated, (req, res) =>
 
 
 router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
-   
+    MatchProfile.findOne({userId: req.params.studentId})
+    .then(studentMatchProfile => {
+         Job.find({
+             companyId: req.user.companyId,
+             swipedRightOnMe: {$in: [studentMatchProfile._id, req.params.studentId]} 
+         })
+         .then(jobs => {
+             if(jobs && jobs.length > 0) {
+                 let matchIds = [];
+                 jobs.map((job, index) => {
+                     let newMatch = new Match({
+                         jobId: job._id,
+                         employerId: req.user.companyId,
+                         studentId: studentMatchProfile.userId,
+                         recruiterId: job.assignedRecruiter,
+                         matchDate: Date.now(),
+                         matchEnd: job.dateClose
+                     });
+                     newMatch.save()
+                     .then(sm => {
+                         matchIds.push(sm._id);
+                         if(matchIds.length === jobs.length) {
+                             MatchProfile.findOneAndUpdate(
+                                 {_id: studentMatchProfile._id},
+                                 {
+                                     $set: {ir: (studentMatchProfile.swipedRightOnMe.length+1)/(studentMatchProfile.swipedLeftOnMe.length)},
+                                     $push: {matches: {$each: matchIds}}
+                                 },
+                                 {
+                                     new: true,
+                                     returnNewDocument: true
+                                 }
+                             )
+                             .then(updatedStudentProf => {
+                                 MatchProfile.findOneAndUpdate(
+                                     {_id: req.user.matchProfile},
+                                     {
+                                         $addToSet: {
+                                             universityPref: {$each: updatedStudentProf.university},
+                                             majorPref: {$each: updatedStudentProf.majors},
+                                             skillsPref: {$each: updatedStudentProf.skills},
+                                             experiencePref: {$each: updatedStudentProf.experience},
+                                             personalityPref: {$each: updatedStudentProf.personality}
+                                         },
+                                         $pop: {candidates: -1},
+                                         $push: {matches: {$each: matchIds}}
+                                     },
+                                     {
+                                         new: true,
+                                         returnNewDocument: true
+                                     }
+                                 )
+                                 .then(updatedEmployerProf => {
+                                     return res.status(200).json({success: true, msg: "Swiped right on student, and edited profile.", isMatch: true, matchProf: updatedEmployerProf})
+                                 })
+                                 .catch(err => {
+                                     return res.status(422).json({success: false, msg: "Something went wrong; swiped on student but couldn't update your match profile.", err});
+                                 })
+                             })
+                             .catch(err => {
+                                 return res.status(422).json({success: false, msg: "Something went wrong couldn't swipe on student", err});
+                             })
+                         }
+                     })
+                     .catch(err => {
+                         return res.status(422).json({success: false, msg: "Something went wrong trying to create match.", err});
+                     })
+                 });
+             }
+             else {
+                 // student hasn't swiped on any of company's jobs, so no match, but record swipe.
+                 MatchProfile.findOneAndUpdate(
+                     {_id: studentMatchProfile._id},
+                     {
+                         $push: {swipedRightOnMe: req.user.matchProfile},
+                         $set: {ir: (studentMatchProfile.swipedRightOnMe.length+1)/(studentMatchProfile.swipedLeftOnMe.length)}
+                     },
+                     {
+                         new: true,
+                         returnNewDocument: true
+                     }
+                 )
+                 .then(updatedStudentProf => {
+                     MatchProfile.findOneAndUpdate(
+                         {_id: req.user.matchProfile},
+                         {
+                             $addToSet: {
+                                 universityPref: {$each: updatedStudentProf.university},
+                                 majorPref: {$each: updatedStudentProf.majors},
+                                 skillsPref: {$each: updatedStudentProf.skills},
+                                 experiencePref: {$each: updatedStudentProf.experience},
+                                 personalityPref: {$each: updatedStudentProf.personality}
+                             },
+                             $pop: {candidates: -1}
+                         },
+                         {
+                             new: true,
+                             returnNewDocument: true
+                         }
+                     )
+                     .then(updatedEmployerProf => {
+                         return res.status(200).json({success: true, msg: "Swiped right on student, and edited profile.", isMatch: false, matchProf: updatedEmployerProf})
+                     })
+                     .catch(err => {
+                         return res.status(422).json({success: false, msg: "Something went wrong; swiped on student but couldn't update your match profile.", err});
+                     })
+                 })
+                 .catch(err => {
+                     return res.status(422).json({success: false, msg: "Something went wrong couldn't swipe on student", err});
+                 })
+ 
+             }
+         })
+         .catch(err => {
+             return res.status(422).json({success: false, msg: "Something went wrong; couldn't swipe right on student "+req.params.studentId, err});
+         })
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong; couldn't swipe right on student "+req.params.studentId, err});
+    })
 });
 
 router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
-   
+    MatchProfile.findOne({userId: req.params.studentId})
+        .then(studentMatchProf => {
+            MatchProfile.findOneAndUpdate(
+                {_id: studentMatchProf.id},
+                {
+                    $push: {swipedLeftOnMe: req.user.matchProfile},
+                    $set: {ir: (studentMatchProf.swipedRightOnMe.length)/(studentMatchProf.swipedLeftOnMe.length+1)}
+                },
+                {
+                    new: true, 
+                    returnNewDocument: true
+                }
+            )
+            .then(updatedStudentProf => {
+                MatchProfile.findOneAndUpdate(
+                    {_id: req.user.matchProfile},
+                    {
+                        $pop: {candidates: -1}
+                    },
+                    {
+                        new: true,
+                        returnNewDocument: true
+                    }
+                )
+                .then(updatedEmployerProf => {
+                    return res.status(200).json({success: true, msg: "Swiped left on student and updated match profile", matchProf: updatedEmployerProf})
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+            })
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+        })
 })
+
+router.put('/skipSwipe/:studentId', ensureAuthorisation, (req, res) => {
+    Student.findOne({_id: req.params.studentId})
+    .then(studentProf => {
+        MatchProfile.findOneAndUpdate(
+            {_id: req.user.matchProfile},
+            {
+                $pop: {candidates: -1},
+                $push: {candidates: studentProf}
+            }
+        )
+        .then(updatedEmpProf => {
+            return res.status(200).json({success: true, msg: "Skipped student", matchProf: updatedEmpProf});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+        })
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+    })
+});
+
+router.get('/getCandidates', ensureAuthenticated, (req, res) => {
+    MatchProfile.findOne({_id: req.user.matchProfile})
+    .then(empmp => {
+        let cands = empmp.candidates;
+        return res.status(200).json({success: true, msg: "Retrieved matching candidates.", candidates: cands})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
+    })
+});
 
 
 module.exports = router;

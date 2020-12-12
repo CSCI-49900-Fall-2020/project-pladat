@@ -92,6 +92,7 @@ class EMain extends React.Component {
     }
 
     componentDidMount() {
+        this.props.actions.userActions.getUser();
         if(this.props.location) {
             this.setState({
                 curLocation: this.props.location.pathname

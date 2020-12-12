@@ -33,6 +33,12 @@ class BasicViewWrapper extends React.Component {
             const { employerActionState, basicSuccessEmp } = this.props.employers;
             const { recruiterActionState, basicSuccessR } = this.props.recruiters;
 
+            if(basicProfileInfoComplete && this.state.initHasBaiscComplete) {
+                this.setState({
+                    basicSuccessForward: true,
+                    basicSuccessForwardRedirectTo: this.handleBasicOnSuccess()
+                })
+            }
             if((!this.state.initHasBaiscComplete) && (basicSuccessEmp || basicSuccessStud || basicSuccessR) && (studentActionState === 'STUDENT_PROFILE_EDIT_SUCCESS' || employerActionState === 'EDITING_EMPLOYER_PROFILE_SUCCESS' || recruiterActionState === 'VERIFY_AS_RECRUITER_EMAIL_SENT')) {
                 this.setState({
                     basicSuccessForward: true,

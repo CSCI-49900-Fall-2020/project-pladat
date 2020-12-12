@@ -41,7 +41,7 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
     })
 }
 
-export const completeMatchProfile = (matchProfile) => dispatch => {
+export const updateMatchProfile = () => dispatch => {
     dispatch({type: RecruiterConstants.EDITING_RECRUITER_PROFILE});
 
     const configs = {
@@ -54,9 +54,8 @@ export const completeMatchProfile = (matchProfile) => dispatch => {
         },
     };
 
-    const requestBody = JSON.stringify({...matchProfile});
 
-    axios.put('/api/recruiter/completeMatchProfile', requestBody, {params: {userType: 'Recruiter'}, ...configs})
+    axios.put('/api/recruiter/updateMatchProfile', {params: {userType: 'Recruiter'}, ...configs})
     .then(res => {
         dispatch({
             type: RecruiterConstants.RECRUITER_PROFILE_EDIT_SUCCESS,
@@ -96,6 +95,7 @@ export const editProfile = (profile) => dispatch => {
             user: res.data.recruiter
         });
         dispatch(hashToLocalStroage(res.data.recruiter));
+        // dispatch(updateMatchProfile());
     })
     .catch(error => {
         dispatch({
