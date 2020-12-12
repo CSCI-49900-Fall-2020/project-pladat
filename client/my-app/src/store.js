@@ -171,7 +171,9 @@ let user = {
     imagesUpdated: false,
     editFields: {},
 
-    matchProfile: null
+    matchProfile: null,
+    
+    candidates: []
 };
 
 const defaultState = {

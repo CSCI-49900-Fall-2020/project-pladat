@@ -123,16 +123,14 @@ export const swipeRight = (jobId) => dispatch => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_RIGHT,
             msg: res.data.msg,
-            user: res.data.student,
-            swipedJob: res.data.job
+            matchProfile: res.data.matchProf,
+            isMatch: res.data.isMatch
         });
-        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.job
         })
     })
 }
@@ -156,16 +154,13 @@ export const swipeLeft = (jobId) => dispatch => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_LEFT,
             msg: res.data.msg,
-            user: res.data.student,
-            swipedJob: res.data.job
+            matchProfile: res.data.matchProf
         });
-        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.job
         })
     })
 }
@@ -198,3 +193,34 @@ export const getStudent = (sId) => dispatch => {
         })
     })
 }
+
+export const skipSwipe = (jobId) => dispatch => {
+    dispatch({type: StudentConstants.STUDENT_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+
+    axios.put('/api/student/skipSwipe/'+jobId, {params: {userType: 'Student'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: StudentConstants.STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: StudentConstants.STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}
+

@@ -439,3 +439,33 @@ export const upLoadImage = (fileData) => dispatch => {
         })
     })
 }
+
+
+//Get candidates
+export const getCandidates = () => dispatch => {
+    dispatch({type: UserConstants.GETTING_CANDIDATES});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/users/getCandidates', {...configs})
+    .then(res => {
+        dispatch({
+            type: UserConstants.GETTING_CANDIDATES_SUCCESS,
+            msg: res.data.msg,
+            candidates: res.data.candidates
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: UserConstants.GETTING_CANDIDATES_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}

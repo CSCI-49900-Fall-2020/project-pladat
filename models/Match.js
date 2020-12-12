@@ -8,7 +8,7 @@ const MatchSchema = new Schema({
     recruiterId: {type: String, required: true, ref: "Recruiter"},
     matchDate: {type: String, required: true, default: Date.now()},
     matchEnd: {type: String, required: true},
-    convo: {type: String, required: false, ref: 'Convo'}
+    convo: {type: String, required: false, ref: 'Convo', default: null}
 });
 
 module.exports = Match = mongoose.model('Match', MatchSchema);

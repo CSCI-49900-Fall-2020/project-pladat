@@ -389,5 +389,44 @@ router.get('/getCandidates', ensureAuthenticated, (req, res) => {
     })
 });
 
+router.get('/getMatches', ensureAuthorisation, (req, res) => {
+    let matchObjArr = [];
+    Match.find({recruiterId: req.user._id})
+    .then(matches => {
+        if(matches.length === 0) {
+            return res.status(200).json({success: true, msg: "No matches just yet; keep swiping.", matches});
+        }
+        matches.map((m, idx) => {
+            let curM = {};
+            Student.findOne({_id: m.studentId})
+            .then(stud => {
+                stud.password=null;
+                curM['student'] = stud;
+                Employer.findOne({_id:m.employerId})
+                .then(emp => {
+                    emp.password = null;
+                    curM['employer'] = emp;
+                    curM['jobId'] = m.jobId;
+                    curM['convoId'] = m.convo;
+                    matchObjArr.push(curM);
+
+                    if(matchObjArr.length === matches.length) {
+                        return res.status(200).json({success: true, msg: "Loaded matches", matches: matchObjArr});
+                    }
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+            })
+            
+        });
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "something went wrong; couldn't retrieve matches", err});
+    })
+});
 
 module.exports = router;

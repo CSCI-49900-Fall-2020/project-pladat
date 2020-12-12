@@ -12,6 +12,8 @@ const MatchProfile = require('../../models/MatchProfile');
 const Match = require('../../models/Match');
 
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
+const Employer = require('../../models/Employer');
+const Recruiter = require('../../models/Recruiter');
 
 
 
@@ -405,5 +407,48 @@ router.get('/getCandidates', ensureAuthenticated, (req, res) => {
         return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
     })
 });
+
+router.get('/getMatches', ensureAuthorisation, (req, res) => {
+    let matchObjArr = [];
+    Match.find({studentId: req.user._id})
+    .then(matches => {
+        if(matches.length === 0) {
+            return res.status(200).json({success: true, msg: "No matches just yet; keep swiping.", matches});
+        }
+        matches.map((m, idx) => {
+            let curM = {};
+            Employer.findOne({_id: m.employerId})
+            .then(emp => {
+                emp.password = null;
+                curM['employer'] = emp;
+                Recruiter.findOne({_id: m.recruiterId})
+                .then(rec => {
+                    rec.password = null;
+                    curM['recruiter'] = rec;
+                    curM['jobId'] = m.jobId;
+                    curM['convoId'] = m.convo;
+                    matchObjArr.push(curM);
+
+                    if(matchObjArr.length === matches.length) {
+                        return res.status(200).json({success: true, msg: "Loaded matches", matches: matchObjArr});
+                    }
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+            })
+            
+        });
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "something went wrong; couldn't retrieve matches", err});
+    })
+});
+
+
+
 
 module.exports = router;

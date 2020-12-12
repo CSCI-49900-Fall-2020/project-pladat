@@ -4,7 +4,6 @@ import { EmployerConstants } from '../constants';
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
 
-import { hashToLocalStroage } from './UserActions';
 
 
 
@@ -444,11 +443,90 @@ export const employerSearchQuery = (query) => dispatch => {
 }
 
 export const swipeRight = (studentId) => dispatch => {
-    return;
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/employer/swipeRight/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_RIGHT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf,
+            isMatch: res.data.isMatch
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        });
+    })
 }
 
 export const swipeLeft = (studentId) => dispatch => {
-    return;
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/employer/swipeLeft/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}
+
+export const skipSwipe = (studentId) => dispatch => {
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+
+    axios.put('/api/employer/skipSwipe/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
 }
 
 

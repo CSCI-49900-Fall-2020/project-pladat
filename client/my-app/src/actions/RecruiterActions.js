@@ -124,16 +124,14 @@ export const swipeRight = (studentId) => dispatch => {
         dispatch({
             type: RecruiterConstants.RECRUITER_SWIPE_RIGHT,
             msg: res.data.msg,
-            user: res.data.recruiter,
-            swipedStudent: res.data.student
+            matchProfile: res.data.matchProf,
+            isMatch: res.data.isMatch
         });
-        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
             type: RecruiterConstants.RECRUITER_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.student
         });
     })
 }
@@ -150,23 +148,48 @@ export const swipeLeft = (studentId) => dispatch => {
             port: 5000
         },
     };
-
-
     axios.put('/api/recruiter/swipeLeft/'+studentId, {params: {userType: 'Recruiter'}, ...configs})
     .then(res => {
         dispatch({
             type: RecruiterConstants.RECRUITER_SWIPE_LEFT,
             msg: res.data.msg,
-            user: res.data.recruiter,
-            swipedStudent: res.data.student
+            matchProfile: res.data.matchProf
         });
-        dispatch(hashToLocalStroage(res.data.recruiter));
     })
     .catch(error => {
         dispatch({
             type: RecruiterConstants.RECRUITER_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.student
+        })
+    })
+}
+
+export const skipSwipe = (studentId) => dispatch => {
+    dispatch({type: RecruiterConstants.RECRUITER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+
+    axios.put('/api/recruiter/skipSwipe/'+studentId, {params: {userType: 'Recruiter'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: RecruiterConstants.RECRUITER_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: RecruiterConstants.RECRUITER_SWIPE_FAIL,
+            msg: error.response.data.msg,
         })
     })
 }
