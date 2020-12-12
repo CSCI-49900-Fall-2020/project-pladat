@@ -67,9 +67,9 @@ class ProfileEdit extends React.Component {
         this.handleAddImg = this.handleAddImg.bind(this);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.user.user !== nextProps.user.user) || (this.props.user !== nextProps.user) || (this.state !== nextState) || (JSON.stringify(nextProps.user.user) !== JSON.stringify(this.props.user.user)) || (JSON.stringify(nextProps.user) !== JSON.stringify(this.props.user));
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return (this.props.user.user !== nextProps.user.user) || (this.props.user !== nextProps.user) || (this.state !== nextState) || (JSON.stringify(nextProps.user.user) !== JSON.stringify(this.props.user.user)) || (JSON.stringify(nextProps.user) !== JSON.stringify(this.props.user));
+    // }
 
     componentDidUpdate(prevProps) {
         if(prevProps !== this.props) {

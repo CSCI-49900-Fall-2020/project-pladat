@@ -3,6 +3,7 @@ import { EmployerConstants } from '../constants';
 
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
+import { hashToLocalStroage } from './UserActions';
 
 
 
@@ -30,7 +31,8 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
             msg: res.data.msg,
             user: res.data.employer,
             isBasic: true
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.employer));
     })
     .catch(error => {
         dispatch({

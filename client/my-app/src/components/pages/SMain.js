@@ -209,17 +209,17 @@ class SMain extends React.Component {
                                     </div>
                                     <div className='grid-left-contentHolder'>
                                        {
-                                           this.state.curLocation === '/s/discover' ?
+                                           ((this.state.curLocation === '/s/discover') || (this.state.curLocation === '/s/discover/')) ?
 
                                            <h2>Matches go here</h2>
 
                                            :
 
                                            <div className='grid-left-editProfileTabs'>
-                                               <span className='text' style={this.state.curLocation === '/s/me' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                               <span className='text' style={((this.state.curLocation === '/s/me') || (this.state.curLocation === '/s/me/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
                                                     <Link to='/s/me'><h3>Edit Profile</h3></Link>
                                                 </span>
-                                               <span className='text' style={this.state.curLocation === '/s/settings' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                               <span className='text' style={((this.state.curLocation === '/s/settings') || (this.state.curLocation === '/s/settings/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
                                                    <Link to='/s/settings'><h3>Settings</h3></Link>
                                                 </span>
                                                <span className='text grid-left-editProfileTabSlotText' onClick={this.handleLogOut}><h3>Log out</h3></span>
