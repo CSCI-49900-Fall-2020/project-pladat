@@ -156,7 +156,24 @@ let user = {
     authError: [],
     errorsDidChange: false,
     authState: null,
-    serverStatus: null
+    serverStatus: null,
+
+    userMatches: [],
+
+    uploadingImg: false,
+    imgUploadError: false,
+    upLoadedImg: null,
+
+    editingDefaultUser: false,
+    defaultEditFail: false,
+    defaultEditSuccess: false,
+
+    imagesUpdated: false,
+    editFields: {},
+
+    matchProfile: null,
+    
+    candidates: []
 };
 
 const defaultState = {

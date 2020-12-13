@@ -4,16 +4,27 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 const passport = require('passport');
+const fs = require('fs');
+// const fs = require('fs');
+
+const cloudinary = require('cloudinary').v2;
+
+
+const fileupload = require('express-fileupload');
+const imgbbUploader = require('imgbb-uploader');
 
 const User = require('../../models/User');
 const Student = require('../../models/Student');
 const Employer = require('../../models/Employer');
 const Recruiter = require('../../models/Recruiter');
+const MatchProfile = require('../../models/MatchProfile');
 
-const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL } = require('../../configs/prodConfig');
+const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL, IMAGE_UPLOAD_KEY } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 const { configureEmailVerification } = require('../../configs/EmailTemplate');
 const { dateInFuture2 } = require('../../configs/DateFunctions');
+
+const { CLOUDINARY_API_KEY, CLOUDINARY_NAME, CLOUDINARY_SECRET } = require('../../configs/prodConfig');
 
 
 function verifyToken(req, res, next) {
@@ -218,12 +229,13 @@ router.post('/login', (req, res, next) => {
     }) (req, res, next);
 });
 
-router.post('/logout', ensureAuthenticated, (req, res) => {
+router.put('/logout', ensureAuthenticated, (req, res) => {
     User.findOneAndUpdate(
-        { email: req.user.email },
+        { _id: req.user._id },
         { $set: { isActive: false } }
     )
     .then(user => {
+        // console.log(user);
         req.logout();
         return res.status(200).json({success: true, msg: "You've been logged out."});
     })
@@ -239,6 +251,196 @@ router.get('/verifyAuth/:userId', (req, res) => {
     }
     return res.status(401).json({success: false, userAuthenticated: false, userInfo: null});
 });
+
+router.put('/addImage', ensureAuthenticated, (req, res) => {
+    let { public_id, secure_url, url } = req.body;
+    let pusher = { public_id, secure_url, url};
+    if(req.user.images.length === req.user.maxNumImages) {
+        return res.status(403).json({success: false, msg: 'Not allowed to add more than '+req.user.maxNumImages+ ' images.'})
+    }
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $push: {
+                images: pusher
+            },
+            $set: {hasAtLeastOneImage: true}
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        return res.status(200).json({success: true, msg: "New image has been added to your profile", user, imgData: pusher})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't add you new image", err});
+    })
+});
+
+router.put('/replaceImage', ensureAuthenticated, (req, res) => {
+    let curImgArr = req.user.images;
+    let imgToReplace = req.query.idx;
+    let newImg = req.query.newImg;
+
+    curImgArr = [...curImgArr.slice(0, imgToReplace), newImg, ...curImgArr.slice(imgToReplace+1)];
+
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                images: [...curImgArr]
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        return res.status(200).json({success: true, msg: "New image has been added to your profile", user})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't add you new image", err});
+    })
+});
+
+router.put('/deleteImage/:idx/:pId', ensureAuthenticated, (req, res) => {
+    let curImgArr = req.user.images;
+    let imgToDelete = Number(req.params.idx);
+    let public_id = req.params.pId;
+
+    curImgArr = [...curImgArr.slice(0, imgToDelete), ...curImgArr.slice(imgToDelete+1, curImgArr.length)];
+
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {
+            $set: {
+                images: [...curImgArr]
+            }
+        },
+        {
+            new: true,
+            returnNewDocument: true
+        }
+    )
+    .then(user => {
+        cloudinary.config({
+            cloud_name: CLOUDINARY_NAME,
+            api_key: CLOUDINARY_API_KEY,
+            api_secret: CLOUDINARY_SECRET
+        });
+
+        cloudinary.uploader.destroy(public_id, function(error, result) {
+            if(error) {
+                console.log(error, public_id);
+                return res.status(500).json({success: false, msg: 'removed img from account, but not cloud', error});
+            }
+
+            return res.status(200).json({success: true, msg: "Image has been deleted from your profile", user, result});
+        })
+
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something went wrong couldn't delete image", err});
+    })
+});
+
+
+router.post('/upLoadImage', ensureAuthenticated, (req, res) => {
+    if(!req.files) {
+        return res.status(422).json({success: false, msg: "No files were uploaded"});
+    }
+
+    const file = req.files.file;
+
+    const filePath = `${__dirname}/../../client/uploads/${file.name}`;
+
+    console.log(filePath);
+
+    file.mv(filePath, err => {
+        if(err) {
+            return res.status(422).json({success: false, msg: "Something happened, couldn't upload file", err});
+        }
+        
+        imgbbUploader(IMAGE_UPLOAD_KEY, filePath)
+        .then(returnedData => {
+            let imgData = { url: returnedData.image.url, deleteUrl: returnedData.delete_url };
+            return res.status(200).json({success: true, msg: "Image uploaded", imgData, unlinkPath: filePath});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong couldn't upload image", err})
+        })
+    })
+});
+
+router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
+    if(!req.files) {
+        return res.status(422).json({success: false, msg: "No files were uploaded"});
+    }
+
+    cloudinary.config({
+        cloud_name: CLOUDINARY_NAME,
+        api_key: CLOUDINARY_API_KEY,
+        api_secret: CLOUDINARY_SECRET
+    });
+
+    const file = req.files.file;
+
+    const filePath = `${__dirname}/../../client/uploads/${file.name}`;
+
+    file.mv(filePath, err => {
+        if(err) {
+            // console.log(err);
+            return res.status(422).json({success: false, msg: "Something happened, couldn't upload file", err});
+        }
+
+        cloudinary.uploader.upload(filePath, {resource_type: 'image'}, function(error, result) {
+            if(error) {
+                try {
+                    fs.unlinkSync(filePath);
+                } catch(err) {
+                    console.error(err);
+                }
+                // console.log(error);
+                return res.status(500).json({success: false, msg: "Something went wrong uploading your imgs", error});
+            }
+
+            try {
+                fs.unlinkSync(filePath);
+            } catch(err) {
+                console.error(err);
+            }
+
+            let { public_id, secure_url, url }  = result;
+
+            const imgData = { public_id, secure_url, url };
+
+            res.status(200).json({success: true, msg: 'img uploaded', imgData})
+        })
+
+    })
+})
+
+
+router.get('/getCandidates', ensureAuthenticated, (req, res) => {
+    MatchProfile.findOne({_id: req.user.matchProfile})
+    .then(usrmp => {
+        let cands = usrmp.candidates;
+        return res.status(200).json({success: true, msg: "Retrieved matching candidates.", candidates: cands})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
+    })
+});
+
+
+
+
+
+
+
 
 router.put('/resetPasswordRequest', ensureAuthenticated, (req, res) => {
     

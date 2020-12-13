@@ -9,6 +9,7 @@ import * as allEmployerActions from '../../actions/EmployerActions';
 import BasicViewWrapper from './BasicViewWrapper';
 
 import { industries } from '../../staticData/industries';
+import { companyStage } from '../../staticData/values';
 
 import ButtonLoader from '../uiComponents/ButtonLoader';
 
@@ -32,6 +33,9 @@ class EmployerBasic extends React.Component {
             industryAddError: "",
             industryArrIdx: 0,
             shortDesc: "",
+            yearFounded: "",
+            companyGrowthStage: "",
+            approxNumEmps: null,
             locationSuggestions: [],
             submittingData: false
         }
@@ -160,14 +164,38 @@ class EmployerBasic extends React.Component {
         })
     }
 
+    handleYearFound = (event) => {
+        event.preventDefault();
+        this.setState({
+            yearFounded: event.target.value
+        })
+    }
+
+    handleCompGrowth = (event) => {
+        event.preventDefault();
+        this.setState({
+            companyGrowthStage: event.target.value
+        })
+    }
+
+    handleNumEmps = (event) => {
+        event.preventDefault();
+        this.setState({
+            approxNumEmps: event.target.value
+        })
+    }
+
     handleSubmit = (event) => {
         event.preventDefault();
-        const { industries, shortDesc, companyName, location } = this.state;
+        const { industries, shortDesc, companyName, location, yearFounded, companyGrowthStage, approxNumEmps } = this.state;
         const empProfile = {
             companyName: companyName,
             industry: industries,
             shortDesc: shortDesc,
-            location: location
+            location: location,
+            yearFounded: yearFounded,
+            companyGrowthStage: companyGrowthStage,
+            approxNumEmployees: approxNumEmps
         };
         this.setState({
             submittingData: true
@@ -175,6 +203,8 @@ class EmployerBasic extends React.Component {
             this.props.actions.employerActions.completeBasicProfile(empProfile);
         })
     }
+
+    
 
     render() {
         return (
@@ -190,6 +220,25 @@ class EmployerBasic extends React.Component {
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-companyName-emp">
                                     <label htmlFor="companyName">Name of your company</label>
                                     <input name="companyName" className="basicInfo-form-input" placeholder="company name" value={this.state.companyName} onChange={this.handleCompanyName}/>
+                                </div>
+                                <div className="basicInfo-form-inputContainer" id="basicInfo-form-yearFounded">
+                                    <label htmlFor="yearFounded">What year was the company founded</label>
+                                    <input name="yearFounded" className="basicInfo-form-input" type="date" value={this.state.yearFounded} onChange={this.handleYearFound}/>
+                                </div>
+                                <div className="basicInfo-form-inputContainer" id="basicInfo-form-growthStage">
+                                    <label htmlFor="growthStage">Company growth stage</label>
+                                    <input list="growthStage" name="growthStage" placeholder="growth stage" className="basicInfo-form-input" type="text" value={this.state.companyGrowthStage} onChange={this.handleCompGrowth}/>
+                                    <datalist id="growthStage">
+                                        {
+                                            companyStage.map((stage, index) => {
+                                                return <option value={stage} key={"stage-"+index}/>
+                                            })
+                                        }
+                                    </datalist>
+                                </div>
+                                <div className="basicInfo-form-inputContainer" id="basicInfo-form-numEmp">
+                                    <label htmlFor="numEmp">Approximately, the number of employees.</label>
+                                    <input name="numEmp" className="basicInfo-form-input" type="number" value={this.state.approxNumEmps} onChange={this.handleNumEmps}/>
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-location">
                                     <label htmlFor="location">Location of HQ, or secondary site</label>
@@ -208,7 +257,7 @@ class EmployerBasic extends React.Component {
                                 </div>
                                 <div className="basicInfo-form-inputContainer" id="basicInfo-form-industry">
                                         <label htmlFor="industry" className="text basicInfo-form-inputLabel">What is the company's industry of work?</label>
-                                        <input value={this.state.jobTitle} list="industry-options" name="industry" className="basicInfo-form-input" placeholder="industry" onChange={this.handleIndustryInput} onFocus={this.toggleDataListOnBioFocus}/>
+                                        <input value={this.state.industry} list="industry-options" name="industry" className="basicInfo-form-input" placeholder="industry" onChange={this.handleIndustryInput} onFocus={this.toggleDataListOnBioFocus}/>
                                         <span className="basicInfo-input-error">{this.state.industryAddError.length > 0 ? this.state.industryAddError: ""}</span>
                                         <span className="basicInfo-form-addBtn" onClick={this.handleIndustryAddMore}>Add <span>&#43;</span></span>
                                         <datalist id="industry-options">
@@ -263,6 +312,30 @@ class EmployerBasic extends React.Component {
                                     <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-companyName">
                                         <label>Company Name: </label>
                                         <span className="basicInfo-form-right-slot">{this.state.companyName}</span>
+                                    </div> 
+                                    : ""
+                                }
+                                {
+                                    this.state.yearFounded.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-yearFounded">
+                                        <label>Year founded: </label>
+                                        <span className="basicInfo-form-right-slot">{this.state.yearFounded}</span>
+                                    </div> 
+                                    : ""
+                                }
+                                {
+                                    this.state.companyGrowthStage.length > 0 ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-growth">
+                                        <label>Growth stage: </label>
+                                        <span className="basicInfo-form-right-slot">{this.state.companyGrowthStage}</span>
+                                    </div> 
+                                    : ""
+                                }
+                                {
+                                    this.state.approxNumEmps ?
+                                    <div className="basicInfo-form-inner-right-elem-container" id="basicInfo-form-inner-right-numEmps">
+                                        <label>Number of employees: </label>
+                                        <span className="basicInfo-form-right-slot">{this.state.approxNumEmps}</span>
                                     </div> 
                                     : ""
                                 }

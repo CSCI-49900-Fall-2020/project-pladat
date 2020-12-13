@@ -114,7 +114,7 @@ export const logInUser = (loginFormData) => dispatch => {
 }
 
 export const verifyUserLogin = (userId) => dispatch => {
-    console.log("verifyLogin UserId: ", userId);
+    // console.log("verifyLogin UserId: ", userId);
     dispatch({type: UserConstants.VERIFYING_USER_LOGIN});
 
     const configs = {
@@ -196,7 +196,7 @@ export const removeFromLoalStorage = () => dispatch => {
 
 export const logOutUser = () => dispatch => {
     dispatch(userLoggingOut());
-    axios.get('/api/users/logout')
+    axios.put('/api/users/logout')
     .then(res => {
         dispatch({type: UserConstants.REMOVING_FROM_STORAGE});
         dispatch(removeFromLoalStorage());
@@ -341,4 +341,131 @@ export const returnAuthErros = (errorMsg, authErrors, serverStatus, authState = 
         authState: authState,
         errors: authErrors
     }
+}
+
+//Image actions
+export const addImage = (imgData) => dispatch => {
+    dispatch({type: UserConstants.EDITING_PROFILE});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        }
+    };
+
+    const requestBody = JSON.stringify({...imgData});
+
+    axios.put('/api/users/addImage', requestBody, {...configs})
+    .then(res => {
+        dispatch({
+            type: UserConstants.EDITING_PROFILE_SUCCESS,
+            msg: res.data.msg,
+            user: res.data.user,
+            imgData: res.data.imgData
+        });
+        dispatch(hashToLocalStroage(res.data.user));
+    })
+    .catch(error => {
+        dispatch({
+            type: UserConstants.EDITING_PROFILE_FAIL,
+            msg: error.response.data.msg
+        })
+    })
+}
+
+export const deleteImage = (idx, pubId) => dispatch => {
+    dispatch({type: UserConstants.EDITING_PROFILE});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        }
+    };
+
+    axios.put(`/api/users/deleteImage/${idx}/${pubId}`, {...configs})
+    .then(res => {
+        dispatch({
+            type: UserConstants.EDITING_PROFILE_SUCCESS,
+            msg: res.data.msg,
+            user: res.data.user
+        });
+        dispatch(hashToLocalStroage(res.data.user));
+    })
+    .catch(error => {
+        dispatch({
+            type: UserConstants.EDITING_PROFILE_FAIL,
+            msg: error.response.data.msg
+        })
+    })
+}
+
+
+export const upLoadImage = (fileData) => dispatch => {
+    dispatch({type: UserConstants.UPLOADING_IMG});
+    const configs = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        }
+    };
+
+    const requestBody = JSON.stringify({...fileData});
+    // console.log(fileData);
+
+    axios.post('/api/users/cloudUploadImg', fileData, {...configs})
+    .then(res => {
+        dispatch({
+            type: UserConstants.IMG_UPLOAD_SUCCESS,
+            imgData: res.data.result,
+            msg: res.data.msg
+        });
+        dispatch(addImage(res.data.imgData));
+    })
+    .catch(error => {
+        dispatch({
+            type: UserConstants.IMG_UPLOAD_FAIL,
+            msg: error.response.data.msg
+        })
+    })
+}
+
+
+//Get candidates
+export const getCandidates = () => dispatch => {
+    dispatch({type: UserConstants.GETTING_CANDIDATES});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/users/getCandidates', {...configs})
+    .then(res => {
+        dispatch({
+            type: UserConstants.GETTING_CANDIDATES_SUCCESS,
+            msg: res.data.msg,
+            candidates: res.data.candidates
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: UserConstants.GETTING_CANDIDATES_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
 }

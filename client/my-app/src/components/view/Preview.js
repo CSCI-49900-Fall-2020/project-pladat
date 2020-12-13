@@ -10,6 +10,7 @@ import * as allStudentActions from '../../actions/StudentActions';
 import * as allRecruiterActions from '../../actions/RecruiterActions';
 import * as allEmployerActions from '../../actions/EmployerActions';
 
+import Card from './Card'
 
 class Preview extends React.Component {
     constructor(props) {
@@ -22,7 +23,7 @@ class Preview extends React.Component {
     render() {
         return (
             <div id="Preview-wrapper">
-                Profile Preview... view (Wow that was hard to say)
+                <Card/>
             </div>
         )
     }

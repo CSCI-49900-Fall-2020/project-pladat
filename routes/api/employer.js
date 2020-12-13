@@ -9,57 +9,112 @@ const User = require('../../models/User');
 const Recruiter = require('../../models/Recruiter');
 const Employer = require('../../models/Employer');
 const Job = require('../../models/Job');
+const Student = require('../../models/Student');
+
 
 const { ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
 
 const { JWT_EMAIL_VERIFY_SIGN_KEY_RECRUITER } = require('../../configs/prodConfig');
+const MatchProfile = require('../../models/MatchProfile');
+const Match = require('../../models/Match');
 
 
 router.put('/completeBaiscProfile', ensureAuthorisation, (req, res) => {
-    const { companyName, industry, location, shortDesc } = req.body;
-    Employer.findOneAndUpdate(
-        {_id: req.user.id},
-        {
-            $set: {
-                companyName: companyName,
-                industry: industry,
-                location: location,
-                basicProfileInfoComplete: true,
-                shortDesc: shortDesc,
-                isVerifiedCompany: true
+    const { companyName, industry, location, shortDesc, yearFounded, companyGrowthStage, approxNumEmployees } = req.body;
+    let newMatchProf = new MatchProfile({
+        userId: req.user._id,
+        psychType: req.user.typeOfUser,
+        psychTarget: 'Student',
+        candidates: [],
+        companyName: companyName,
+        industries: [...industry],
+        locations: [location],
+        cgs: companyGrowthStage,
+        approxNumEmployees,
+        compOffers: [],
+        ir: req.user.internalRank,
+        jobsListed: [],
+        todos: [],
+        workEnv: [],
+        roles: [],
+
+        universityPref: [],
+        majorPref: [],
+        skillsPref: [],
+        experiencePref: [],
+        personalityPref: []
+    });
+    newMatchProf.save()
+    .then(empMatchProf => {
+        Employer.findOneAndUpdate(
+            {_id: req.user.id},
+            {
+                $set: {
+                    companyName: companyName,
+                    industry: industry,
+                    location: location,
+                    basicProfileInfoComplete: true,
+                    shortDesc: shortDesc,
+                    yearFounded: yearFounded,
+                    approxNumEmployees: approxNumEmployees,
+                    companyGrowthStage: companyGrowthStage,
+                    isVerifiedCompany: true,
+                    matchProfile: empMatchProf._id
+                }
+            },
+            {
+                new: true,
+                returnNewDocument: true
             }
-        },
-        {
-            new: true,
-            returnNewDocument: true
-        }
-    )
-    .then(employer => {
-        return res.status(200).json({success: true, msg: "Completed employer basic profile.", employer});
+        )
+        .then(employer => {
+            return res.status(200).json({success: true, msg: "Completed employer basic profile.", employer, matchProf: empMatchProf});
+        })
+        .catch(err => {
+            console.log(err);
+            return res.status(422).json({success: false, msg: "Something went wrong; couldn't complete your employer basic profile.", err});
+        })
     })
     .catch(err => {
-        return res.status(422).json({success: false, msg: "Something went wrong; couldn't complete your employer basic profile.", err});
+        return res.status(422).json({success: false, msg: "Something went wrong; couldn't create match profile"}, err);
     })
+    
 });
 
-router.put('/editMatchProfile', ensureAuthorisation, (req, res) => {
-    const { matchProfile } = req.body;
-    Employer.findOneAndUpdate(
-        {_id: req.user._id},
-        {
-            $set: { matchProfile: matchProfile}
-        },
-        {
-            new: true,
-            returnNewDocument: true
-        }
-    )
-    .then(employer => {
-        res.status(200).json({success: true, msg: "Edited match profile.", employer});
-    })
-    .catch(err => {
-        res.status(422).json({success: false, msg: "Couldn't edit match profile.", err});
-    })
+router.put('/updateMatchProfile', ensureAuthorisation, (req, res) => {
+   const {compOffer, studPersPref, workEnv} = req.user.values;
+   MatchProfile.findOne({_id: req.user.matchProfile})
+   .then(empMatchProf => {
+       let curEmpProf = empMatchProf;
+       curEmpProf.compOffers = [...compOffer];
+       studPersPref.map((pref, idx) => {
+            if(!curEmpProf.includes(pref)) {
+                curEmpProf.push(pref);
+            }
+       });
+       curEmpProf.workEnv = [...workEnv];
+       MatchProfile.findOneAndUpdate(
+           {_id: empMatchProf._id},
+           {
+               $set: {
+                   ...curEmpProf
+               }
+           },
+           {
+               new: true,
+               returnNewDocument: true
+           }
+       )
+       .then(editedEmpMatchProf => {
+           return res.status(200).json({success: false, msg: "Successfully edited match profile", matchProf: editedEmpMatchProf});
+       })
+       .catch(err => {
+           return res.status(422).json({success: false, msg: 'Something went wrong; could not edit match profile', err});
+       })
+   })
+   .catch(err => {
+       return res.status(422).json({success: false, msg: "Something went wrong trying to edit match profile", err});
+   })
 });
 
 router.put('/editProfile', ensureAuthorisation, (req, res) => {
@@ -67,7 +122,11 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
         companyGrowthStage,
         approxNumEmployees,
         yearFounded,
-        socials
+        socials,
+        industry,
+        location,
+        shortDesc, 
+        values
     } = req.body;
 
     Employer.findOneAndUpdate(
@@ -77,7 +136,11 @@ router.put('/editProfile', ensureAuthorisation, (req, res) => {
                 companyGrowthStage: companyGrowthStage,
                 approxNumEmployees: approxNumEmployees,
                 yearFounded: yearFounded,
-                socials: socials
+                socials: socials,
+                industry: industry,
+                location: location,
+                shortDesc: shortDesc,
+                values: values
             }
         },
         {
@@ -219,34 +282,62 @@ router.get('/queryByName/:query', ensureAuthenticated, (req, res) => {
 });
 
 router.post('/createJob', ensureAuthorisation, (req, res) => {
-    const {
-        title,
-        description,
-        company = req.user.companyName,
-        dateOpen,
-        location,
-        todo,
-        mustHaveSkills,
-        recommendSkills,
-        dateClose,
-        matchProfile = req.user.matchProfile,
-        matchLimit,
-        typeOfJob,
-        assignedRecruiters,
-        industry
-    } = req.body;
+   const {
+    title,
+    description,
+    companyName,
+    locations,
+    skillsRequired,
+    typeOfJob,
+    industry,
+    assignedRecruiter,
+    fullJobAppLink,
+    dateClose, role
+   } = req.body;
 
-    const newJob = new Job({
-        title, description, company, dateClose, location, todo, mustHaveSkills, recommendSkills, matchProfile,
-        matchLimit, typeOfJob, isOpen: true, dateOpen, assignedRecruiters, industry: industry.toLowerCase()
-    });
-    newJob.save()
-    .then(job => {
-        return res.status(200).json({success: true, msg: "Created a new job listing.", job});
-    })
-    .catch(err => {
-        return res.status(422).json({success: false, msg: "Something went wrong, couldn't create jobs"});
-    })
+   const newJobPost = new Job({
+       title, description, companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
+       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile, role: role
+   });
+
+   newJobPost.save()
+   .then(job => {
+       MatchProfile.findOne({_id: req.user.matchProfile})
+       .then(empMatchProf => {
+           let curEmpProf = empMatchProf;
+           curEmpProf.jobsListed.push(job._id);
+           curEmpProf.industries.includes(industry) ? curEmpProf.industries = curEmpProf.industries : [...curEmpProf.industries, industry];
+           locations.map((loc, idx) => {
+               if(!curEmpProf.locations.includes(loc)) {
+                   curEmpProf.locations.push(loc);
+               }
+           });
+           MatchProfile.findOneAndUpdate(
+               {_id: req.user.matchProfile},
+               {
+                   $set: {
+                       ...curEmpProf
+                   }
+               },
+               {
+                   new: true,
+                   returnNewDocument: true
+               }
+           )
+           .then(editedMp => {
+               return res.status(200).json({success: true, msg: "created job, and edited match profile", job, matchProf: editedMp});
+           })
+           .catch(err => {
+               return res.status(422).json({success: false, msg: "Someting went wrong; created job, but couldn't edit match profile.", err, job});
+           }) 
+       })
+       .catch(err => {
+           return res.status(422).json({success: false, msg: "Created job but couldn't edit match profile"});
+       })
+   })
+   .catch(err => {
+       return res.status(422).json({success: false, msg: "Couldn't create job something went wrong", err});
+   })
 });
 
 router.put('/editJob/:jobId', ensureAuthorisation, (req, res) => {
@@ -388,10 +479,241 @@ router.put('/assignRecruiter/:jobId/:recruiterId', ensureAuthorisation, (req, re
    })
 })
 
-router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
+   MatchProfile.findOne({userId: req.params.studentId})
+   .then(studentMatchProfile => {
+        Job.find({
+            companyId: req.user._id,
+            swipedRightOnMe: {$in: [studentMatchProfile._id, req.params.studentId]} 
+        })
+        .then(jobs => {
+            if(jobs && jobs.length > 0) {
+                let matchIds = [];
+                jobs.map((job, index) => {
+                    let newMatch = new Match({
+                        jobId: job._id,
+                        employerId: req.user._id,
+                        studentId: studentMatchProfile.userId,
+                        recruiterId: job.assignedRecruiter,
+                        matchDate: Date.now(),
+                        matchEnd: job.dateClose
+                    });
+                    newMatch.save()
+                    .then(sm => {
+                        matchIds.push(sm._id);
+                        if(matchIds.length === jobs.length) {
+                            MatchProfile.findOneAndUpdate(
+                                {_id: studentMatchProfile._id},
+                                {
+                                    $set: {ir: (studentMatchProfile.swipedRightOnMe.length+1)/(studentMatchProfile.swipedLeftOnMe.length)},
+                                    $push: {matches: {$each: matchIds}}
+                                },
+                                {
+                                    new: true,
+                                    returnNewDocument: true
+                                }
+                            )
+                            .then(updatedStudentProf => {
+                                MatchProfile.findOneAndUpdate(
+                                    {_id: req.user.matchProfile},
+                                    {
+                                        $addToSet: {
+                                            universityPref: {$each: updatedStudentProf.university},
+                                            majorPref: {$each: updatedStudentProf.majors},
+                                            skillsPref: {$each: updatedStudentProf.skills},
+                                            experiencePref: {$each: updatedStudentProf.experience},
+                                            personalityPref: {$each: updatedStudentProf.personality}
+                                        },
+                                        $pop: {candidates: -1},
+                                        $push: {matches: {$each: matchIds}}
+                                    },
+                                    {
+                                        new: true,
+                                        returnNewDocument: true
+                                    }
+                                )
+                                .then(updatedEmployerProf => {
+                                    return res.status(200).json({success: true, msg: "Swiped right on student, and edited profile.", isMatch: true, matchProf: updatedEmployerProf})
+                                })
+                                .catch(err => {
+                                    return res.status(422).json({success: false, msg: "Something went wrong; swiped on student but couldn't update your match profile.", err});
+                                })
+                            })
+                            .catch(err => {
+                                return res.status(422).json({success: false, msg: "Something went wrong couldn't swipe on student", err});
+                            })
+                        }
+                    })
+                    .catch(err => {
+                        return res.status(422).json({success: false, msg: "Something went wrong trying to create match.", err});
+                    })
+                });
+            }
+            else {
+                // student hasn't swiped on any of company's jobs, so no match, but record swipe.
+                MatchProfile.findOneAndUpdate(
+                    {_id: studentMatchProfile._id},
+                    {
+                        $push: {swipedRightOnMe: req.user.matchProfile},
+                        $set: {ir: (studentMatchProfile.swipedRightOnMe.length+1)/(studentMatchProfile.swipedLeftOnMe.length)}
+                    },
+                    {
+                        new: true,
+                        returnNewDocument: true
+                    }
+                )
+                .then(updatedStudentProf => {
+                    MatchProfile.findOneAndUpdate(
+                        {_id: req.user.matchProfile},
+                        {
+                            $addToSet: {
+                                universityPref: {$each: updatedStudentProf.university},
+                                majorPref: {$each: updatedStudentProf.majors},
+                                skillsPref: {$each: updatedStudentProf.skills},
+                                experiencePref: {$each: updatedStudentProf.experience},
+                                personalityPref: {$each: updatedStudentProf.personality}
+                            },
+                            $pop: {candidates: -1}
+                        },
+                        {
+                            new: true,
+                            returnNewDocument: true
+                        }
+                    )
+                    .then(updatedEmployerProf => {
+                        return res.status(200).json({success: true, msg: "Swiped right on student, and edited profile.", isMatch: false, matchProf: updatedEmployerProf})
+                    })
+                    .catch(err => {
+                        return res.status(422).json({success: false, msg: "Something went wrong; swiped on student but couldn't update your match profile.", err});
+                    })
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Something went wrong couldn't swipe on student", err});
+                })
+
+            }
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong; couldn't swipe right on student "+req.params.studentId, err});
+        })
+   })
+   .catch(err => {
+       return res.status(422).json({success: false, msg: "Something went wrong; couldn't swipe right on student "+req.params.studentId, err});
+   })
 });
 
-router.put('/swipeRight/:studentId', ensureAuthorisation, (req, res) => {
+router.put('/swipeLeft/:studentId', ensureAuthorisation, (req, res) => {
+    MatchProfile.findOne({userId: req.params.studentId})
+        .then(studentMatchProf => {
+            MatchProfile.findOneAndUpdate(
+                {_id: studentMatchProf.id},
+                {
+                    $push: {swipedLeftOnMe: req.user.matchProfile},
+                    $set: {ir: (studentMatchProf.swipedRightOnMe.length)/(studentMatchProf.swipedLeftOnMe.length+1)}
+                },
+                {
+                    new: true, 
+                    returnNewDocument: true
+                }
+            )
+            .then(updatedStudentProf => {
+                MatchProfile.findOneAndUpdate(
+                    {_id: req.user.matchProfile},
+                    {
+                        $pop: {candidates: -1}
+                    },
+                    {
+                        new: true,
+                        returnNewDocument: true
+                    }
+                )
+                .then(updatedEmployerProf => {
+                    return res.status(200).json({success: true, msg: "Swiped left on student and updated match profile", matchProf: updatedEmployerProf})
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+            })
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on student.", err});
+        })
+});
+
+router.put('/skipSwipe/:studentId', ensureAuthorisation, (req, res) => {
+    Student.findOne({_id: req.params.studentId})
+    .then(studentProf => {
+        MatchProfile.findOneAndUpdate(
+            {_id: req.user.matchProfile},
+            {
+                $pop: {candidates: -1},
+                $push: {candidates: studentProf}
+            }
+        )
+        .then(updatedEmpProf => {
+            return res.status(200).json({success: true, msg: "Skipped student", matchProf: updatedEmpProf});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+        })
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+    })
+});
+
+router.get('/getCandidates', ensureAuthenticated, (req, res) => {
+    MatchProfile.findOne({_id: req.user.matchProfile})
+    .then(empmp => {
+        let cands = empmp.candidates;
+        return res.status(200).json({success: true, msg: "Retrieved matching candidates.", candidates: cands})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
+    })
+});
+
+router.get('/getMatches', ensureAuthorisation, (req, res) => {
+    let matchObjArr = [];
+    Match.find({employerId: req.user._id})
+    .then(matches => {
+        if(matches.length === 0) {
+            return res.status(200).json({success: true, msg: "No matches just yet; keep swiping.", matches});
+        }
+        matches.map((m, idx) => {
+            let curM = {};
+            Student.findOne({_id: m.studentId})
+            .then(stud => {
+                stud.password = null;
+                curM['student'] = stud;
+                Recruiter.findOne({_id: m.recruiterId})
+                .then(emp => {
+                    emp.password = null;
+                    curM['recruiter'] = emp;
+                    curM['jobId'] = m.jobId;
+                    curM['convoId'] = m.convo;
+                    matchObjArr.push(curM);
+
+                    if(matchObjArr.length === matches.length) {
+                        return res.status(200).json({success: true, msg: "Loaded matches", matches: matchObjArr});
+                    }
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+            })
+            
+        });
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "something went wrong; couldn't retrieve matches", err});
+    })
 });
 
 

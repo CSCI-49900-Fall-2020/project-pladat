@@ -39,7 +39,7 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
     })
 }
 
-export const completeMatchProfile = (matchProfile) => dispatch => {
+export const updateMatchProfile = () => dispatch => {
     dispatch({type: StudentConstants.EDITING_STUDENT_PROFILE});
 
     const configs = {
@@ -52,14 +52,14 @@ export const completeMatchProfile = (matchProfile) => dispatch => {
         },
     };
 
-    const requestBody = JSON.stringify({...matchProfile});
+    // const requestBody = JSON.stringify({...matchProfile});
 
-    axios.put('/api/student/completeMatchProfile', requestBody, {params: {userType: 'Student'}, ...configs})
+    axios.put('/api/student/updateMatchProfile', {params: {userType: 'Student'}, ...configs})
     .then(res => {
         dispatch({
             type: StudentConstants.STUDENT_PROFILE_EDIT_SUCCESS,
             msg: res.data.msg,
-            user: res.data.student
+            matchProf: res.data.mp
         });
         dispatch(hashToLocalStroage(res.data.student));
     })
@@ -93,6 +93,7 @@ export const editProfile = (profile) => dispatch => {
             msg: res.data.msg,
             user: res.data.student
         });
+        dispatch(updateMatchProfile());
         dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
@@ -122,16 +123,14 @@ export const swipeRight = (jobId) => dispatch => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_RIGHT,
             msg: res.data.msg,
-            user: res.data.student,
-            swipedJob: res.data.job
+            matchProfile: res.data.matchProf,
+            isMatch: res.data.isMatch
         });
-        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.job
         })
     })
 }
@@ -155,16 +154,13 @@ export const swipeLeft = (jobId) => dispatch => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_LEFT,
             msg: res.data.msg,
-            user: res.data.student,
-            swipedJob: res.data.job
+            matchProfile: res.data.matchProf
         });
-        dispatch(hashToLocalStroage(res.data.student));
     })
     .catch(error => {
         dispatch({
             type: StudentConstants.STUDENT_SWIPE_FAIL,
             msg: error.response.data.msg,
-            failedSwipe: error.response.data.job
         })
     })
 }
@@ -197,3 +193,34 @@ export const getStudent = (sId) => dispatch => {
         })
     })
 }
+
+export const skipSwipe = (jobId) => dispatch => {
+    dispatch({type: StudentConstants.STUDENT_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+
+    axios.put('/api/student/skipSwipe/'+jobId, {params: {userType: 'Student'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: StudentConstants.STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: StudentConstants.STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}
+

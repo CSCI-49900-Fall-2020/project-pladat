@@ -19,13 +19,12 @@ import Settings from '../view/Settings';
 import DiscoverView from '../view/DiscoverView';
 import FourOFour from '../pages/FourOFour';
 
-import Header from './Header'
-import Cards from './Cards'
+
+
 
 import './styles/Base.css';
 import './styles/MainBase.css';
 import './styles/SMain.css';
-import "./styles/MainPage.css"
 
 class SMain extends React.Component {
     constructor(props) {
@@ -37,13 +36,20 @@ class SMain extends React.Component {
 
         this.state = {
             studentUser: this.props.user.user,
+            studentUserName: this.props.user.user ? this.props.user.user.firstname : 'PlaceMint User',
+            studentUserLastName: this.props.user.user ? this.props.user.user.lastname : "",
+            studentUserMatches: this.props.user.userMatches,
+            studentUserImages: this.props.user.user ? this.props.user.user.images : [],
             userType: this.props.user.user ? this.props.user.user.typeOfUser : null,
             loadingJobs: false,
             loadingUser: true,
             redirectToLogin: false,
             redirect: false,
             redirectTo: null,
-            possibUrlUsrTypes: 'sre'
+            possibUrlUsrTypes: 'sre',
+
+            curLocation: this.props.location.pathname,
+            headerText: 'PlaceMint'
         }
     }
 
@@ -52,16 +58,59 @@ class SMain extends React.Component {
             const { loggedIn, isAuthenticated, userLoginVerificationFail, authState, user } = this.props.user;
 
             if(!isAuthenticated || !user && !this.state.loadingUser) {
+                // console.log('redirecting to login  from smain wrapper');
                 this.setState({ redirectToLogin: true })
             }
             else {
-                // setTimeout(() => {
-                //     this.setState({
-                //         loadingUser: false
-                //     })
-                // }, 1000)
                 this.setState({
                     loadingUser: false
+                })
+            }
+
+            if(prevProps.location !== this.props.location) {
+                this.setState({
+                    curLocation: this.props.location.pathname
+                });
+
+                if(this.props.location.pathname === '/s/settings') {
+                    this.setState({
+                        headerText: "Settings"
+                    })
+                }
+                else if(this.props.location.pathname === '/s/me' || this.props.location.pathname === '/s/me/preview_profile') {
+                    this.setState({
+                        headerText: "PlaceMint Profile"
+                    })
+                }
+                else {
+                    this.setState({
+                        headerText: 'PlaceMint'
+                    })
+                }
+            }
+        }
+    }
+
+    componentDidMount() {
+        this.props.actions.userActions.getUser();
+        if(this.props.location) {
+            this.setState({
+                curLocation: this.props.location.pathname
+            });
+
+            if(this.props.location.pathname === '/s/settings') {
+                this.setState({
+                    headerText: "Settings"
+                })
+            }
+            else if(this.props.location.pathname === '/s/me' || this.props.location.pathname === '/s/me/preview_profile') {
+                this.setState({
+                    headerText: "PlaceMint Profile"
+                })
+            }
+            else {
+                this.setState({
+                    headerText: 'PlaceMint'
                 })
             }
         }
@@ -81,7 +130,42 @@ class SMain extends React.Component {
         return pathCombine;
     }
 
+    handleCreateAvatar = () => {
+        if(this.state.studentUserImages.length > 0) {
+            return (
+                <div className='grid-left-avatarRealPic'>
+                    <img className='avatar' src={this.state.studentUserImages[0].secure_url} />
+                </div>
+            )
+        }
+        else {
+            if(this.state.studentUserName !== 'PlaceMint User') {
+                return (
+                    <div className='grid-left-avatarGenerated'>
+                        <h4>{this.state.studentUserName.substring(0,1).toUpperCase() + this.state.studentUserLastName.substring(0,1).toUpperCase()}</h4>
+                    </div>
+                )
+            }
+            else {
+                return (
+                    <div className='grid-left-avatarGenerated'>
+                        <h4>PU</h4>
+                    </div>
+                )
+            }
+        }
+    }
+
+
+    handleLogOut = (event) => {
+        event.preventDefault();
+        this.props.actions.userActions.logOutUser();
+        return;
+    }
+
+
     render() {
+        let tempAvatar = this.handleCreateAvatar();
         if(this.state.redirectToLogin) {
             return <Redirect to='/login'/>
         }
@@ -107,17 +191,56 @@ class SMain extends React.Component {
                             <div className="inner-gridContainer">
                                 <div className='grid-left-sidebar'>
                                     <div className='grid-left-nameHolder'>
-                                        <h1>{}</h1>
+                                    {
+                                            this.state.curLocation.indexOf('/s/discover') < 0 ?
+
+                                            <span className="grid-left-backToDiscoverBtn" title="Discover">
+                                                <Link to='/s/discover/'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                        <path d="M0 0h24v24H0z" fill="#00a68a"/>
+                                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                                    </svg>
+                                                </Link>
+                                            </span>
+                                            : ''
+                                        }
+                                        <span className='grid-left-nameHolder-nameLink'><Link to='/s/me'><h1 className='text'>{this.state.studentUserName}</h1></Link></span>
+                                        <span className='grid-left-nameHolder-avatarLink'><Link to='/s/me'>{tempAvatar}</Link></span>
                                     </div>
                                     <div className='grid-left-contentHolder'>
+                                       {
+                                           ((this.state.curLocation === '/s/discover') || (this.state.curLocation === '/s/discover/')) ?
 
+                                           <h2>Matches go here</h2>
+
+                                           :
+
+                                           <div className='grid-left-editProfileTabs'>
+                                               <span className='text' style={((this.state.curLocation === '/s/me') || (this.state.curLocation === '/s/me/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                    <Link to='/s/me'><h3>Edit Profile</h3></Link>
+                                                </span>
+                                               <span className='text' style={((this.state.curLocation === '/s/settings') || (this.state.curLocation === '/s/settings/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                   <Link to='/s/settings'><h3>Settings</h3></Link>
+                                                </span>
+                                               <span className='text grid-left-editProfileTabSlotText' onClick={this.handleLogOut}><h3>Log out</h3></span>
+                                           </div>
+                                       }
                                     </div>
                                 </div>
-                                <div className='main-page-wrapper'>
-                                    <Header />
-                                    <Cards />
-                                        <Switch>
-                                        <Route exact path='/s' component={DiscoverView}/>
+                                <div className='grid-top-title'>
+                                    {
+                                        this.state.headerText.indexOf('PlaceMint') >=0 ?
+
+                                            <h1 className='text'>{this.state.headerText.substring(0,5)}<span className='grid-top-title-headerEmphasis'>{this.state.headerText.substring(5,9)}</span>{this.state.headerText.substring(9)}</h1>
+
+                                        :
+                                        
+                                        <h1 className='text'>{this.state.headerText}</h1>
+                                    }
+                                </div>
+                                <div className='grid-center-main'>
+                                    <Switch>
+                                        <Route exact path = '/s' component={DiscoverView}/>
                                         <Route exact path='/s/discover/' component={DiscoverView} />
                                         <Route exact path='/s/discover/:id' component={null} />
                                         <Route exact path='/s/me' component={ProfileEdit} />
