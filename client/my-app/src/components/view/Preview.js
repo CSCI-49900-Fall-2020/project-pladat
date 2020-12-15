@@ -1,6 +1,5 @@
 import React from 'react';
 
-import './styles/Preview.css';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -10,20 +9,26 @@ import * as allStudentActions from '../../actions/StudentActions';
 import * as allRecruiterActions from '../../actions/RecruiterActions';
 import * as allEmployerActions from '../../actions/EmployerActions';
 
+import Card from './Card';
+import './styles/Preview.css';
+
+
 
 class Preview extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            curUser: null,
-            curUserType: null
+            curUser: this.props.user.user,
+            curUserType: this.props.user.user.typeOfUser
         }
     }
 
     render() {
         return (
             <div id="Preview-wrapper">
-                Profile Preview... view (Wow that was hard to say)
+                <div id="Preview-wrapper-innerContainer">
+                    <Card cardType='user' isPreview={true} cardData={this.state.curUser}/>
+                </div>
             </div>
         )
     }
