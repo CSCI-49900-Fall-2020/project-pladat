@@ -1,9 +1,8 @@
 .buttons-container {
-    bottom: 2vh;
-    align-items: center;
+    position: relative;
     display: flex;
-    overflow-x: hidden;
-    justify-content: center;
+    bottom: 5vh;
+    justify-content: space-evenly ;
 }
 
 .card-wrapper {
