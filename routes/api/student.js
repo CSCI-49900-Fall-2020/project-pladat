@@ -51,7 +51,8 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
         industries: [],
         workEnv: [],
         compOffers: [],
-        todos: []
+        todos: [],
+        pay: []
     });
     studMatchProfile.save()
     .then(matchProf => {
@@ -240,7 +241,8 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
                                         workEnv: {$each: empMatchProf.workEnv},
                                         cgs: empMatchProf.cgs,
                                         jobTypes: swipedJob.typeOfJob,
-                                        roles: swipedJob.role
+                                        roles: swipedJob.role,
+                                        pay: swipedJob.pay
                                     },
                                     $push: {matches: newMatch._id},
                                     $pop: {candidates: -1}

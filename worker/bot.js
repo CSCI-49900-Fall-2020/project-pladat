@@ -301,7 +301,7 @@ eventEmmiter.on('SJC', () => {
                                 { university: {$in: matchProf.universityPref} },
                                 { majors: {$in: matchProf.majorPref} },
                                 { majors: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
-                                { experience: {$in: matchProf.experiencePref} },
+                                { experience: {$in: [...matchProf.experiencePref, ...job.backgrounds]} },
                                 { experience: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
                                 { roles: {$in: [...matchProf.roles, job.role]} },
                                 { roles: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
@@ -313,8 +313,9 @@ eventEmmiter.on('SJC', () => {
                                 { cgs: {$in: matchProf.cgs} },
                                 { industries: {$in: [...matchProf.industries, job.industry]} },
                                 { industries: {$in: [...jobTitleSplit, ...jobDescSplit, ...jobTodoSplit]} },
-                                { workEnv: {$in: matchProf.workEnv} },
-                                { compOffers: { $in: matchProf.compOffers} },
+                                { workEnv: {$in: [...matchProf.workEnv, ...job.workEnv]} },
+                                { compOffers: { $in: [...matchProf.compOffers, ...job.perks]} },
+                                { pay: {$in: job.pay} }
                             ]
                         }, 
                         {

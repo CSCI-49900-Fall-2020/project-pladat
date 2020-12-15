@@ -41,6 +41,10 @@ const JobSchema = new Schema({
    typeOfJob: {type: String, required: true},
    industry: {type: String, required: true},
    role: {type: String, required: true},
+   backgrounds: [{type: String, required: true}],
+   perks: [{type: String, required: true}],
+   workEnv: [{type: String, required: true}],
+   pay: {type: String, required: true},
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},

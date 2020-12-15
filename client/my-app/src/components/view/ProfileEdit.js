@@ -75,6 +75,15 @@ class ProfileEdit extends React.Component {
         if(prevProps !== this.props) {
             const { defaultEditSuccess, imagesUpdated, user, uploadingImg } = this.props.user;
 
+            if(prevProps.user.user !== user) {
+                this.setState({
+                    curUser: user ? this.props.user.user: null,
+                    curUserType: user ? this.props.user.user.typeOfUser : null,
+                    curUserImages: this.handleImgPopulate(),
+                    curUserMaxImgNum: user ? this.props.user.user.maxNumImages : 6
+                })
+            }
+
             if(defaultEditSuccess) {
                 this.setState({
                     curUser: user,
