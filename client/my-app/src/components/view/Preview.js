@@ -27,7 +27,7 @@ class Preview extends React.Component {
         return (
             <div id="Preview-wrapper">
                 <div id="Preview-wrapper-innerContainer">
-                    <Card cardType='user' isPreview={true} cardData={this.state.curUser}/>
+                    <Card cardType='user' mode="preview" isPreview={true} cardData={this.state.curUser}/>
                 </div>
             </div>
         )

@@ -10,6 +10,7 @@
     align-content: center;
     align-items: center;
     overflow: hidden;
+    position: relative;
 }
 #Preview-wrapper-innerContainer {
     width: 75%;
@@ -22,5 +23,6 @@
     justify-content: center;
     align-content: center;
     align-items: center;
-    overflow: hidden;
+    /* overflow: hidden; */
+    position: relative;
 }

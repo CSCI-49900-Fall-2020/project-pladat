@@ -45,6 +45,7 @@ const JobSchema = new Schema({
    perks: [{type: String, required: true}],
    workEnv: [{type: String, required: true}],
    pay: {type: String, required: true},
+   compLogo: {type: Schema.Types.Mixed, required: true},
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},
