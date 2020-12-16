@@ -41,7 +41,6 @@ const JobSchema = new Schema({
    typeOfJob: {type: String, required: true},
    industry: {type: String, required: true},
    role: {type: String, required: true},
-   backgrounds: [{type: String, required: true}],
    perks: [{type: String, required: true}],
    workEnv: [{type: String, required: true}],
    pay: {type: String, required: true},
@@ -49,7 +48,7 @@ const JobSchema = new Schema({
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},
-   dateClose: {type: String, required: true},
+   dateClose: {type: String, required: false},
 
    swipedRightOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],
    swipedLeftOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],
@@ -58,7 +57,7 @@ const JobSchema = new Schema({
    isOpen: {type: Boolean, required: true, default: false},
 
    //Logistics:
-   assignedRecruiter: {type: Schema.Types.ObjectId, required: true},
+   assignedRecruiter: {type: Schema.Types.ObjectId, required: false},
    fullJobAppLink: {type: String, required: true},
 
    //Analysis:

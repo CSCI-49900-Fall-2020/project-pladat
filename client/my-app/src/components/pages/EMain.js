@@ -17,6 +17,7 @@ import ProfileEdit from '../view/ProfileEdit';
 import Preview from '../view/Preview';
 import Settings from '../view/Settings';
 import DiscoverView from '../view/DiscoverView';
+import JobCreate from '../view/JobCreate';
 import FourOFour from '../pages/FourOFour';
 
 
@@ -222,6 +223,9 @@ class EMain extends React.Component {
                                                <span className='text' style={((this.state.curLocation === '/e/settings') || (this.state.curLocation === '/e/settings/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
                                                    <Link to='/e/settings'><h3>Settings</h3></Link>
                                                 </span>
+                                                <span className='text' style={((this.state.curLocation === '/e/create-job') || (this.state.curLocation === '/e/create-job/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                   <Link to='/e/create-job'><h3>Create Job</h3></Link>
+                                                </span>
                                                <span className='text grid-left-editProfileTabSlotText' onClick={this.handleLogOut}><h3>Log out</h3></span>
                                            </div>
                                        }
@@ -246,6 +250,7 @@ class EMain extends React.Component {
                                         <Route exact path='/e/me' component={ProfileEdit} />
                                         <Route exact path='/e/me/preview_profile' component={Preview} />
                                         <Route exact path='/e/settings' component={Settings}/>
+                                        <Route exact path='/e/create-job/' component={JobCreate} />
                                         <Route component={FourOFour} />
                                     </Switch>
                                 </div>

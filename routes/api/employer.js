@@ -293,7 +293,7 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
     assignedRecruiter,
     fullJobAppLink,
     dateClose, role,
-    perks, backgrounds, workEnv, pay, person
+    perks, workEnv, pay, person
    } = req.body;
 
    const newJobPost = new Job({
@@ -311,7 +311,7 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
                     industries: industry,
                     jobsListed: job._id,
                     skillsPref: {$each: skillsRequired},
-                    experiencePref: {$each: backgrounds},
+                    // experiencePref: {$each: backgrounds},
                     compOffers: {$each: perks},
                     workEnv: {$each: workEnv},
                     personalityPref: {$each: person},
