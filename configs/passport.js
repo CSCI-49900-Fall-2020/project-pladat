@@ -12,6 +12,9 @@ module.exports = (passport) => {
                 return done(null, false, {msg: 'Email is not registered'});
             }
             /* maybe check for verification here */
+            if(!user.isVerified) {
+                return done(null, false, {msg: 'Must verify email to login.'});
+            }
 
             bcrypt.compare(password.trim(), user.password, (err, isMatch) => {
                 if(err) {
@@ -21,6 +24,7 @@ module.exports = (passport) => {
                     return done(null, user);
                 }
                 else {
+                    // console.log('wrong passwrod: ', password);
                     return done(null, false, { msg: 'Password is incorrect' });
                 }
             });

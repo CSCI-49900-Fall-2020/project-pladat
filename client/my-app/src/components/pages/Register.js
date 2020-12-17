@@ -17,6 +17,7 @@ import { ON_REGISTER_SUCCESS_KEY } from '../../staticData/config';
 
 
 import anime from 'animejs';
+import ButtonLoader from '../uiComponents/ButtonLoader';
 
 class Register extends Component {
     constructor(props) {
@@ -334,7 +335,7 @@ class Register extends Component {
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-register-submitBtnContainer">
                                     <button className="auth-form-submitBtn" onClick={this.handleFromSubmit}>
                                         {
-                                            this.state.sumbitting ? "Boyeong's loader" :
+                                            this.state.sumbitting ? <ButtonLoader /> :
                                             <h2 className="text">
                                                 Sign Up
                                             </h2>

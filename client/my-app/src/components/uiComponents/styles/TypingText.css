@@ -43,3 +43,15 @@
 .space-char {
     margin-left: 10px;
 }
+
+@media (max-width: 840px) {
+    #typed-text-holder .typed-text {
+        /* font-size: 23px; */
+        font-size: 2.8vw;
+        font-weight: 300;
+        /* color: rgb(229, 229, 229); */
+        /* color: #e4e4e4; */
+        color: #d3d3d3;
+        display: none;
+    }
+}

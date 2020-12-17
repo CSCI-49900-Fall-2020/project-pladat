@@ -11,6 +11,7 @@ import * as allUserActions from '../../actions/UserActions';
 
 import './styles/OnEmailVerify.css';
 import './styles/Base.css';
+import ViewLoader from '../uiComponents/ViewLoader';
 
 class OnEmailVerify extends React.Component {
     constructor(props) {
@@ -86,7 +87,7 @@ class OnEmailVerify extends React.Component {
                         </div>
 
                         <div id='main-card-content'>
-                            {this.state.verifying ? "Boyeong's activity loader goes here..." 
+                            {this.state.verifying ? <ViewLoader /> 
                             : this.state.onFinishContent.map((content, i) => {
                                 return (
                                     <h2 className={this.state.success === false ? "card-content-text-err text": "card-content-text text"} key={i}>

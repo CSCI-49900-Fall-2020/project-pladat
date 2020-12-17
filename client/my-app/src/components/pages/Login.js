@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import * as allUserActions from '../../actions/UserActions';
 
 import anime from 'animejs';
+import ButtonLoader from '../uiComponents/ButtonLoader';
 
 class Login extends Component {
     constructor(props) {
@@ -53,12 +54,20 @@ class Login extends Component {
                 this.setState({
                     submitting: false,
                     successFullLogin: true,
-                    redirectParam1: user.uni_Id,
-                    redirectParam2: user.uni
+                    canRedirect: true,
+                    redirectCompToken: this.computeRedirectUrl()
                 })
             }
-    
-            if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+            
+            if(authError !== prevProps.user.authError && errorsDidChange && (!authError || authError.length < 1) && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
+                this.setState({
+                    authErrors: [],
+                    authErrorsMapper: [],
+                    errorsLoaded: false,
+                    submitting: false
+                })
+            }
+            else if(authError !== prevProps.user.authError && errorsDidChange && this.state.formSubmitted && authState !== 'USER_LOGGING_IN') {
                 if(authError !== this.state.authErrors[0]) {
                     let tempArr = [];
                     tempArr.push({msg: authError});
@@ -89,9 +98,18 @@ class Login extends Component {
 
     }
 
+    computeRedirectUrl = () => {
+        let userType = this.props.user.user.typeOfUser.toLowerCase();
+        let basicComplete = this.props.user.user.basicProfileInfoComplete;
+
+        let url = basicComplete ? "/login" : `${userType}/basicInfo`;
+
+        return url;
+    }
+
     errorOnShowAnimation = () => {
         anime({
-            targets: '#auth-login-from-error-holder .auth-form-error',
+            targets: '#auth-login-form-error-container .auth-form-error',
             delay: anime.stagger(80),
             visibility: 'visible',
             translateX: [
@@ -170,12 +188,13 @@ class Login extends Component {
 
         const { email, password } = this.state;
         const userCred = { email, password };
+        // console.log(userCred);
 
-        setTimeout(() => {
-            this.props.actions.userActions.logInUser(userCred);
-        }, 1000);
+        // setTimeout(() => {
+        //     this.props.actions.userActions.logInUser(userCred);
+        // }, 1000);
 
-        // this.props.actions.userActions.logInUser(userCred);
+        this.props.actions.userActions.logInUser(userCred);
     }
 
     handleEmailInput = (e) => {
@@ -255,7 +274,7 @@ class Login extends Component {
                            
                                 <div className="auth-form-inputLine auth-form-submitBtn-container" id="auth-login-submitBtnContainer">
                                     <button onClick={this.handleFormSubmit} className="auth-form-submitBtn">
-                                        {this.state.submitting ? 'Boyeongs loader...' : <h2 className="text">Login</h2>}
+                                        {this.state.submitting ? <ButtonLoader /> : <h2 className="text">Login</h2>}
                                     </button>
                                 </div>
 

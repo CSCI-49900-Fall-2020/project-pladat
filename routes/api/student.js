@@ -13,7 +13,7 @@ const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = requ
 
 
 
-router.put('/completeBaiscProfile', ensureAuthenticated, (req, res) => {
+router.put('/student/completeBaiscProfile', ensureAuthenticated, (req, res) => {
     const {
         university,
         major,
@@ -56,8 +56,8 @@ router.put('/completeBaiscProfile', ensureAuthenticated, (req, res) => {
 })
 
 
-router.put('/completeMatchProfile', ensureAuthenticated, (req, res) => {
-    const { matchProfile, resume, values } = req.body;
+router.put('/student/completeMatchProfile', ensureAuthenticated, (req, res) => {
+    const { matchProfile, resume, values, socials } = req.body;
 
     Student.findOneAndUpdate(
         {_id: req.user.id},
@@ -86,7 +86,7 @@ router.put('/completeMatchProfile', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.put('/editProfile', ensureAuthenticated, (req, res) => {
+router.put('/student/editProfile', ensureAuthenticated, (req, res) => {
     const {
         university,
         major,
@@ -131,7 +131,7 @@ router.put('/editProfile', ensureAuthenticated, (req, res) => {
     })
 });
 
-router.put('/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
+router.put('/student/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
     let srs = req.user.swipedRight;
     let sls = req.user.swipedLeft;
 
@@ -183,7 +183,7 @@ router.put('/swipeRight/:jobId', ensureAuthenticated, (req, res) => {
     }
 });
 
-router.put('/swipeLeft/:jobId', ensureAuthenticated, (req, res) => {
+router.put('/student/swipeLeft/:jobId', ensureAuthenticated, (req, res) => {
     let srs = req.user.swipedRight;
     let sls = req.user.swipedLeft;
 
