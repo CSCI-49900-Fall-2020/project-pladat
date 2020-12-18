@@ -43,7 +43,7 @@ Allows employers to “like” any candidates and any students to “like” any
 ## Test Plan
 Fill the database with dummy data to see if the matching algorithm is working as intended. As well as also test both the student view and employer view to ensure that everything is behaving as expected. Filling out employer prompts from a student perspective as well as testing Premium by creating full profiles for mock students and employers to test the profile pages and like tabs. Then tweak some aspects of those profiles to have some controlled variables and multiple very similar accounts to ensure that the weighting on the algorithm is working as intended.
 
-* [Hosted application](mighty-fjord-37266.herokuapp.com)
+* Hosted application: mighty-fjord-37266.herokuapp.com
 
 ## Authors
 * William Darko (williamliamdarko@gmail.com)
