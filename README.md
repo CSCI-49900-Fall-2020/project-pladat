@@ -17,19 +17,28 @@ PlaceMint for promising students benefit both students and employers tremendousl
 | Frontend | __HTML, CSS, JavaScript, React__ |
 | Backend (Server Architecture) | __Node.js, Express.js, Passport.js, Jason Web Token, bcrypt, etc.__ |
 | Backend (Database Schema Design) | __MongoDB, Mongoose__ |
-| Matching Algorithm | [See details](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Matching-Algorithm)|
+| Matching Algorithm | __Simple CRON job using a queue system__ |
 | Deployment | __Heroku, Docker__ |
 
 
 ## List of features
-* __Candidate like tab__: Allow employers to see candidates who “like” their opportunities 
-* __Student like tab__: Allow students to see any candidates that “like” the resumes of prospective placements
-* __Targeted follow up function__: Allow employers to highlights aspects and respond directly to interesting resume information or student interview prompts
-* __Versatile file uploads__: Upload features for different file types of resumes, job descriptions, profile pictures, job site picture, employers may upload the video to display workplace culture in action
-* __Student profile page prompts__: Common interview questions can be published as prompts on a students page where they can showcase their answers to employers
-* __Employer profile page prompts__: Employers can publish FAQ as prompts on their page to assist students in deciding if that particular work-place culture is for them
-* __Premium Version for Students__: gives viewing access to internship salaries
-* __Employer - Student matching algorithms__: rating system of both parties and max scores determine the compatibility of placement. Similar to the college admission process where different characteristics have different values of importance to either party
+__Dynamic & Personal Profile Editing__:
+Allow users to make changes to their profile at any time during the discover process 
+
+__Previewing your Profile__:
+Allow users to see how their profile appears before others see it
+
+__Image Support__:
+Allow users to add images to bolster their profile and show potential recruiters a personal touch
+
+__Discover Views for Students and Employers__:
+Both employers and students have their own curated discovery queue of potential matches
+
+__Like & Dislike__:
+Allows employers to “like” any candidates and any students to “like” any recruiters to have the chance to match with each other. They can also “dislike” to avoid matching.
+
+
+
 
 
 ## Test Plan
