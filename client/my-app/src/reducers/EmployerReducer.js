@@ -25,6 +25,7 @@ const initialState = {
     removingJob: false,
     jobDeleteError: false,
     curJob: null,
+    jobCreateSuccess: false,
 
     verifyingRecruiter: false,
     assigningRecruiter: false,
@@ -151,6 +152,10 @@ function employer(state = initialState, action) {
                 creatingJob: true,
                 editingJob: false,
                 removingJob: false,
+                jobCreateError: false,
+                jobEditError: false,
+                jobDeleteError: false,
+                jobCreateSuccess: false
             };
         case EmployerConstants.EMPLOYER_CREATE_JOB_SUCCESS:
             return {
@@ -161,7 +166,8 @@ function employer(state = initialState, action) {
                 jobEditError: false,
                 jobDeleteError: false,
                 curJob: action.jobCreated,
-                serverMsg: action.msg
+                serverMsg: action.msg,
+                jobCreateSuccess: true
             };
         case EmployerConstants.EMPLOYER_CREATE_JOB_FAIL:
             return {

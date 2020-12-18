@@ -14,6 +14,8 @@ import { preferredRoles } from '../../staticData/preferredRoles';
 import { workEnvironment } from '../../staticData/values';
 import { industries } from '../../staticData/industries';
 
+import ButtonLoader from '../uiComponents/ButtonLoader';
+
 import './styles/JobCreate.css';
 
 
@@ -44,19 +46,43 @@ class JobCreate extends React.Component {
             locationSuggestions: [],
             recruiters: [],
 
-            canSubmit: false
+            canSubmit: false,
+
+            submittingJob: false,
+            toggleJobSuccessMsg: false,
+            submitFail: false
         }
     }
 
     componentDidUpdate(prevProps) {
-        if(this.state.title.length > 0 && this.state.description.length > 0 && this.state.locations.length > 0 && this.state.todo.length > 0 && this.state.skillsRequired.length > 0
-            && this.state.typeOfJob.length > 0 && this.state.industry.length > 0 && this.state.role.length > 0 && this.state.perks.length > 0 && this.state.pay
-            && this.state.workEnv.length > 0 && this.state.companyName && this.state.companyId && this.state.compLogo && this.state.canSubmit === false)
-            {
+        const {jobCreateSuccess, jobCreateError} = this.props.employers;
+        if(prevProps.employers !== this.props.employers) {
+            if(this.state.submittingJob & jobCreateSuccess) {
                 this.setState({
-                    canSubmit: true
+                    submittingJob: false,
+                    toggleJobSuccessMsg: true
+                }, () => {
+                    setTimeout(() => {
+                        this.setState({
+                            toggleJobSuccessMsg: false
+                        })
+                    }, 7000)
                 })
             }
+            if(this.state.submittingJob && jobCreateError) {
+                this.setState({
+                    submittingJob: false,
+                    toggleJobSuccessMsg: true,
+                    submitFail: true
+                }, () => {
+                    setTimeout(() => {
+                        this.setState({
+                            toggleJobSuccessMsg: false
+                        })
+                    }, 7000)
+                })
+            }
+        }
     }
 
     handleLocationSuggestions = (event) => {
@@ -125,7 +151,7 @@ class JobCreate extends React.Component {
     handleJobDesc = (event) => {
         event.preventDefault();
         this.setState({
-            description: this.state.description.length < 270 ? event.target.value : this.state.description
+            description: this.state.description.length < 1500 ? event.target.value : this.state.description
         })
     }
 
@@ -238,7 +264,7 @@ class JobCreate extends React.Component {
     handleTodo = (event) => {
         event.preventDefault();
         this.setState({
-            todo: event.target.value.length < 270 ? event.target.value : this.state.todo
+            todo: event.target.value
         })
     }
 
@@ -246,19 +272,22 @@ class JobCreate extends React.Component {
         let jobInfo = {
             title: this.state.title,
             description: this.state.description,
-            companyName: this.state.companyName,
             locations: this.state.locations,
             skillsRequired: this.state.skillsRequired,
             typeOfJob: this.state.typeOfJob,
             industry: this.state.industry,
-            assignedRecruiter: null,
-            fullJobAppLink: null,
-            dateClose: null,
+            assignedRecruiter: 'null',
+            fullJobAppLink: 'null',
+            dateClose: 'null',
             perks: this.state.perks,
             workEnv: this.state.workEnv,
-            pay: this.state.pay,
+            pay: this.state.pay, role: this.state.role
         }
-        this.props.employerActions.createJob(jobInfo);
+        this.setState({
+            submittingJob: true
+        }, () => {
+            this.props.actions.employerActions.createJob(jobInfo);
+        })
     }
 
 
@@ -267,6 +296,15 @@ class JobCreate extends React.Component {
             <div id="JobCreate-view">
                 <div id='JobCreate-view-innerWrapper'>
                     <div id='JobCreate-view-form-container'>
+                        {
+                            this.state.toggleJobSuccessMsg ?
+                            
+                            (
+                                this.state.submitFail ? <span className='jobSubFail'>Job listing failed.</span> : <span id='toggleJobSuccess'>Job listed successfully</span>
+                            )
+
+                            :''
+                        }
                         <form>
                            <div id='JobCreate-inner-form-container'>
                                 <div className='JobCreate-from-fromGroup groupwborder'>
@@ -447,7 +485,15 @@ class JobCreate extends React.Component {
                                 </div>
                                         
                                 <div onClick={this.handleJobList} className='listJobBtn'>
-                                    <h2>List job</h2>
+                                    {
+                                        this.state.submittingJob ?
+
+                                        <ButtonLoader />
+
+                                        :
+
+                                        <h2>List job</h2>
+                                    }
                                 </div>
                             </div> 
                         </form>

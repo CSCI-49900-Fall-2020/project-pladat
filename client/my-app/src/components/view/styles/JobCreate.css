@@ -290,3 +290,27 @@
     color:rgb(27, 27, 27);
     font-size: 17px;
 }
+
+#toggleJobSuccess {
+    border: 1px solid #00a68a;
+    font-size: 22px;
+    position: absolute;
+    top: 0;
+    z-index: 3000;
+    padding: 4px;
+    border-radius: 4px;
+    color: #d3d3d3;
+    background: #00a68a;
+}
+
+.jobSubFail {
+    border: 1px solid #df454e;
+    font-size: 22px;
+    position: absolute;
+    top: 0;
+    z-index: 3000;
+    padding: 4px;
+    border-radius: 4px;
+    color: #d3d3d3;
+    background: #df454e;
+}

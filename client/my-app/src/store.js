@@ -34,6 +34,7 @@ let employers = {
     removingJob: false,
     jobDeleteError: false,
     curJob: null,
+    jobCreateSuccess: false,
 
     verifyingRecruiter: false,
     assigningRecruiter: false,

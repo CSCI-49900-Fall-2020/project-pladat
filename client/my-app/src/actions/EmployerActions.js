@@ -242,7 +242,7 @@ export const createJob = (jobDetails) => dispatch => {
 
     const requestBody = JSON.stringify({...jobDetails});
 
-    axios.put('/api/employer/createJob', requestBody, {params: {userType: 'Employer'}, ...configs})
+    axios.post('/api/employer/createJob', requestBody, {params: {userType: 'Employer'}, ...configs})
     .then(res => {
         dispatch({
             type: EmployerConstants.EMPLOYER_CREATE_JOB_SUCCESS,

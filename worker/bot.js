@@ -34,6 +34,7 @@ mongoose
 })
 .then(() => {
     console.log("worker connected to mongo cluster");
+    eventEmmiter.emit('startBot');
 })
 .catch(err => {
     console.log(err);
@@ -42,7 +43,7 @@ mongoose
 
 const workServer = workerApp.listen(PORT, () => {
     console.log('worker running on port: ', PORT);
-    eventEmmiter.emit('startBot');
+    
 });
 
 
@@ -65,16 +66,28 @@ const listenForNewJobs = () => {
     //         }
     //     }
     // ];
+    // const jobWatchPipeline = [
+    //     {
+    //         '$match': {
+    //             '$expr': {
+    //                 '$or': [
+    //                     {'$eq': ['operationType', 'insert']},
+    //                     {'$eq': ['operationType', 'update']},
+    //                     {'$eq': ['operationType', 'delete']}
+    //                 ]
+    //             }
+    //         }
+    //     }
+    // ];
+
     const jobWatchPipeline = [
         {
             '$match': {
-                '$expr': {
-                    '$or': [
-                        {'$eq': ['operationType', 'insert']},
-                        {'$eq': ['operationType', 'update']},
-                        {'$eq': ['operationType', 'delete']}
-                    ]
-                }
+                '$or': [
+                    {'$and': [{'operationType': 'insert'}, {'operationType': 'insert'}]},
+                    {'$and': [{'operationType': 'update'}, {'operationType': 'update'}]},
+                    {'$and': [{'operationType': 'delete'}, {'operationType': 'delete'}]}
+                ]
             }
         }
     ];

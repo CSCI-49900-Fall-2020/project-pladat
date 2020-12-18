@@ -294,10 +294,12 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
     dateClose, role,
     perks, workEnv, pay
    } = req.body;
+   console.log(req.body);
 
    const newJobPost = new Job({
-       title, description, companyName: req.user.companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
-       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile, role: role, perks: perks, workEnv: workEnv, pay: pay, compLogo: req.user.images[0]
+       title, description, companyName: req.user.companyName, locations, skillsRequired, typeOfJob, industry, dateClose,
+       dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile, role: role, perks: perks, workEnv: workEnv, pay: pay, compLogo: req.user.images[0],
+       todo: 'not available', assignedRecruiter: 'not available', fullJobAppLink: 'not available', companyId: req.user.id
    });
 
    newJobPost.save()
@@ -313,7 +315,7 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
                     // experiencePref: {$each: backgrounds},
                     compOffers: {$each: perks},
                     workEnv: {$each: workEnv},
-                    personalityPref: {$each: person},
+                    // personalityPref: {$each: person},
                     roles: role
                 }
             },
@@ -326,10 +328,12 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
             return res.status(200).json({success: true, msg: "created job, and edited match profile", job, matchProf: editedMp});
         })
         .catch(err => {
+            console.log(err);
             return res.status(422).json({success: false, msg: "Someting went wrong; created job, but couldn't edit match profile.", err, job});
         }) 
    })
    .catch(err => {
+       console.log(err);
        return res.status(422).json({success: false, msg: "Couldn't create job something went wrong", err});
    })
 });
