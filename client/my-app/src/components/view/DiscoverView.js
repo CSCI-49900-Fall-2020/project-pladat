@@ -55,7 +55,7 @@ class DiscoverView extends React.Component {
 
     componentDidMount() {
         this.setState({
-            gettingCandidates: true,
+            gettingCandidates: false,
         }, () => {
         this.props.actions.userActions.getCandidates();
         })
