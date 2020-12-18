@@ -2,7 +2,7 @@
 
 
 ## Introduction
-PlaMint for promising students benefit both students and employers tremendously. Students gain valuable experience, mentorship, and often financial incentive while employers improve their existing resources in personnel, help staff with mentoring and management, and hire potential long-term employees. Searching for these placements can be an anxious time in a student’s life. Employers similarly can find it difficult to find qualified candidates to fill these placements. Students looking to engage in placements with potential employers can use our service to “match” to these opportunities. Employers and students will both register with our service and provide details of placement opportunities and student capabilities. Our matching algorithm then will provide strong candidates for employers and suggested placements for students to review in order to find the match possible.
+PlaceMint for promising students benefit both students and employers tremendously. Students gain valuable experience, mentorship, and often financial incentive while employers improve their existing resources in personnel, help staff with mentoring and management, and hire potential long-term employees. Searching for these placements can be an anxious time in a student’s life. Employers similarly can find it difficult to find qualified candidates to fill these placements. Students looking to engage in placements with potential employers can use our service to “match” to these opportunities. Employers and students will both register with our service and provide details of placement opportunities and student capabilities. Our matching algorithm then will provide strong candidates for employers and suggested placements for students to review in order to find the match possible.
 
 
 ## How to run and test
@@ -44,5 +44,6 @@ Fill the database with dummy data to see if the matching algorithm is working as
 
 
 ## Wiki
-* [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal) <br>
+* [Project Proposal](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Project-Proposal)
 * [Group Authored](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Group-Authored)
+* [Final Written Report](https://github.com/CSCI-49900-Fall-2020/project-pladat/wiki/Final-Written-Report)
