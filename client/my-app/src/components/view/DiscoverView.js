@@ -48,7 +48,7 @@ class DiscoverView extends React.Component {
         return (
             <div id="Discover-wrapper">
                 <div id="Preview-wrapper-innerContainer">
-                    <Card cardType='user' mode="preview" isPreview={true} cardData={this.state.curUser}/>
+                    <Card cardType='job' mode="preview" isPreview={true} cardData={this.state.curUser}/>
                 </div>
             </div>
         )
