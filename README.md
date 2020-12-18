@@ -1,6 +1,5 @@
 # PlaceMint
 
-
 ## Introduction
 PlaceMint for promising students benefit both students and employers tremendously. Students gain valuable experience, mentorship, and often financial incentive while employers improve their existing resources in personnel, help staff with mentoring and management, and hire potential long-term employees. Searching for these placements can be an anxious time in a student’s life. Employers similarly can find it difficult to find qualified candidates to fill these placements. Students looking to engage in placements with potential employers can use our service to “match” to these opportunities. Employers and students will both register with our service and provide details of placement opportunities and student capabilities. Our matching algorithm then will provide strong candidates for employers and suggested placements for students to review in order to find the match possible.
 
@@ -43,6 +42,8 @@ Allows employers to “like” any candidates and any students to “like” any
 
 ## Test Plan
 Fill the database with dummy data to see if the matching algorithm is working as intended. As well as also test both the student view and employer view to ensure that everything is behaving as expected. Filling out employer prompts from a student perspective as well as testing Premium by creating full profiles for mock students and employers to test the profile pages and like tabs. Then tweak some aspects of those profiles to have some controlled variables and multiple very similar accounts to ensure that the weighting on the algorithm is working as intended.
+
+* Hosted application: (mighty-fjord-37266.herokuapp.com)
 
 ## Authors
 * William Darko (williamliamdarko@gmail.com)
