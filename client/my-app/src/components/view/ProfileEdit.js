@@ -52,7 +52,14 @@ class ProfileEdit extends React.Component {
             empWorkEnv: this.props.user.user.typeOfUser === 'Employer' ? this.props.user.user.values.workEnv: [],
 
 
-            prevProfUrl: '/'
+            prevProfUrl: '/',
+
+            recEducation: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.education : [],
+            recJobTitle: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.jobTitle : '',
+            recShortDesc: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.shortDesc : '',
+            recSocials: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.socials: '',
+            recAutomatedMatchMsg: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.automatedMatchMsg: '',
+            recCompName: this.props.user.user.typeOfUser === 'Recruiter' ? this.props.user.user.companyName: ''
 
 
         }
@@ -60,13 +67,22 @@ class ProfileEdit extends React.Component {
         this.handleAddImg = this.handleAddImg.bind(this);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (this.props.user.user !== nextProps.user.user) || (this.props.user !== nextProps.user) || (this.state !== nextState) || (JSON.stringify(nextProps.user.user) !== JSON.stringify(this.props.user.user)) || (JSON.stringify(nextProps.user) !== JSON.stringify(this.props.user));
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return (this.props.user.user !== nextProps.user.user) || (this.props.user !== nextProps.user) || (this.state !== nextState) || (JSON.stringify(nextProps.user.user) !== JSON.stringify(this.props.user.user)) || (JSON.stringify(nextProps.user) !== JSON.stringify(this.props.user));
+    // }
 
     componentDidUpdate(prevProps) {
         if(prevProps !== this.props) {
             const { defaultEditSuccess, imagesUpdated, user, uploadingImg } = this.props.user;
+
+            if(prevProps.user.user !== user) {
+                this.setState({
+                    curUser: user ? this.props.user.user: null,
+                    curUserType: user ? this.props.user.user.typeOfUser : null,
+                    curUserImages: this.handleImgPopulate(),
+                    curUserMaxImgNum: user ? this.props.user.user.maxNumImages : 6
+                })
+            }
 
             if(defaultEditSuccess) {
                 this.setState({
@@ -337,7 +353,6 @@ class ProfileEdit extends React.Component {
         })
     }
 
-
     handleEmpOffer = (event) => {
         event.preventDefault();
         let clickedRole = event.target.dataset.experiencetype;
@@ -437,6 +452,14 @@ class ProfileEdit extends React.Component {
         }
     }
 
+    handleRecruiterAutoMsg = (event) => {
+        event.preventDefault();
+        this.setState({
+            recAutomatedMatchMsg: event.target.value,
+            toggleSaveChangesBtn: true
+        })
+    }
+
     SaveChanges = (event) => {
         event.preventDefault();
         switch(this.state.curUserType) {
@@ -473,6 +496,15 @@ class ProfileEdit extends React.Component {
                 this.props.actions.employerActions.editProfile(empProfEditData);
                 return;
             case 'Recruiter':
+                let recEditInfo = {
+                    education: this.state.recEducation,
+                    jobTitle: this.state.recJobTitle,
+                    shortDesc: this.state.recShortDesc,
+                    socials: this.state.recSocials,
+                    automatedMatchMsg: this.state.recAutomatedMatchMsg
+                };
+                this.props.actions.recruiterActions.editProfile(recEditInfo);
+            default:
                 return;
         }
     }
@@ -489,6 +521,8 @@ class ProfileEdit extends React.Component {
                 return;
         }
     }
+
+
     
 
     render() {
@@ -784,6 +818,50 @@ class ProfileEdit extends React.Component {
                                         }
                                     </fieldset>
                                 </div>
+                            </div>
+
+                        </div>
+
+                        : ""
+                    }
+                    {
+                        this.state.curUserType === 'Recruiter' && this.state.profileEditFields ?
+                        <div className='ProfileEdit-inputs-recruiter ProfileEdit-inputsContainer'>
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-education'>
+                                <label>Education</label>
+                                <div className='ProfileEdit-choice-slot-container'>
+                                    {this.state.recEducation.map((ed, idx) => {
+                                        return <span key={idx} className='ProfileEditChoiceSlot'>{ed} <span>&#10006;</span> </span>
+                                    })}
+                                </div>
+                                <input type='text' placeholder='Enter a college / university'/>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-compName'>
+                                <label>Company Name</label>
+                                <input type='text' placeholder='Company name' value={this.state.recCompName}/>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-jobTitle'>
+                                <label>Job Title</label>
+                                <input type='text' placeholder='Job Title' value={this.state.recJobTitle}/>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-bio'>
+                                <label>Bio</label>
+                                <textarea type='text' placeholder='Bio' value={this.state.recShortDesc}></textarea>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-socials'>
+                                <label>Socials</label>
+                                <input type='text' placeholder='A comma separated string, of you socials' value={this.state.recSocials}/>
+                            </div>
+
+                            <div className='ProfileEdit-input-group ProfileEdit-rec-autoMsg'>
+                                <label>Automated Match Message</label>
+                                <textarea type='text' onChange={this.handleRecruiterAutoMsg} placeholder='This is an automatic message starting the conversation with a student upon a match.'>
+                                    {this.state.recAutomatedMatchMsg}
+                                </textarea>
                             </div>
 
                         </div>

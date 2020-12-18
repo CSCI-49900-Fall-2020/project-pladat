@@ -3,8 +3,8 @@ import { EmployerConstants } from '../constants';
 
 import jwt from 'jsonwebtoken';
 import { REDUX_PERSIST_KEY } from '../staticData/config';
-
 import { hashToLocalStroage } from './UserActions';
+
 
 
 
@@ -31,7 +31,8 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
             msg: res.data.msg,
             user: res.data.employer,
             isBasic: true
-        })
+        });
+        dispatch(hashToLocalStroage(res.data.employer));
     })
     .catch(error => {
         dispatch({
@@ -41,7 +42,7 @@ export const completeBasicProfile = (basicInfo) => dispatch => {
     })
 }
 
-export const editMatchProfile = () => dispatch => {
+export const updateMatchProfile = () => dispatch => {
     dispatch({type: EmployerConstants.EDITING_EMPLOYER_PROFILE});
 
     const configs = {
@@ -54,9 +55,8 @@ export const editMatchProfile = () => dispatch => {
         },
     };
 
-    // const requestBody = JSON.stringify({...matchProfile});
 
-    axios.put('/api/employer/editMatchProfile', {params: {userType: 'Employer'}, ...configs})
+    axios.put('/api/employer/updateMatchProfile', {params: {userType: 'Employer'}, ...configs})
     .then(res => {
         dispatch({
             type: EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS,
@@ -93,7 +93,8 @@ export const editProfile = (profile) => dispatch => {
             type: EmployerConstants.EDITING_EMPLOYER_PROFILE_SUCCESS,
             msg: res.data.msg,
             user: res.data.employer
-        })
+        });
+        dispatch(updateMatchProfile());
     })
     .catch(error => {
         dispatch({
@@ -444,11 +445,90 @@ export const employerSearchQuery = (query) => dispatch => {
 }
 
 export const swipeRight = (studentId) => dispatch => {
-    return;
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/employer/swipeRight/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_RIGHT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf,
+            isMatch: res.data.isMatch
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        });
+    })
 }
 
 export const swipeLeft = (studentId) => dispatch => {
-    return;
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+    axios.put('/api/employer/swipeLeft/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
+}
+
+export const skipSwipe = (studentId) => dispatch => {
+    dispatch({type: EmployerConstants.EMPLOYER_SWIPING});
+
+    const configs = {
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        proxy: {
+            host: '127.0.0.1',
+            port: 5000
+        },
+    };
+
+
+    axios.put('/api/employer/skipSwipe/'+studentId, {params: {userType: 'Employer'}, ...configs})
+    .then(res => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_LEFT,
+            msg: res.data.msg,
+            matchProfile: res.data.matchProf
+        });
+    })
+    .catch(error => {
+        dispatch({
+            type: EmployerConstants.EMPLOYER_STUDENT_SWIPE_FAIL,
+            msg: error.response.data.msg,
+        })
+    })
 }
 
 

@@ -17,6 +17,7 @@ import ProfileEdit from '../view/ProfileEdit';
 import Preview from '../view/Preview';
 import Settings from '../view/Settings';
 import DiscoverView from '../view/DiscoverView';
+import JobCreate from '../view/JobCreate';
 import FourOFour from '../pages/FourOFour';
 
 
@@ -92,6 +93,7 @@ class EMain extends React.Component {
     }
 
     componentDidMount() {
+        this.props.actions.userActions.getUser();
         if(this.props.location) {
             this.setState({
                 curLocation: this.props.location.pathname
@@ -208,18 +210,21 @@ class EMain extends React.Component {
                                     </div>
                                     <div className='grid-left-contentHolder'>
                                        {
-                                           this.state.curLocation === '/e/discover' ?
+                                           ((this.state.curLocation === '/e/discover') || (this.state.curLocation === '/e/discover/')) ?
 
                                            <h2>Matches go here</h2>
 
                                            :
 
                                            <div className='grid-left-editProfileTabs'>
-                                               <span className='text' style={this.state.curLocation === '/e/me' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                               <span className='text' style={((this.state.curLocation === '/e/me') || (this.state.curLocation === '/e/me/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
                                                     <Link to='/e/me'><h3>Edit Profile</h3></Link>
                                                 </span>
-                                               <span className='text' style={this.state.curLocation === '/e/settings' ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                               <span className='text' style={((this.state.curLocation === '/e/settings') || (this.state.curLocation === '/e/settings/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
                                                    <Link to='/e/settings'><h3>Settings</h3></Link>
+                                                </span>
+                                                <span className='text' style={((this.state.curLocation === '/e/create-job') || (this.state.curLocation === '/e/create-job/')) ? {color: "#00a68a", pointerEvents: 'none'} : {color: "#d3d3d3"}}>
+                                                   <Link to='/e/create-job'><h3>Create Job</h3></Link>
                                                 </span>
                                                <span className='text grid-left-editProfileTabSlotText' onClick={this.handleLogOut}><h3>Log out</h3></span>
                                            </div>
@@ -245,6 +250,7 @@ class EMain extends React.Component {
                                         <Route exact path='/e/me' component={ProfileEdit} />
                                         <Route exact path='/e/me/preview_profile' component={Preview} />
                                         <Route exact path='/e/settings' component={Settings}/>
+                                        <Route exact path='/e/create-job/' component={JobCreate} />
                                         <Route component={FourOFour} />
                                     </Switch>
                                 </div>

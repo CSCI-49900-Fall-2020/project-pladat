@@ -17,6 +17,7 @@ const User = require('../../models/User');
 const Student = require('../../models/Student');
 const Employer = require('../../models/Employer');
 const Recruiter = require('../../models/Recruiter');
+const MatchProfile = require('../../models/MatchProfile');
 
 const { JWT_EMAIL_VERIFY_SIGN_KEY, JWT_EMAIL_VERIFY_SIGN_OPTIONS, SENDGRID_APIKEY, CLIENT_ORIGIN, PROJECT_EMAIL, IMAGE_UPLOAD_KEY } = require('../../configs/prodConfig');
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
@@ -421,6 +422,24 @@ router.post('/cloudUploadImg', ensureAuthenticated, (req, res) => {
 
     })
 })
+
+
+router.get('/getCandidates', ensureAuthenticated, (req, res) => {
+    MatchProfile.findOne({_id: req.user.matchProfile})
+    .then(usrmp => {
+        let cands = usrmp.candidates;
+        return res.status(200).json({success: true, msg: "Retrieved matching candidates.", candidates: cands})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
+    })
+});
+
+
+
+
+
+
 
 
 router.put('/resetPasswordRequest', ensureAuthenticated, (req, res) => {

@@ -12,6 +12,8 @@ const MatchProfile = require('../../models/MatchProfile');
 const Match = require('../../models/Match');
 
 const { forwardAuthentication, ensureAuthenticated, ensureAuthorisation } = require('../../configs/authorise');
+const Employer = require('../../models/Employer');
+const Recruiter = require('../../models/Recruiter');
 
 
 
@@ -49,7 +51,8 @@ router.put('/completeBasicProfile', ensureAuthorisation, (req, res) => {
         industries: [],
         workEnv: [],
         compOffers: [],
-        todos: []
+        todos: [],
+        pay: []
     });
     studMatchProfile.save()
     .then(matchProf => {
@@ -208,8 +211,7 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
         .then(empMatchProf => {
             MatchProfile.findOne({_id: req.user.matchProfile})
             .then(studMatchProf => {
-                const isMatch = swipedJob.swipedRightOnMe.includes(req.user._id) && studMatchProf.swipedRightOnMe.includes(empMatchProf._id);
-
+                const isMatch = swipedJob.swipedRightOnMe.includes(req.user.matchProfile) && studMatchProf.swipedRightOnMe.includes(empMatchProf._id);
                 if(isMatch) {
                     let newMatch = new Match({
                         jobId: swipedJob._id,
@@ -224,48 +226,26 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
                         MatchProfile.findOneAndUpdate(
                             {_id: empMatchProf._id},
                             {
-                                $push: {swipedRightOnMe: studMatchProf._id, matches: newMatch._id},
+                                $push: {matches: newMatch._id},
                                 $set: {ir: (empMatchProf.swipedRightOnMe.length+1)/empMatchProf.swipedLeftOnMe.length}
                             }
                         )
                         .then(updatedEmpMatchProf => {
-                            let tempMp = studMatchProf;
-                            if(!tempMp.companies.includes(empMatchProf.userId)) {
-                                tempMp.companies.push(empMatchProf.userId)
-                            }
-                            empMatchProf.industries.map((ind, idx) => {
-                                if(!tempMp.industries.includes(ind)) {
-                                    tempMp.industries.push(ind);
-                                }
-                            });
-                            empMatchProf.compOffers.map((offer, idx) => {
-                                if(!tempMp.compOffers.includes(offer)) {
-                                    tempMp.compOffers.push(offer);
-                                }
-                            });
-                            empMatchProf.workEnv.map((env, idx) => {
-                                if(!tempMp.workEnv.includes(env)) {
-                                    tempMp.workEnv.push(evn);
-                                }
-                            });
-                            empMatchProf.cgs.map((stage, idx) => {
-                                if(!tempMp.cgs.includes(stage)) {
-                                    tempMp.cgs.push(stage);
-                                }
-                            });
-                            if(!tempMp.jobTypes.includes(swipedJob.typeOfJob)) {
-                                tempMp.jobTypes.push(swipedJob.typeOfJob);
-                            }
-                            if(!tempMp.roles.includes(swipedJob.role)) {
-                                tempMp.roles.push(swipedJob.role);
-                            }
                             MatchProfile.findOneAndUpdate(
                                 {_id: req.user.matchProfile},
                                 {
-                                    $set: {
-                                        ...tempMp
+                                    $addToSet: {
+                                        companies: empMatchProf.userId,
+                                        industries: {$each: empMatchProf.industries},
+                                        compOffers: {$each: empMatchProf.compOffers},
+                                        workEnv: {$each: empMatchProf.workEnv},
+                                        cgs: empMatchProf.cgs,
+                                        jobTypes: swipedJob.typeOfJob,
+                                        roles: swipedJob.role,
+                                        pay: swipedJob.pay
                                     },
-                                    $push: {matches: newMatch._id}
+                                    $push: {matches: newMatch._id},
+                                    $pop: {candidates: -1}
                                 },
                                 {
                                     new: true,
@@ -296,42 +276,19 @@ router.put('/swipeRight/:jobId', ensureAuthorisation, (req, res) => {
                         }
                     )
                     .then(empMatchProf => {
-                        let tempMp = studMatchProf;
-                        if(!tempMp.companies.includes(empMatchProf.userId)) {
-                            tempMp.companies.push(empMatchProf.userId)
-                        }
-                        empMatchProf.industries.map((ind, idx) => {
-                            if(!tempMp.industries.includes(ind)) {
-                                tempMp.industries.push(ind);
-                            }
-                        });
-                        empMatchProf.compOffers.map((offer, idx) => {
-                            if(!tempMp.compOffers.includes(offer)) {
-                                tempMp.compOffers.push(offer);
-                            }
-                        });
-                        empMatchProf.workEnv.map((env, idx) => {
-                            if(!tempMp.workEnv.includes(env)) {
-                                tempMp.workEnv.push(evn);
-                            }
-                        });
-                        empMatchProf.cgs.map((stage, idx) => {
-                            if(!tempMp.cgs.includes(stage)) {
-                                tempMp.cgs.push(stage);
-                            }
-                        });
-                        if(!tempMp.jobTypes.includes(swipedJob.typeOfJob)) {
-                            tempMp.jobTypes.push(swipedJob.typeOfJob);
-                        }
-                        if(!tempMp.roles.includes(swipedJob.role)) {
-                            tempMp.roles.push(swipedJob.role);
-                        }
                         MatchProfile.findOneAndUpdate(
                             {_id: req.user.matchProfile},
                             {
-                                $set: {
-                                    ...tempMp
-                                }
+                                $addToSet: {
+                                    companies: empMatchProf.userId,
+                                    industries: {$each: empMatchProf.industries},
+                                    compOffers: {$each: empMatchProf.compOffers},
+                                    workEnv: {$each: empMatchProf.workEnv},
+                                    cgs: empMatchProf.cgs,
+                                    jobTypes: swipedJob.typeOfJob,
+                                    roles: swipedJob.role
+                                },
+                                $pop: {candidates: -1}
                             },
                             {
                                 new: true,
@@ -390,7 +347,22 @@ router.put('/swipeLeft/:jobId', ensureAuthorisation, (req, res) => {
                 }
             )
             .then(slj => {
-                return res.status(200).json({success: true, msg: "Swiped left on job, no match prof update needed"});
+                MatchProfile.findOneAndUpdate(
+                    {_id: req.user.matchProfile},
+                    {
+                        $pop: {candidates: -1}
+                    },
+                    {
+                        new: true,
+                        returnNewDocument: true
+                    }
+                )
+                .then(finalSMP => {
+                    return res.status(200).json({success: true, msg: "Swiped left on job, and edited match profile", matchProf: finalSMP})
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Something went wrong; swiped left but couldn't update match profile", err});
+                })
             })
             .catch(err => {
                 return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on job", err})
@@ -404,6 +376,81 @@ router.put('/swipeLeft/:jobId', ensureAuthorisation, (req, res) => {
         return res.status(422).json({success: false, msg: "Something went wrong trying to swipe left on job", err})
     })
 });
+
+router.put('/skipSwipe/:jobId', ensureAuthorisation, (req, res) => {
+    Job.findOne({_id: req.params.jobId})
+    .then(job => {
+        MatchProfile.findOneAndUpdate(
+            {_id: req.user.matchProfile},
+            {
+                $pop: {candidates: -1},
+                $push: {candidates: job}
+            }
+        )
+        .then(updatedSTUDProf => {
+            return res.status(200).json({success: true, msg: "Skipped job", matchProf: updatedSTUDProf});
+        })
+        .catch(err => {
+            return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+        })
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Something happened trying to skip swipe", err});
+    })
+});
+
+router.get('/getCandidates', ensureAuthenticated, (req, res) => {
+    MatchProfile.findOne({_id: req.user.matchProfile})
+    .then(studmp => {
+        let cands = studmp.candidates;
+        return res.status(200).json({success: true, msg: "Retrieved matching candidates.", candidates: cands})
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "Trouble getting candidates", err});
+    })
+});
+
+router.get('/getMatches', ensureAuthorisation, (req, res) => {
+    let matchObjArr = [];
+    Match.find({studentId: req.user._id})
+    .then(matches => {
+        if(matches.length === 0) {
+            return res.status(200).json({success: true, msg: "No matches just yet; keep swiping.", matches});
+        }
+        matches.map((m, idx) => {
+            let curM = {};
+            Employer.findOne({_id: m.employerId})
+            .then(emp => {
+                emp.password = null;
+                curM['employer'] = emp;
+                Recruiter.findOne({_id: m.recruiterId})
+                .then(rec => {
+                    rec.password = null;
+                    curM['recruiter'] = rec;
+                    curM['jobId'] = m.jobId;
+                    curM['convoId'] = m.convo;
+                    matchObjArr.push(curM);
+
+                    if(matchObjArr.length === matches.length) {
+                        return res.status(200).json({success: true, msg: "Loaded matches", matches: matchObjArr});
+                    }
+                })
+                .catch(err => {
+                    return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+                })
+            })
+            .catch(err => {
+                return res.status(422).json({success: false, msg: "Couldn't retrieve matches..", err});
+            })
+            
+        });
+    })
+    .catch(err => {
+        return res.status(422).json({success: false, msg: "something went wrong; couldn't retrieve matches", err});
+    })
+});
+
+
 
 
 module.exports = router;

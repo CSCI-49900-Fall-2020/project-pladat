@@ -35,7 +35,16 @@ const initialState = {
 
     editFields: {},
 
-    matchProfile: null
+    matchProfile: null,
+
+    candidates: [],
+    gettingCandidates: false,
+    gettingCandidatesError: false,
+    candidatesLoaded: false,
+
+    gettingMatches: false,
+    gettingMatchesError: false,
+    matchesLoaded: false
 };
 
 function user(state = initialState, action) {
@@ -141,7 +150,7 @@ function user(state = initialState, action) {
                 authState: UserConstants.LOADING_USER_SUCCESS,
                 emailIsValidated: action.userInfo.data.isVerified,
                 loggedIn: true,
-                editFields: { ...efs}
+                editFields: { ...efs},
             }
         case UserConstants.USER_LOGGING_IN:
             return {
@@ -373,6 +382,28 @@ function user(state = initialState, action) {
                 uploadingImg: false,
                 upLoadedImg: null,
                 imgUploadError: true
+            };
+        case UserConstants.GETTING_CANDIDATES:
+            return {
+                ...state,
+                gettingCandidates: true,
+                gettingCandidatesError: false,
+                candidatesLoaded: false
+            };
+        case UserConstants.GETTING_CANDIDATES_SUCCESS:
+            return {
+                ...state,
+                gettingCandidatesError: false,
+                gettingCandidates: false,
+                candidatesLoaded: true,
+                candidatesLoaded: action.candidates
+            };
+        case UserConstants.GETTING_CANDIDATES_FAIL:
+            return {
+                ...state,
+                gettingCandidates: false,
+                candidatesLoaded: false,
+                gettingCandidatesError: true
             };
         default:
             return state;
