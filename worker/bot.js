@@ -325,20 +325,24 @@ eventEmmiter.on('SJC', () => {
                     .then(res => {
                         console.log(`Job: ${job._id} broadcast. matchCount: ${res.matchedCount}, modCount: ${res.modifiedCount}`);
                         JobQueue.dequeue();
+                        JobQueue.enqueue(jobId);
                     })
                     .catch(err => {
                         console.log(`couldn't broadcast job: ${job._id} to matchProfiles`, err);
                         JobQueue.dequeue();
+                        JobQueue.enqueue(jobId);
                     })
                 })
                 .catch(err => {
                     console.log('Broadcasting job error: ', err);
                     JobQueue.dequeue();
+                    JobQueue.enqueue(jobId);
                 })
             })
             .catch(err => {
                 console.log('Broadcasting job error: ', err);
                 JobQueue.dequeue();
+                JobQueue.enqueue(jobId);
             })
         }
     }

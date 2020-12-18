@@ -22,19 +22,22 @@ class Card extends React.Component {
             cardType: this.props.cardType,
             isPreview: this.props.isPreview,
             cardData: this.props.cardData,
+            cardMode: this.props.mode,
             
-            curUser: this.props.cardData,
-            curUserType: this.props.cardData ? this.props.cardData.typeOfUser : null,
-            curUserImages: this.handleImgPopulate(),
-            curUserMaxImgNum: this.props.user.user ? this.props.user.user.maxNumImages : 6,
+            curUser: this.props.cardType === 'user' ? this.props.cardData : null,
+            curUserType: this.props.cardData && this.props.cardType === 'user' ? this.props.cardData.typeOfUser : null,
+            curUserImages: this.props.cardType === 'user' ?  this.handleImgPopulate() : null,
+            curUserMaxImgNum: this.props.user.user && this.props.cardType === 'user' ? this.props.user.user.maxNumImages : 6,
 
-            cardMode: this.props.mode
+            curJob: this.props.cardType === 'job' ? this.props.cardData: null,
+            curJobImages: this.props.cardType === 'job' ? this.handleImgPopulate(): [],
+            curMaxJobImg: 6
         }
     }
 
 
     handleImgPopulate = () => {
-        const curUserImgs = this.props.cardData ? this.props.cardData.images : [];
+        const curUserImgs = this.props.cardType === 'user' ? this.props.cardData.images : this.props.cardData.compLogo;
         const imgMax = this.props.cardData ? this.props.cardData.maxNumImages : 6;
 
         if(curUserImgs.length === imgMax) {
@@ -183,10 +186,44 @@ class Card extends React.Component {
                             this.state.cardType === 'job' ?
 
                             <div id='job-card-carousel-slideList' className='card-carousel-slideList'>
-                                <div className='card-carousel-slide carousel-slide1'></div>
-                                <div className='card-carousel-slide carousel-slide2'></div>
-                                <div className='card-carousel-slide carousel-slide3'></div>
-                                <div className='card-carousel-slide carousel-slide4'></div>
+                                <div className='card-carousel-slide carousel-slide1' style={this.state.curJob.compLogo[0] ? {backgroundImage: `url(${this.state.curJob.compLogo[0].url})`}: {}}>
+                                    <div className='job-slide1-info'>
+                                        <h1 id='jobTitle'>{this.state.curJob.title}</h1>
+                                        <div id='nameAndType'>
+                                            <span id='cp'><h2 id='companyName'>{this.state.curJob.companyName}</h2></span> 
+                                            <span id='jt'><h2 id='typeOfJob'>{this.state.curJob.typeOfJob}</h2></span>
+                                        </div>
+                                        <div id='locas'>
+                                            <span id='locIcon'>          
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                    <path d="M0 0h24v24H0z" fill="none"/>
+                                                    <path id='locIconPath' d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                                </svg>
+                                            </span>
+                                            {
+                                                this.state.curJob.locations.map((loc, idx) => {
+                                                    return (<span className='jobSlide1-spanLoc'>
+                                                        {loc}
+                                                    </span>)
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                    <div id='numApps'>
+                                        <span id='pplLogo'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+                                                <path d="M0 0h24v24H0z" fill="none"/>
+                                                <path id='pplIconpath' d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                                            </svg>
+                                        </span>
+                                        <span id='appCount'>
+                                            {this.state.curJob.numApplicants} applicants
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='card-carousel-slide carousel-slide2 carousel-noImg-slide'></div>
+                                <div className='card-carousel-slide carousel-slide3 carousel-noImg-slide'></div>
+                                <div className='card-carousel-slide carousel-slide4 carousel-noImg-slide'></div>
                             </div>
 
                             : ''

@@ -173,7 +173,14 @@ let user = {
 
     matchProfile: null,
     
-    candidates: []
+    candidates: [],
+    gettingCandidates: false,
+    gettingCandidatesError: false,
+    candidatesLoaded: false,
+
+    gettingMatches: false,
+    gettingMatchesError: false,
+    matchesLoaded: false
 };
 
 const defaultState = {

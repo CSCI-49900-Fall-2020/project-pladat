@@ -454,7 +454,7 @@ export const getCandidates = () => dispatch => {
             port: 5000
         },
     };
-    axios.put('/api/users/getCandidates', {...configs})
+    axios.get('/api/users/getCandidates', {...configs})
     .then(res => {
         dispatch({
             type: UserConstants.GETTING_CANDIDATES_SUCCESS,
