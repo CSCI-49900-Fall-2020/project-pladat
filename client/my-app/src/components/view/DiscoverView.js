@@ -12,6 +12,8 @@ import * as allEmployerActions from '../../actions/EmployerActions';
 
 import Card from '../view/Card';
 
+import ViewLoader from '../uiComponents/ViewLoader';
+
 import './styles/Preview.css';
 
 
@@ -20,12 +22,16 @@ class DiscoverView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            gettingCandidates: false,
+
+            curUserType: this.props.user.user.typeOfUser,
+
             fakeJob: {
                 title: 'Great tech Job',
                 description: 'Beautiful Job',
-                companyName: 'Nozama',
+                companyName: 'Nozama Inc',
                 companyId: '5fd498ae25f410120b276769',
-                locations: 'Seattle, WA',
+                locations: ['Seattle, WA'],
                 todo: 'Coding stuff',
                 skillsRequired: 'Java',
                 typeOfJob: 'Internship unpaid',
@@ -34,21 +40,45 @@ class DiscoverView extends React.Component {
                 perks: ['Career Growth'],
                 workEnv: ['Chaotic'],
                 pay: '$$$',
-                compLogo: {url: 'http://res.cloudinary.com/placemint/image/upload/v1607769238/ldgo2ta6p5guggojjznx.jpg'},
+                compLogo: [{url: 'http://res.cloudinary.com/placemint/image/upload/v1607769238/ldgo2ta6p5guggojjznx.jpg'}],
              
-             
-                numApplicants: {type: Number, required: false, default: 0},
-                isOpen: {type: Boolean, required: true, default: false},
+                numApplicants: 99,
+
+                ///////
+
+                cardType: this.props.user.user.typeOfUser !== 'Student' ? 'user' : 'job',
+                cardData: this.props.user.user.typeOfUser !== 'Student' ? this.props.user.user : {}
              
             }
         }
+    }
+
+    componentDidMount() {
+        this.setState({
+            gettingCandidates: true,
+        }, () => {
+        this.props.actions.userActions.getCandidates();
+        })
     }
 
     render() {
         return (
             <div id="Discover-wrapper">
                 <div id="Discover-wrapper-innerContainer">
-                    <Card cardType='job' mode="swipe" isPreview={true} cardData={this.state.fakeJob}/>
+                    {
+                        this.state.gettingCandidates ?
+
+                        <div id='Discover-wrapper-loadingDivContainer'>
+                            <h1>Setting things up for you...</h1>
+
+                            <ViewLoader />
+                        </div>
+                    
+                        :
+
+                        <Card cardType={this.state.curUserType !== 'Student' ? 'user' : 'job'} mode="swipe" isPreview={true} cardData={this.state.curUserType !== 'Student' ? this.props.user.user : this.state.fakeJob}/>
+
+                    }
                 </div>
             </div>
         )

@@ -368,3 +368,111 @@
     transform: scale(2.7);
 }
 
+
+.job-slide1-info {
+    width: auto;
+    position: absolute;
+    bottom: 15%;
+    left: 2%;
+    font-family: Montserrat, sans-serif;
+    color: rgb(27, 27, 27);
+}
+.job-slide1-info #jobTitle {
+    font-size: 42px;
+    font-weight: 300;
+    background-color: #00a68a;
+    width: auto;
+    padding: 3px;
+    margin: 0;
+    border-radius: 4px;
+    border: 1px solid #00a68a;
+}
+
+.job-slide1-info #nameAndType {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+.job-slide1-info #nameAndType #cp{
+    margin-right: 8px;
+    border: 1px solid #00a68a;
+    padding: 2px;
+    height: min-content;
+    border-radius: 4px;
+    background-color: #00a680;
+}
+.job-slide1-info #nameAndType #cp h2{
+    padding: 0;
+    margin: 0;
+    font-weight: 300;
+}
+
+.job-slide1-info #nameAndType #jt{
+    margin-right: 8px;
+    border: 1px solid #00a68a;
+    padding: 2px;
+    height: min-content;
+    border-radius: 4px;
+    background-color: #afdfd4;
+}
+.job-slide1-info #nameAndType #jt h2{
+    padding: 0;
+    margin: 0;
+    font-weight: 300;
+}
+.job-slide1-info #locas {
+    width: auto;
+    position: relative;
+    /* border: 1px solid #00694e; */
+    margin-top: 8px;
+    padding-left: 26px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    height: auto;
+
+}
+.job-slide1-info #locIcon {
+    position: absolute;
+    left: 2px;
+    top: 0;
+    bottom: auto;
+}
+
+.job-slide1-info .jobSlide1-spanLoc {
+    border: 1px solid #00a680;
+    background: #00a680;
+    border-radius: 4px;
+    margin-right: 4px;
+    padding: 2px;
+}
+#numApps {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    display: flex;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+    align-items: center;
+    justify-items: center;
+    align-content: center;
+    justify-content: center;
+    border: 1px solid #afdfd4;
+    border-radius: 4px;
+    background: #afdfd4;
+    padding: 2px;
+}
+#numApps #pplLogo {
+    margin-right: 2px;
+}
+#numApps #pplLogo #pplIconpath, #locIconPath {
+    /* stroke: rgb(27, 27, 27); */
+    fill: rgb(27, 27, 27);
+}
+#numApps #appCount {
+    font-size: 12px;
+    color: rgb(27, 27, 27);
+}
+
