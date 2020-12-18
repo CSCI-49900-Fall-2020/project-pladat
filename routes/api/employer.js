@@ -285,7 +285,6 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
    const {
     title,
     description,
-    companyName,
     locations,
     skillsRequired,
     typeOfJob,
@@ -293,11 +292,11 @@ router.post('/createJob', ensureAuthorisation, (req, res) => {
     assignedRecruiter,
     fullJobAppLink,
     dateClose, role,
-    perks, workEnv, pay, person
+    perks, workEnv, pay
    } = req.body;
 
    const newJobPost = new Job({
-       title, description, companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
+       title, description, companyName: req.user.companyName, locations, skillsRequired, typeOfJob, industry, assignedRecruiter, fullJobAppLink, dateClose,
        dateOpen: Date.now(), isOpen: true, matchProfile: req.user.matchProfile, role: role, perks: perks, workEnv: workEnv, pay: pay, compLogo: req.user.images[0]
    });
 

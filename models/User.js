@@ -8,7 +8,7 @@ const baseOptions = {
 
 const GeneralUser = new Schema({
     firstname: {type: String, required: true},
-    lastname: {type: String, required: false},
+    lastname: {type: String, required: true},
     email: {type: String, requried: true},
     isActive: {type: Boolean, default: false},
     password: {type: String, required: true},

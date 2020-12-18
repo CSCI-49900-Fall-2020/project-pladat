@@ -48,7 +48,7 @@ const JobSchema = new Schema({
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},
-   dateClose: {type: String, required: false},
+   dateClose: {type: String, required: true},
 
    swipedRightOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],
    swipedLeftOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],

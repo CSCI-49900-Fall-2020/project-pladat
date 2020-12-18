@@ -33,7 +33,7 @@ class BasicViewWrapper extends React.Component {
             const { employerActionState, basicSuccessEmp } = this.props.employers;
             const { recruiterActionState, basicSuccessR } = this.props.recruiters;
 
-            if(basicProfileInfoComplete && this.state.initHasBaiscComplete) {
+            if(this.props.user.user.basicProfileInfoComplete && this.state.initHasBaiscComplete) {
                 this.setState({
                     basicSuccessForward: true,
                     basicSuccessForwardRedirectTo: this.handleBasicOnSuccess()
@@ -66,6 +66,12 @@ class BasicViewWrapper extends React.Component {
                     correctType: this.props.user.user.typeOfUser.toLowerCase()
                 })
             }
+        }
+        if(this.props.user.user.basicProfileInfoComplete && this.state.initHasBaiscComplete) {
+            this.setState({
+                basicSuccessForward: true,
+                basicSuccessForwardRedirectTo: this.handleBasicOnSuccess()
+            })
         }
 
     }

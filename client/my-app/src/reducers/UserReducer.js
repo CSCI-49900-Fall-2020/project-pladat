@@ -150,7 +150,7 @@ function user(state = initialState, action) {
                 authState: UserConstants.LOADING_USER_SUCCESS,
                 emailIsValidated: action.userInfo.data.isVerified,
                 loggedIn: true,
-                editFields: { ...efs}
+                editFields: { ...efs},
             }
         case UserConstants.USER_LOGGING_IN:
             return {
