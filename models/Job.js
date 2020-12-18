@@ -11,7 +11,7 @@ const Schema = mongoose.Schema;
 //    todo: {type: String, required: true},
 //    skillsRequired: [{type: String, required: true}],
 //    dateClose: {type: String, required: true},
-//    matchProfile: {type: Schema.Types.ObjectId, required: true, ref: 'MatchProfile'},
+//    matchProfile: {type: String, required: true, ref: 'MatchProfile'},
 //    swipeRights: [{type: String, ref: 'Student'}],
 //    matches: [{type: String, ref: 'Match'}],
 //    numApplicants: {type: Number, default: 0, required: false},
@@ -34,7 +34,7 @@ const JobSchema = new Schema({
    title: {type: String, required: true},
    description: {type: String, required: true},
    companyName: {type: String, required: true},
-   companyId: {type: Schema.Types.ObjectId, required: true},
+   companyId: {type: String, required: true},
    locations: [{type: String, required: true}],
    todo: {type: String, required: true},
    skillsRequired: [{type: String, required: true}],
@@ -43,25 +43,25 @@ const JobSchema = new Schema({
    role: {type: String, required: true},
    perks: [{type: String, required: true}],
    workEnv: [{type: String, required: true}],
-   pay: {type: String, required: true},
+   pay: {type: Schema.Types.Mixed, required: true},
    compLogo: {type: Schema.Types.Mixed, required: true},
 
    //Tracking:
    dateOpen: {type: String, required: false, default: new Date()},
    dateClose: {type: String, required: true},
 
-   swipedRightOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],
-   swipedLeftOnMe: [{type: Schema.Types.ObjectId, required: false, ref: 'Student'}],
+   swipedRightOnMe: [{type: String, required: false, ref: 'Student'}],
+   swipedLeftOnMe: [{type: String, required: false, ref: 'Student'}],
 
    numApplicants: {type: Number, required: false, default: 0},
    isOpen: {type: Boolean, required: true, default: false},
 
    //Logistics:
-   assignedRecruiter: {type: Schema.Types.ObjectId, required: false},
+   assignedRecruiter: {type: String, required: false},
    fullJobAppLink: {type: String, required: true},
 
    //Analysis:
-   matchProfile: {type: Schema.Types.ObjectId, required: true, ref: 'Employer'},
+   matchProfile: {type: String, required: true, ref: 'Employer'},
 
 
 })
