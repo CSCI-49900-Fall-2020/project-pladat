@@ -54,30 +54,30 @@ let CompanyQueue = new Queue();
 
 const listenForNewJobs = () => {
     console.log('listening for changes in jobs collection...');
-    const jobWatchPipeline = [
-        {
-            '$match': {
-                '$or': [
-                    {'$eq': ['operationType', 'insert']},
-                    {'$eq': ['operationType', 'update']},
-                    {'$eq': ['operationType', 'delete']}
-                ]
-            }
-        }
-    ];
     // const jobWatchPipeline = [
     //     {
     //         '$match': {
-    //             '$expr': {
-    //                 '$or': [
-    //                     {'$eq': ['operationType', 'insert']},
-    //                     {'$eq': ['operationType', 'update']},
-    //                     {'$eq': ['operationType', 'delete']}
-    //                 ]
-    //             }
+    //             '$or': [
+    //                 {'$eq': ['operationType', 'insert']},
+    //                 {'$eq': ['operationType', 'update']},
+    //                 {'$eq': ['operationType', 'delete']}
+    //             ]
     //         }
     //     }
     // ];
+    const jobWatchPipeline = [
+        {
+            '$match': {
+                '$expr': {
+                    '$or': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
+            }
+        }
+    ];
 
     // const jobWatchPipeline = [
     //     {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
@@ -114,31 +114,31 @@ const listenForMatchProfileChanges = () => {
     //     {'$match': {'operationType': 'insert', 'operationType': 'update', 'operationType': 'delete'}}
     // ];
 
-    // const profPipeLine = [
-    //     {
-    //         '$match': {
-    //             '$expr': {
-    //                 '$or': [
-    //                     {'$eq': ['operationType', 'insert']},
-    //                     {'$eq': ['operationType', 'update']},
-    //                     {'$eq': ['operationType', 'delete']}
-    //                 ]
-    //             }
-    //         }
-    //     }
-    // ];
-    
     const profPipeLine = [
         {
             '$match': {
-                '$or': [
-                    {'$eq': ['operationType', 'insert']},
-                    {'$eq': ['operationType', 'update']},
-                    {'$eq': ['operationType', 'delete']}
-                ]
+                '$expr': {
+                    '$or': [
+                        {'$eq': ['operationType', 'insert']},
+                        {'$eq': ['operationType', 'update']},
+                        {'$eq': ['operationType', 'delete']}
+                    ]
+                }
             }
         }
     ];
+    
+    // const profPipeLine = [
+    //     {
+    //         '$match': {
+    //             '$or': [
+    //                 {'$eq': ['operationType', 'insert']},
+    //                 {'$eq': ['operationType', 'update']},
+    //                 {'$eq': ['operationType', 'delete']}
+    //             ]
+    //         }
+    //     }
+    // ];
 
         
 
